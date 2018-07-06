@@ -154,7 +154,7 @@ public abstract class Card
                 DeployCostBuff buff = x as DeployCostBuff;
                 if (buff != null)
                 {
-                    if (buff.isBecome)
+                    if (buff.IsBecome)
                     {
                         deployCostNow = buff.Value;
                         return;
@@ -183,7 +183,7 @@ public abstract class Card
                 ClassChangeCostBuff buff = x as ClassChangeCostBuff;
                 if (buff != null)
                 {
-                    if (buff.isBecome)
+                    if (buff.IsBecome)
                     {
                         classChangeCostNow = buff.Value;
                         return;
