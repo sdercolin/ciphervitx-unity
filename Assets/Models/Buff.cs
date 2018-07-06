@@ -65,9 +65,10 @@ public class UnitNameBuff : Buff
 /// </summary>
 public class DeployCostBuff : Buff
 {
-    public DeployCostBuff(Card giver, Skill origin, int value, BuffLastingTypeEnum lastingType = BuffLastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public DeployCostBuff(Card giver, Skill origin, int value, bool isBecome, BuffLastingTypeEnum lastingType = BuffLastingTypeEnum.Forever) : base(giver, origin, lastingType)
     {
         Value = value;
+        IsBecome = isBecome;
     }
 
     /// <summary>
@@ -79,7 +80,7 @@ public class DeployCostBuff : Buff
     /// <summary>
     /// 是否为“变为”类型
     /// </summary>
-    public bool IsBecome = false;
+    public bool IsBecome;
 }
 
 /// <summary>
@@ -87,9 +88,10 @@ public class DeployCostBuff : Buff
 /// </summary>
 public class ClassChangeCostBuff : Buff
 {
-    public ClassChangeCostBuff(Card giver, Skill origin, int value, BuffLastingTypeEnum lastingType = BuffLastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public ClassChangeCostBuff(Card giver, Skill origin, int value, bool isBecome, BuffLastingTypeEnum lastingType = BuffLastingTypeEnum.Forever) : base(giver, origin, lastingType)
     {
         Value = value;
+        IsBecome = isBecome;
     }
 
     /// <summary>
@@ -100,7 +102,7 @@ public class ClassChangeCostBuff : Buff
     /// <summary>
     /// 是否为“变为”类型
     /// </summary>
-    public bool IsBecome = false;
+    public bool IsBecome;
 }
 
 /// <summary>
