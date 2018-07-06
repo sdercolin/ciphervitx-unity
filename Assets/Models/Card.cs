@@ -592,6 +592,7 @@ public abstract class Card
     public void AddSubSkill(SubSkill subskill)
     {
         SubSkillList.Add(subskill);
+        subskill.Owner = this;
     }
 
     /// <summary>
@@ -603,6 +604,7 @@ public abstract class Card
         if (SubSkillList.Contains(subskill))
         {
             SubSkillList.Remove(subskill);
+            subskill.Owner = null;
         }
     }
 
