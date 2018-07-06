@@ -15,14 +15,28 @@ public abstract class Buff
     /// <param name="Owner">该附加值作用的对象</param>
     /// <param name="Giver">产生该附加值的卡</param>
     /// <param name="Origin">产生该附加值的能力</param>
-    public Buff(Card Giver, Skill Origin)
+    /// <param name="LastingType">持续类型</param>
+    public Buff(Card Giver, Skill Origin, BuffLastingTypeEnum LastingType)
     {
         this.Giver = Giver;
         this.Origin = Origin;
+        this.LastingType = LastingType;
     }
     public Card Owner;
     public Card Giver;
     public Skill Origin;
+    public BuffLastingTypeEnum LastingType;
+}
+
+/// <summary>
+/// 持续类型
+/// </summary>
+public enum BuffLastingTypeEnum
+{
+    UntilBattleEnds, //直到战斗结束
+    UntilTurnEnds, //直到回合结束
+    UntilNextOpponentTurnEnds, //直到下个对手的回合结束
+    Forever //永续
 }
 
 /// <summary>
@@ -30,7 +44,7 @@ public abstract class Buff
 /// </summary>
 public class UnitNameBuff : Buff
 {
-    public UnitNameBuff(Card Giver, Skill Origin, bool IsAdding, string Value) : base(Giver, Origin)
+    public UnitNameBuff(Card Giver, Skill Origin, bool IsAdding, string Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.IsAdding = IsAdding;
         this.Value = Value;
@@ -52,7 +66,7 @@ public class UnitNameBuff : Buff
 /// </summary>
 public class DeployCostBuff : Buff
 {
-    public DeployCostBuff(Card Giver, Skill Origin, int Value) : base(Giver, Origin)
+    public DeployCostBuff(Card Giver, Skill Origin, int Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.Value = Value;
     }
@@ -74,7 +88,7 @@ public class DeployCostBuff : Buff
 /// </summary>
 public class ClassChangeCostBuff : Buff
 {
-    public ClassChangeCostBuff(Card Giver, Skill Origin, int Value) : base(Giver, Origin)
+    public ClassChangeCostBuff(Card Giver, Skill Origin, int Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.Value = Value;
     }
@@ -95,7 +109,7 @@ public class ClassChangeCostBuff : Buff
 /// </summary>
 public class PowerBuff : Buff
 {
-    public PowerBuff(Card Giver, Skill Origin, int Value) : base(Giver, Origin)
+    public PowerBuff(Card Giver, Skill Origin, int Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.Value = Value;
     }
@@ -111,7 +125,7 @@ public class PowerBuff : Buff
 /// </summary>
 public class SupportBuff : Buff
 {
-    public SupportBuff(Card Giver, Skill Origin, int Value) : base(Giver, Origin)
+    public SupportBuff(Card Giver, Skill Origin, int Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.Value = Value;
     }
@@ -127,7 +141,7 @@ public class SupportBuff : Buff
 /// </summary>
 public class SymbolBuff : Buff
 {
-    public SymbolBuff(Card Giver, Skill Origin, bool IsAdding, SymbolEnum Value) : base(Giver, Origin)
+    public SymbolBuff(Card Giver, Skill Origin, bool IsAdding, SymbolEnum Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.IsAdding = IsAdding;
         this.Value = Value;
@@ -149,7 +163,7 @@ public class SymbolBuff : Buff
 /// </summary>
 public class WeaponBuff : Buff
 {
-    public WeaponBuff(Card Giver, Skill Origin, bool IsAdding, WeaponEnum Value) : base(Giver, Origin)
+    public WeaponBuff(Card Giver, Skill Origin, bool IsAdding, WeaponEnum Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.IsAdding = IsAdding;
         this.Value = Value;
@@ -171,7 +185,7 @@ public class WeaponBuff : Buff
 /// </summary>
 public class GenderBuff : Buff
 {
-    public GenderBuff(Card Giver, Skill Origin, bool IsAdding, GenderEnum Value) : base(Giver, Origin)
+    public GenderBuff(Card Giver, Skill Origin, bool IsAdding, GenderEnum Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.IsAdding = IsAdding;
         this.Value = Value;
@@ -193,7 +207,7 @@ public class GenderBuff : Buff
 /// </summary>
 public class TypeBuff : Buff
 {
-    public TypeBuff(Card Giver, Skill Origin, bool IsAdding, TypeEnum Value) : base(Giver, Origin)
+    public TypeBuff(Card Giver, Skill Origin, bool IsAdding, TypeEnum Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.IsAdding = IsAdding;
         this.Value = Value;
@@ -215,7 +229,7 @@ public class TypeBuff : Buff
 /// </summary>
 public class RangeBuff : Buff
 {
-    public RangeBuff(Card Giver, Skill Origin, bool IsAdding, RangeEnum Value) : base(Giver, Origin)
+    public RangeBuff(Card Giver, Skill Origin, bool IsAdding, RangeEnum Value, BuffLastingTypeEnum LastingType = BuffLastingTypeEnum.Forever) : base(Giver, Origin, LastingType)
     {
         this.IsAdding = IsAdding;
         this.Value = Value;
