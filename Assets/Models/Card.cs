@@ -36,9 +36,33 @@ public abstract class Card
     public string UnitName { get; protected set; }
 
     /// <summary>
-    /// 由于能力附加的单位名列表
+    /// 当前具备的全部单位名
     /// </summary>
-    protected List<string> otherUnitNames = new List<string>();
+    public List<string> AllUnitNames
+    {
+        get
+        {
+            List<string> result = new List<string>();
+            result.Add(UnitName);
+            BuffList.ForEach(x =>
+            {
+                UnitNameBuff buff = x as UnitNameBuff;
+                if (buff != null)
+                {
+                    if (buff.IsAdding)
+                    {
+                        result.Add(buff.Value);
+                        return;
+                    }
+                    else
+                    {
+                        result.Remove(buff.Value);
+                    }
+                }
+            });
+            return result;
+        }
+    }
 
     /// <summary>
     /// 是否具备某个单位名
@@ -47,18 +71,7 @@ public abstract class Card
     /// <returns></returns>
     public bool HasUnitNameOf(string unitName)
     {
-        if (this.UnitName == unitName)
-        {
-            return true;
-        }
-        else if (otherUnitNames.Count > 0)
-        {
-            if (otherUnitNames.Contains(unitName))
-            {
-                return true;
-            }
-        }
-        return false;
+        return AllUnitNames.Contains(unitName);
     }
 
     /// <summary>
@@ -68,34 +81,10 @@ public abstract class Card
     /// <returns></returns>
     public bool HasSameUnitNameWith(Card card)
     {
-        if (card.HasUnitNameOf(UnitName))
-        {
-            return true;
-        }
-        else
-        {
-            return !otherUnitNames.TrueForAll(unitName =>
-            {
-                return !card.HasUnitNameOf(unitName);
-            });
-        }
-    }
-
-    /// <summary>
-    /// 给该卡添加单位名
-    /// </summary>
-    /// <param name="unitName">单位名</param>
-    public bool AddUnitName(string unitName)
-    {
-        if (HasUnitNameOf(unitName))
-        {
-            return false;
-        }
-        else
-        {
-            otherUnitNames.Add(unitName);
-            return true;
-        }
+        return !card.AllUnitNames.TrueForAll(x =>
+       {
+           return !HasUnitNameOf(x);
+       });
     }
 
     /// <summary>
@@ -649,7 +638,6 @@ public abstract class Card
     //    }));
     //}
     #endregion
-
 }
 
 /// <summary>
