@@ -607,6 +607,19 @@ public abstract class Card
             subskill.Owner = null;
         }
     }
+    #endregion
+
+    #region 别名
+    /// <summary>
+    /// 我方
+    /// </summary>
+    public Player Player { get { return Controller; } }
+
+    /// <summary>
+    /// 对手
+    /// </summary>
+    public Player Opponent { get { return Controller.Opponent; } }
+    #endregion
 
     /// <summary>
     /// 卡片接受消息
@@ -639,7 +652,6 @@ public abstract class Card
     //        return skill.Try(message);
     //    }));
     //}
-    #endregion
 }
 
 /// <summary>
