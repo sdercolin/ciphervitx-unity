@@ -625,33 +625,33 @@ public abstract class Card
     /// 卡片接受消息
     /// </summary>
     /// <param name="message">接受到的消息</param>
-    //public void Read(Message message)
-    //{
-    //    SkillList.ForEach(skill =>
-    //    {
-    //        skill.Read(message);
-    //    });
-    //    SubSkillList.ForEach(skill =>
-    //    {
-    //        skill.Read(message);
-    //    });
-    //}
+    public void Read(Message message)
+    {
+        SkillList.ForEach(skill =>
+        {
+            skill.Read(message);
+        });
+        SubSkillList.ForEach(skill =>
+        {
+            skill.Read(message);
+        });
+    }
 
     /// <summary>
     /// 询问卡片是否允许某操作
     /// </summary>
     /// <param name="message">表示该操作的消息</param>
     /// <returns></returns>
-    //public bool Try(Message message)
-    //{
-    //    return (SkillList.TrueForAll(skill =>
-    //    {
-    //        return skill.Try(message);
-    //    })) && (SubSkillList.TrueForAll(skill =>
-    //    {
-    //        return skill.Try(message);
-    //    }));
-    //}
+    public bool Try(Message message)
+    {
+        return (SkillList.TrueForAll(skill =>
+        {
+            return skill.Try(message);
+        })) && (SubSkillList.TrueForAll(skill =>
+        {
+            return skill.Try(message);
+        }));
+    }
 }
 
 /// <summary>
