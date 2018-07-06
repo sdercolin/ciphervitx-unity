@@ -2,10 +2,10 @@
 
 ##分支规则
 
-master：主分支，确保能够编译及运行
-feature/\*：以功能模块为单位开发时新建的分支
-issue/\*：处理bug时新建的分支
-resource：资源管理分支
+- master：主分支，确保能够编译及运行
+- feature/\*：以功能模块为单位开发时新建的分支
+- issue/\*：处理bug时新建的分支
+- resource：资源管理分支
 
 
 ##简单的Commit写法指导
