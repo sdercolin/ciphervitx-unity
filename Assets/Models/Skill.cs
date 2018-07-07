@@ -51,7 +51,7 @@ public abstract class Skill : IAttachable
     /// </summary>
     public List<SkillTypeSymbol> TypeSymbols;
 
-    public abstract void Detach();
+    public virtual void Detach() { }
 
     /// <summary>
     /// 确认该能力是否对某个消息有响应并执行响应 
@@ -421,4 +421,27 @@ public abstract class SubSkill : Skill
     /// 持续类型
     /// </summary>
     public LastingTypeEnum LastingType;
+
+    public override void Detach()
+    {
+        Owner.AttachableList.Remove(this);
+        Owner = null;
+    }
+
+    public override void Read(Message message)
+    {
+        switch (LastingType)
+        {
+            case LastingTypeEnum.UntilBattleEnds:
+                break;
+            case LastingTypeEnum.UntilTurnEnds:
+                break;
+            case LastingTypeEnum.UntilNextOpponentTurnEnds:
+                break;
+            case LastingTypeEnum.Forever:
+                break;
+            default:
+                break;
+        }
+    }
 }
