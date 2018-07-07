@@ -469,19 +469,66 @@ public abstract class Card
     }
 
     /// <summary>
-    /// 附加值列表
+    /// 附加列表
     /// </summary>
-    protected List<Buff> BuffList = new List<Buff>();
+    public List<IAttachable> AttachableList = new List<IAttachable>();
 
     /// <summary>
     /// 能力列表
     /// </summary>
-    public List<Skill> SkillList = new List<Skill>();
+    public List<Skill> SkillList
+    {
+        get
+        {
+            List<Skill> buffList = new List<Skill>();
+            foreach (var item in AttachableList)
+            {
+                if (item is Skill)
+                {
+                    buffList.Add(item as Skill);
+                }
+            }
+            return buffList;
+        }
+    }
+
+    /// <summary>
+    /// 附加值列表
+    /// </summary>
+    public List<Buff> BuffList
+    {
+        get
+        {
+            List<Buff> buffList = new List<Buff>();
+            foreach (var item in AttachableList)
+            {
+                if (item is Buff)
+                {
+                    buffList.Add(item as Buff);
+                }
+            }
+            return buffList;
+        }
+    }
 
     /// <summary>
     /// 附加能力列表
     /// </summary>
-    public List<Skill> SubSkillList = new List<Skill>();
+    public List<SubSkill> SubSkillList
+    {
+        get
+        {
+            List<SubSkill> subSkillList = new List<SubSkill>();
+            foreach (var item in AttachableList)
+            {
+                if (item is SubSkill)
+                {
+                    subSkillList.Add(item as SubSkill);
+                }
+            }
+            return subSkillList;
+        }
+    }
     #endregion
 
     #region 卡片动作
@@ -627,13 +674,9 @@ public abstract class Card
     /// <param name="message">接受到的消息</param>
     public void Read(Message message)
     {
-        SkillList.ForEach(skill =>
+        AttachableList.ForEach(item =>
         {
-            skill.Read(message);
-        });
-        SubSkillList.ForEach(skill =>
-        {
-            skill.Read(message);
+            item.Read(message);
         });
     }
 
@@ -642,15 +685,17 @@ public abstract class Card
     /// </summary>
     /// <param name="message">表示该操作的消息</param>
     /// <returns></returns>
-    public bool Try(Message message)
+    public bool Try(Message message, ref Message substitute)
     {
-        return (SkillList.TrueForAll(skill =>
+        bool result = true;
+        foreach (var item in AttachableList)
         {
-            return skill.Try(message);
-        })) && (SubSkillList.TrueForAll(skill =>
-        {
-            return skill.Try(message);
-        }));
+            if (!item.Try(message, ref substitute))
+            {
+                result = false;
+            }
+        }
+        return result;
     }
 }
 

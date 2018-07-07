@@ -7,7 +7,7 @@ using System.Text;
 /// <summary>
 /// 所有附加值的基类
 /// </summary>
-public abstract class Buff
+public abstract class Buff: IAttachable
 {
     /// <summary>
     /// 附加值的构造函数
@@ -21,10 +21,39 @@ public abstract class Buff
         Origin = origin;
         LastingType = lastingType;
     }
+
     public Card Owner;
     public Card Giver;
     public Skill Origin;
     public LastingTypeEnum LastingType;
+
+    public void Detach()
+    {
+        Owner.AttachableList.Remove(this);
+        Owner = null;
+    }
+
+    public void Read(Message message)
+    {
+        switch (LastingType)
+        {
+            case LastingTypeEnum.UntilBattleEnds:
+                break;
+            case LastingTypeEnum.UntilTurnEnds:
+                break;
+            case LastingTypeEnum.UntilNextOpponentTurnEnds:
+                break;
+            case LastingTypeEnum.Forever:
+                break;
+            default:
+                break;
+        }
+    }
+
+    public bool Try(Message message, ref Message substitute)
+    {
+        return true;
+    }
 }
 
 /// <summary>

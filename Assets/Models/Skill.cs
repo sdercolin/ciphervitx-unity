@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public abstract class Skill
+public abstract class Skill : IAttachable
 {
     /// <summary>
     /// 持有该能力的卡
@@ -51,6 +51,8 @@ public abstract class Skill
     /// </summary>
     public List<SkillTypeSymbol> TypeSymbols;
 
+    public abstract void Detach();
+
     /// <summary>
     /// 确认该能力是否对某个消息有响应并执行响应 
     /// 自动、常时需确认在场；起动不需
@@ -59,11 +61,12 @@ public abstract class Skill
     public virtual void Read(Message message) { }
 
     /// <summary>
-    /// 询问该能力是否阻止（或允许）某个将要发生的动作
+    /// 询问该能力是否拒绝某个将要发生的动作
     /// </summary>
     /// <param name="message">表示该动作的消息</param>
-    /// <returns>若不阻止（或保持正常情况）则返回true</returns>
-    public virtual bool Try(Message message)
+    /// <param name="substitute">表示拒绝时作为代替的动作的消息</param>
+    /// <returns>若不拒绝（保持正常情况）则返回true</returns>
+    public virtual bool Try(Message message, ref Message substitute)
     {
         return true;
     }
@@ -121,9 +124,9 @@ public abstract class ActionSkill : Skill
         base.Read(message);
     }
 
-    public override bool Try(Message message)
+    public override bool Try(Message message, ref Message substitute)
     {
-        return base.Try(message);
+        return base.Try(message, ref substitute);
     }
 
     /// <summary>
@@ -218,9 +221,9 @@ public abstract class AutoSkill : Skill
         }
     }
 
-    public override bool Try(Message message)
+    public override bool Try(Message message, ref Message substitute)
     {
-        return base.Try(message);
+        return base.Try(message, ref substitute);
     }
 
     /// <summary>
@@ -310,9 +313,9 @@ public abstract class PermanentSkill : Skill
         }
     }
 
-    public override bool Try(Message message)
+    public override bool Try(Message message, ref Message substitute)
     {
-        return base.Try(message);
+        return base.Try(message, ref substitute);
     }
 
     /// <summary>
