@@ -9,7 +9,7 @@ public abstract class Skill : IAttachable
     /// <summary>
     /// 持有该能力的卡
     /// </summary>
-    public Card Owner;
+    public Card Owner { get; set; }
 
     /// <summary>
     /// 该能力在卡面上的记述顺序号
@@ -258,8 +258,8 @@ public abstract class AutoSkill : Skill
 public abstract class PermanentSkill : Skill
 {
     private List<Card> Targets = new List<Card>();
-    private Dictionary<Card, object[]> ItemsApplied = new Dictionary<Card, object[]>();
-    private List<object> ItemsToApply = new List<object>();
+    private Dictionary<Card, IAttachable[]> ItemsApplied = new Dictionary<Card, IAttachable[]>();
+    private List<IAttachable> ItemsToApply = new List<IAttachable>();
 
     /// <summary>
     /// 是否在起效中
@@ -281,16 +281,7 @@ public abstract class PermanentSkill : Skill
                 SetItemToAppy(card);
                 foreach (var item in ItemsToApply)
                 {
-                    if (item is Buff)
-                    {
-                        card.AddBuff(item as Buff);
-                    }
-                    else
-                    {
-                        SubSkill subSkill = item as SubSkill;
-                        subSkill.Origin = this;
-                        card.AddSubSkill(subSkill);
-                    }
+                    card.Attach(item);
                 }
                 ItemsApplied.Add(card, ItemsToApply.ToArray());
             }
@@ -299,14 +290,7 @@ public abstract class PermanentSkill : Skill
                 Targets.Remove(card);
                 foreach (var item in ItemsApplied[card])
                 {
-                    if (item is Buff)
-                    {
-                        card.RemoveBuff(item as Buff);
-                    }
-                    else
-                    {
-                        card.RemoveSubSkill(item as SubSkill);
-                    }
+                    item.Detach();
                 }
                 ItemsApplied.Remove(card);
             }

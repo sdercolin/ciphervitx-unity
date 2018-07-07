@@ -610,49 +610,13 @@ public abstract class Card
     }
 
     /// <summary>
-    /// 添加附加值
+    /// 添加附加
     /// </summary>
-    /// <param name="newbuff"></param>
-    public void AddBuff(Buff newbuff)
+    /// <param name="item">要添加的对象</param>
+    public void Attach(IAttachable item)
     {
-        BuffList.Add(newbuff);
-        newbuff.Owner = this;
-    }
-
-    /// <summary>
-    /// 移除附加值
-    /// </summary>
-    /// <param name="buff"></param>
-    public void RemoveBuff(Buff buff)
-    {
-        if (BuffList.Contains(buff))
-        {
-            BuffList.Remove(buff);
-            buff.Owner = null;
-        }
-    }
-
-    /// <summary>
-    /// 添加附加能力
-    /// </summary>
-    /// <param name="subskill"></param>
-    public void AddSubSkill(SubSkill subskill)
-    {
-        SubSkillList.Add(subskill);
-        subskill.Owner = this;
-    }
-
-    /// <summary>
-    /// 移除附加能力
-    /// </summary>
-    /// <param name="subskill"></param>
-    public void RemoveSubSkill(SubSkill subskill)
-    {
-        if (SubSkillList.Contains(subskill))
-        {
-            SubSkillList.Remove(subskill);
-            subskill.Owner = null;
-        }
+        AttachableList.Add(item);
+        item.Owner = this;
     }
     #endregion
 

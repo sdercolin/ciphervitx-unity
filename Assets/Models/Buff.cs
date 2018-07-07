@@ -22,7 +22,7 @@ public abstract class Buff: IAttachable
         LastingType = lastingType;
     }
 
-    public Card Owner;
+    public Card Owner { get; set; }
     public Card Giver;
     public Skill Origin;
     public LastingTypeEnum LastingType;
