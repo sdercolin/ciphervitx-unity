@@ -350,9 +350,9 @@ public abstract class Card
 
     #region 卡片状态
     /// <summary>
-    /// 卡在卡组中的编号
+    /// 卡的Id，唯一识别卡的依据
     /// </summary>
-    public int NumberInDeck { get; protected set; }
+    public int Id { get; protected set; }
 
     /// <summary>
     /// 控制者
@@ -624,7 +624,7 @@ public abstract class Card
     /// <summary>
     /// 我方
     /// </summary>
-    public User Ally { get { return Controller; } }
+    public User Player { get { return Controller; } }
 
     /// <summary>
     /// 对手

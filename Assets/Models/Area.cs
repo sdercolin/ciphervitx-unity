@@ -130,7 +130,7 @@ public abstract class Area
     /// </summary>
     /// <param name="UnitName">单位名</param>
     /// <returns>具备该单位名的卡的列表</returns>
-    public List<Card> SearchCardBy(string UnitName)
+    public List<Card> SearchCard(string UnitName)
     {
         List<Card> result = new List<Card>();
         list.ForEach(card =>
@@ -138,6 +138,24 @@ public abstract class Area
             if (card.HasUnitNameOf(UnitName))
             {
                 result.Add(card);
+            }
+        });
+        return result;
+    }
+
+    /// <summary>
+    /// 查找某张卡
+    /// </summary>
+    /// <param name="id">卡的Id</param>
+    /// <returns>唯一持有该Id的卡</returns>
+    public Card SearchCard(int id)
+    {
+        Card result = null;
+        list.ForEach(card =>
+        {
+            if (card.Id==id)
+            {
+                result = card;
             }
         });
         return result;
