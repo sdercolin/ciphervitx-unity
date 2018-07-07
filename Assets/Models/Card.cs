@@ -624,12 +624,12 @@ public abstract class Card
     /// <summary>
     /// 我方
     /// </summary>
-    public Player Player { get { return Controller; } }
+    public User Ally { get { return Controller; } }
 
     /// <summary>
     /// 对手
     /// </summary>
-    public Player Opponent { get { return Controller.Opponent; } }
+    public User Rival { get { return Controller.Opponent; } }
     #endregion
 
     /// <summary>
