@@ -357,7 +357,7 @@ public abstract class Card
     /// <summary>
     /// 控制者
     /// </summary>
-    public Player Controller { get; protected set; }
+    public User Controller { get; protected set; }
 
     /// <summary>
     /// 卡下方所叠放的卡

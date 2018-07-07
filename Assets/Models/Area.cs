@@ -8,7 +8,7 @@ using System.Text;
 /// </summary>
 public abstract class Area
 {
-    public Area(Player Controller)
+    public Area(User Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -40,7 +40,7 @@ public abstract class Area
     /// <summary>
     /// 控制者
     /// </summary>
-    public Player Controller;
+    public User Controller;
 
     public abstract void ProcessCardIn(Card card, Area fromArea);
     public abstract void ProcessCardOut(Card card, Area toArea);
@@ -159,7 +159,7 @@ public abstract class Area
 /// </summary>
 public class Deck : Area
 {
-    public Deck(Player Controller) : base(Controller)
+    public Deck(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -188,7 +188,7 @@ public class Deck : Area
 /// </summary>
 public class Hand : Area
 {
-    public Hand(Player Controller) : base(Controller)
+    public Hand(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -211,7 +211,7 @@ public class Hand : Area
 /// </summary>
 public class Retreat : Area
 {
-    public Retreat(Player Controller) : base(Controller)
+    public Retreat(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -234,7 +234,7 @@ public class Retreat : Area
 /// </summary>
 public class Support : Area
 {
-    public Support(Player Controller) : base(Controller)
+    public Support(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -257,7 +257,7 @@ public class Support : Area
 /// </summary>
 public class Bond : Area
 {
-    public Bond(Player Controller) : base(Controller)
+    public Bond(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -331,7 +331,7 @@ public class Bond : Area
 /// </summary>
 public class Orb : Area
 {
-    public Orb(Player Controller) : base(Controller)
+    public Orb(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -354,7 +354,7 @@ public class Orb : Area
 /// </summary>
 public class Field : Area
 {
-    public Field(Player Controller) : base(Controller)
+    public Field(User Controller) : base(Controller)
     {
         this.Controller = Controller;
     }
@@ -389,7 +389,7 @@ public class Field : Area
 /// </summary>
 public class FrontField : Area
 {
-    public FrontField(Player Controller) : base(Controller)
+    public FrontField(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -419,7 +419,7 @@ public class FrontField : Area
 /// </summary>
 public class BackField : Area
 {
-    public BackField(Player Controller) : base(Controller)
+    public BackField(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -449,7 +449,7 @@ public class BackField : Area
 /// </summary>
 public class Overlay : Area
 {
-    public Overlay(Player Controller) : base(Controller)
+    public Overlay(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
