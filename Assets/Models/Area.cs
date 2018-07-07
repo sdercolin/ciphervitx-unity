@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 /// <summary>
 /// 所有区域的基类
@@ -63,7 +61,7 @@ public abstract class Area
     {
         AddCard(card, Count);
     }
-    
+
     /// <summary>
     /// 在特定卡前加入卡
     /// </summary>
@@ -153,7 +151,7 @@ public abstract class Area
         Card result = null;
         list.ForEach(card =>
         {
-            if (card.Id==id)
+            if (card.Id == id)
             {
                 result = card;
             }
@@ -195,8 +193,6 @@ public class Deck : Area
         if (list.Count == 0)
         {
             //割り込み処理：补充卡组
-            Controller.ReplendishDeck();
-            Controller.DeckShuffle();
         }
     }
 }
@@ -257,7 +253,7 @@ public class Support : Area
         list = new List<Card>();
         this.Controller = Controller;
     }
-    
+
     public override void ProcessCardIn(Card card, Area fromArea)
     {
         card.FrontShown = true;
@@ -354,7 +350,7 @@ public class Orb : Area
         list = new List<Card>();
         this.Controller = Controller;
     }
-    
+
     public override void ProcessCardIn(Card card, Area fromArea)
     {
         card.FrontShown = false;

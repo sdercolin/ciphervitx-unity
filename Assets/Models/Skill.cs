@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 public abstract class Skill : IAttachable
 {
@@ -10,6 +6,11 @@ public abstract class Skill : IAttachable
     /// 持有该能力的卡
     /// </summary>
     public Card Owner { get; set; }
+
+    /// <summary>
+    /// 游戏对象
+    /// </summary>
+    public Game Game { get { return Owner.Game; } }
 
     /// <summary>
     /// 该能力在卡面上的记述顺序号
@@ -175,7 +176,7 @@ public abstract class AutoSkill : Skill
         if (Available && (!UsedInThisTurn))
         {
             InducedCount++;
-            Owner.Controller.Owner.Game.InducedSkillSet.Add(this);
+            //Owner.Controller.Owner.Game.InducedSkillSet.Add(this);
         }
     }
 
@@ -271,6 +272,7 @@ public abstract class PermanentSkill : Skill
             return Targets.Count > 0;
         }
     }
+
     public override void Read(Message message)
     {
         foreach (Card card in Game.AllCards)

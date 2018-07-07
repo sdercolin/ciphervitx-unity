@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-
-/// <summary>
+﻿/// <summary>
 /// 所有附加值的基类
 /// </summary>
-public abstract class Buff: IAttachable
+public abstract class Buff : IAttachable
 {
     /// <summary>
     /// 附加值的构造函数
