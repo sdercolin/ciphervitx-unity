@@ -653,18 +653,18 @@ public abstract class Card
     /// 询问卡片是否允许某操作
     /// </summary>
     /// <param name="message">表示该操作的消息</param>
-    /// <returns></returns>
+    /// <param name="substitute">拒绝该操作时表示作为代替的动作的的消息</param>
+    /// <returns>如允许，则返回True</returns>
     public bool Try(Message message, ref Message substitute)
     {
-        bool result = true;
         foreach (var item in AttachableList)
         {
             if (!item.Try(message, ref substitute))
             {
-                result = false;
+                return false;
             }
         }
-        return result;
+        return true;
     }
 }
 

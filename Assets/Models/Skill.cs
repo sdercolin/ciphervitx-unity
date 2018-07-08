@@ -62,11 +62,11 @@ public abstract class Skill : IAttachable
     public virtual void Read(Message message) { }
 
     /// <summary>
-    /// 询问该能力是否拒绝某个将要发生的动作
+    /// 询问该能力是否允许某操作
     /// </summary>
-    /// <param name="message">表示该动作的消息</param>
-    /// <param name="substitute">表示拒绝时作为代替的动作的消息</param>
-    /// <returns>若不拒绝（保持正常情况）则返回true</returns>
+    /// <param name="message">表示该操作的消息</param>
+    /// <param name="substitute">拒绝该操作时表示作为代替的动作的的消息</param>
+    /// <returns>如允许，则返回True</returns>
     public virtual bool Try(Message message, ref Message substitute)
     {
         return true;

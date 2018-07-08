@@ -93,6 +93,9 @@ public abstract class User
     {
         return AllAreas.TrueForAll(area => area.TrueForAllCard(predicate));
     }
+
+    public abstract void Broadcast(Message message);
+    public abstract bool BroadcastTry(Message message, ref Message substitute);
 }
 
 /// <summary>
@@ -120,24 +123,31 @@ public class Player : User
     /// 广播消息
     /// </summary>
     /// <param name="message">消息</param>
-    internal void Broadcast(Message message)
+    public override void Broadcast(Message message)
     {
-        if (this is Player)
+        //发送消息给对方
+        Game.ForEachCard(card =>
         {
-            //发送消息给对方
-            ForEachCard(card =>
-            {
-                card.Read(message);
-            });
-        }
-        else
+            card.Read(message);
+        });
+    }
+
+    /// <summary>
+    /// 广播询问是否允许某操作
+    /// </summary>
+    /// <param name="message">表示该操作的消息</param>
+    /// <param name="substitute">拒绝该操作时表示作为代替的动作的的消息</param>
+    /// <returns>如允许，则返回True</returns>
+    public override bool BroadcastTry(Message message, ref Message substitute)
+    {
+        foreach (Card card in Game.AllCards)
         {
-            message.SendBySelf = false;
-            Opponent.ForEachCard(card =>
+            if(!card.Try(message, ref substitute))
             {
-                card.Read(message);
-            });
+                return false;
+            }
         }
+        return true;
     }
 }
 
@@ -147,6 +157,19 @@ public class Player : User
 public class Rival : User
 {
     public Rival(Game game) : base(game) { }
+
+    /// <summary>
+    /// 复现对手动作时，不再重复广播
+    /// </summary>
+    public override void Broadcast(Message message) { }
+
+    /// <summary>
+    /// 复现对手动作时不需要Try
+    /// </summary>
+    public override bool BroadcastTry(Message message, ref Message substitute)
+    {
+        return true;
+    }
 
     /// <summary>
     /// 接受消息并重复其动作
