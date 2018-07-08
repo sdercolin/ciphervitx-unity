@@ -260,7 +260,7 @@ public abstract class Card
     /// <summary>
     /// 武器
     /// </summary>
-    protected List<WeaponEnum> weapons;
+    protected List<WeaponEnum> weapons = new List<WeaponEnum>();
 
     /// <summary>
     /// 是否具备某个武器
