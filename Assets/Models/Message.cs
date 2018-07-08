@@ -88,7 +88,36 @@ public class EmptyMessage : Message
 {
     public override void Do() { }
 }
-public class DeployMessage : Message { }
+
+public class DeployMessage : Message
+{
+    public struct MetaData
+    {
+        public bool ToFrontField;
+        public bool Actioned;
+    }
+    public Dictionary<Card, MetaData> MetaDict = new Dictionary<Card, MetaData>();
+
+    public override Message Clone()
+    {
+        DeployMessage clone = base.Clone() as DeployMessage;
+        clone.MetaDict = new Dictionary<Card, MetaData>();
+        foreach (Card card in clone.Targets)
+        {
+            clone.MetaDict.Add(card, 
+                new MetaData()
+                {
+                    ToFrontField = MetaDict[card].ToFrontField,
+                    Actioned = MetaDict[card].Actioned
+                });
+        }
+        return clone;
+    }
+    public override void Do()
+    {
+        base.Do();
+    }
+}
 
 public class MoveMessage : Message
 {
