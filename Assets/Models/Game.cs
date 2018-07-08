@@ -3,11 +3,10 @@ using System.Collections.Generic;
 
 public class Game
 {
-    static Game ThisGame;
-    public Game(Player Player, Rival Rival)
+    public Game()
     {
-        this.Player = Player;
-        this.Rival = Rival;
+        Player = new Player(this);
+        Rival = new Rival(this);
     }
 
     public Player Player;
