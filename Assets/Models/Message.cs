@@ -34,11 +34,12 @@ public class Message
         }
         get
         {
-            if (Reason != null && reasonCard==null)
+            if (Reason != null && reasonCard == null)
             {
                 return Reason.Owner;
             }
-            else {
+            else
+            {
                 return reasonCard;
             }
         }
