@@ -40,8 +40,17 @@ public abstract class Area
     /// </summary>
     public User Controller;
 
-    public abstract void ProcessCardIn(Card card, Area fromArea);
-    public abstract void ProcessCardOut(Card card, Area toArea);
+    public virtual void ProcessCardIn(Card card, Area fromArea)
+    {
+        card.AttachableList.ForEach(item =>
+        {
+            if(!item.AvailableAreas.Contains(this))
+            {
+                item.Detach();
+            }
+        });
+    }
+    public virtual void ProcessCardOut(Card card, Area toArea) { }
 
     /// <summary>
     /// 查找卡的位置
@@ -186,6 +195,7 @@ public class Deck : Area
         card.FrontShown = false;
         card.IsHorizontal = false;
         card.Visible = false;
+        base.ProcessCardIn(card, fromArea);
     }
 
     public override void ProcessCardOut(Card card, Area toArea)
@@ -194,6 +204,7 @@ public class Deck : Area
         {
             //割り込み処理：补充卡组
         }
+        base.ProcessCardOut(card, toArea);
     }
 }
 
@@ -213,10 +224,7 @@ public class Hand : Area
         card.FrontShown = true;
         card.IsHorizontal = false;
         card.Visible = false;
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
+        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -236,10 +244,7 @@ public class Retreat : Area
         card.FrontShown = true;
         card.IsHorizontal = false;
         card.Visible = true;
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
+        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -259,10 +264,7 @@ public class Support : Area
         card.FrontShown = true;
         card.IsHorizontal = false;
         card.Visible = true;
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
+        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -333,10 +335,7 @@ public class Bond : Area
         card.FrontShown = true;
         card.IsHorizontal = true;
         card.Visible = true;
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
+        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -356,15 +355,12 @@ public class Orb : Area
         card.FrontShown = false;
         card.IsHorizontal = false;
         card.Visible = false;
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
+        base.ProcessCardIn(card, fromArea);
     }
 }
 
 /// <summary>
-/// 战场（实际上不存在这个区域）
+/// 战场（不维护卡的列表）
 /// </summary>
 public class Field : Area
 {
@@ -389,13 +385,8 @@ public class Field : Area
         return !TrueForAllCard(x => !x.HasSameUnitNameWith(card));
     }
 
-    public override void ProcessCardIn(Card card, Area fromArea)
-    {
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
-    }
+    public override void ProcessCardIn(Card card, Area fromArea) { }
+    public override void ProcessCardOut(Card card, Area toArea) { }
 }
 
 /// <summary>
@@ -417,6 +408,7 @@ public class FrontField : Area
         }
         card.FrontShown = true;
         card.Visible = true;
+        base.ProcessCardIn(card, fromArea);
     }
 
     public override void ProcessCardOut(Card card, Area toArea)
@@ -425,6 +417,7 @@ public class FrontField : Area
         {
             //离场
         }
+        base.ProcessCardOut(card, toArea);
     }
 }
 
@@ -447,6 +440,7 @@ public class BackField : Area
         }
         card.FrontShown = true;
         card.Visible = true;
+        base.ProcessCardIn(card, fromArea);
     }
 
     public override void ProcessCardOut(Card card, Area toArea)
@@ -455,6 +449,7 @@ public class BackField : Area
         {
             //离场
         }
+        base.ProcessCardOut(card, toArea);
     }
 }
 
@@ -474,9 +469,6 @@ public class Overlay : Area
         card.FrontShown = true;
         card.IsHorizontal = false;
         card.Visible = true;
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
+        base.ProcessCardIn(card, fromArea);
     }
 }

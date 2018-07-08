@@ -1,4 +1,5 @@
-﻿/// <summary>
+﻿using System.Collections.Generic;
+/// <summary>
 /// 所有附加值的基类
 /// </summary>
 public abstract class Buff : IAttachable
@@ -16,7 +17,23 @@ public abstract class Buff : IAttachable
         LastingType = lastingType;
     }
 
-    public Card Owner { get; set; }
+    protected Card owner;
+    public Card Owner {
+        get
+        {
+            return owner;
+        }
+        set
+        {
+            owner = value;
+            OnlyAvailableWhenFrontShown = true;
+            AvailableAreas = new List<Area>() { owner.Controller.FrontField, owner.Controller.BackField };
+        }
+    }
+
+    public bool OnlyAvailableWhenFrontShown { get; set; }
+    public List<Area> AvailableAreas { get; set; }
+
     public Card Giver;
     public Skill Origin;
     public LastingTypeEnum LastingType;

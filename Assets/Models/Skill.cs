@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+﻿using System;
 
 public abstract class Skill : IAttachable
 {
@@ -52,7 +53,11 @@ public abstract class Skill : IAttachable
     /// </summary>
     public List<SkillTypeSymbol> TypeSymbols;
 
+    #region 不使用
+    public virtual bool OnlyAvailableWhenFrontShown { get; set; }
+    public virtual List<Area> AvailableAreas { get; set; }
     public virtual void Detach() { }
+    #endregion
 
     /// <summary>
     /// 确认该能力是否对某个消息有响应并执行响应 
@@ -273,28 +278,48 @@ public abstract class PermanentSkill : Skill
         }
     }
 
+    protected void Attach(Card target, List<IAttachable> items)
+    {
+        foreach (var item in items)
+        {
+            target.Attach(item);
+        }
+        ItemsApplied.Add(target, items.ToArray());
+    }
+
+    protected void Detach(Card target)
+    {
+        Targets.Remove(target);
+        foreach (var item in ItemsApplied[target])
+        {
+            item.Detach();
+        }
+        ItemsApplied.Remove(target);
+    }
+
+    protected void DetachAll()
+    {
+        Targets.ForEach(target => Detach(target));
+    }
+
     public override void Read(Message message)
     {
+        if (!Available || !Owner.IsOnField)
+        {
+            DetachAll();
+            return;
+        }
         foreach (Card card in Game.AllCards)
         {
             if (CanTarget(card) && !Targets.Contains(card))
             {
                 ItemsToApply.Clear();
                 SetItemToAppy(card);
-                foreach (var item in ItemsToApply)
-                {
-                    card.Attach(item);
-                }
-                ItemsApplied.Add(card, ItemsToApply.ToArray());
+                Attach(card, ItemsToApply);
             }
             else if (!CanTarget(card) && Targets.Contains(card))
             {
-                Targets.Remove(card);
-                foreach (var item in ItemsApplied[card])
-                {
-                    item.Detach();
-                }
-                ItemsApplied.Remove(card);
+                Detach(card);
             }
         }
     }
@@ -408,6 +433,23 @@ public abstract class SubSkill : Skill
     /// </summary>
     public LastingTypeEnum LastingType;
 
+    public override Card Owner
+    {
+        get
+        {
+            return base.Owner;
+        }
+
+        set
+        {
+            base.Owner = value;
+            OnlyAvailableWhenFrontShown = true;
+            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
+        }
+    }
+    public override bool OnlyAvailableWhenFrontShown { get; set; }
+    public override List<Area> AvailableAreas { get; set; }
+
     public override void Detach()
     {
         Owner.AttachableList.Remove(this);
@@ -429,5 +471,68 @@ public abstract class SubSkill : Skill
             default:
                 break;
         }
+    }
+}
+
+/// <summary>
+/// 无效能力
+/// </summary>
+public class DiableSkill : SubSkill
+{
+    public DiableSkill(Skill target)
+    {
+        Target = target;
+    }
+
+    Skill Target;
+
+    public override Card Owner
+    {
+        get
+        {
+            return base.Owner;
+        }
+
+        set
+        {
+            base.Owner = value;
+            Target.Available = false;
+            OnlyAvailableWhenFrontShown = true;
+            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
+        }
+    }
+    public override void Detach()
+    {
+        Target.Available = true;
+        Owner.AttachableList.Remove(this);
+        Owner = null;
+    }
+}
+
+/// <summary>
+/// 无效全部能力
+/// </summary>
+public class DiableAllSkills : SubSkill
+{
+    public override Card Owner
+    {
+        get
+        {
+            return base.Owner;
+        }
+
+        set
+        {
+            base.Owner = value;
+            base.Owner.SkillList.ForEach(skill => skill.Available = false);
+            OnlyAvailableWhenFrontShown = true;
+            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
+        }
+    }
+    public override void Detach()
+    {
+        Owner.SkillList.ForEach(skill => skill.Available = true);
+        Owner.AttachableList.Remove(this);
+        Owner = null;
     }
 }
