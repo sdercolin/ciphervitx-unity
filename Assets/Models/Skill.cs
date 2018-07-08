@@ -412,7 +412,8 @@ public enum SkillTypeSymbol
     Auto, //自动
     Special, //特殊
     Permanent, //常时
-    Bond //羁绊
+    Bond, //羁绊
+    Support //支援
 }
 
 /// <summary>
@@ -423,9 +424,15 @@ public enum SkillKeyword
     Null, //无
     FS, //行动技
     CCS, //转职技
-    LvS, //升级技
+    LvS2, //升级技2
+    LvS3, //升级技3
+    LvS4, //升级技4
+    LvS5, //升级技5
     US, //共斗技
-    CF //化形
+    CF, //化形
+    BS, //羁绊技
+    RM, //龙脉
+    IS, //连发技
 }
 
 /// <summary>
