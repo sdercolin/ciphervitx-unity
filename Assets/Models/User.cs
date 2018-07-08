@@ -96,6 +96,14 @@ public abstract class User
 
     public abstract void Broadcast(Message message);
     public abstract bool BroadcastTry(Message message, ref Message substitute);
+
+
+    #region 动作
+    public bool Move(Card target, Skill reason)
+    {
+        throw new NotImplementedException();
+    }
+    #endregion
 }
 
 /// <summary>

@@ -1,12 +1,22 @@
-﻿using System.Collections.Generic;
 ﻿using System;
+using System.Collections.Generic;
 
 public abstract class Skill : IAttachable
 {
     /// <summary>
     /// 持有该能力的卡
     /// </summary>
-    public Card Owner { get; set; }
+    public virtual Card Owner { get; set; }
+
+    /// <summary>
+    /// 控制者
+    /// </summary>
+    public User Controller { get { return Owner.Controller; } }
+
+    /// <summary>
+    /// 控制者的对手
+    /// </summary>
+    public User Opponent { get { return Owner.Controller.Opponent; } }
 
     /// <summary>
     /// 游戏对象
@@ -51,7 +61,7 @@ public abstract class Skill : IAttachable
     /// <summary>
     /// 该能力的种类标志
     /// </summary>
-    public List<SkillTypeSymbol> TypeSymbols;
+    public List<SkillTypeSymbol> TypeSymbols = new List<SkillTypeSymbol>();
 
     #region 不使用
     public virtual bool OnlyAvailableWhenFrontShown { get; set; }
@@ -263,9 +273,9 @@ public abstract class AutoSkill : Skill
 /// </summary>
 public abstract class PermanentSkill : Skill
 {
-    private List<Card> Targets = new List<Card>();
-    private Dictionary<Card, IAttachable[]> ItemsApplied = new Dictionary<Card, IAttachable[]>();
-    private List<IAttachable> ItemsToApply = new List<IAttachable>();
+    protected List<Card> Targets = new List<Card>();
+    protected Dictionary<Card, IAttachable[]> ItemsApplied = new Dictionary<Card, IAttachable[]>();
+    protected List<IAttachable> ItemsToApply = new List<IAttachable>();
 
     /// <summary>
     /// 是否在起效中
@@ -314,7 +324,7 @@ public abstract class PermanentSkill : Skill
             if (CanTarget(card) && !Targets.Contains(card))
             {
                 ItemsToApply.Clear();
-                SetItemToAppy(card);
+                SetItemToApply(card);
                 Attach(card, ItemsToApply);
             }
             else if (!CanTarget(card) && Targets.Contains(card))
@@ -340,7 +350,7 @@ public abstract class PermanentSkill : Skill
     /// 准备待设置的附加量或附加能力（需填入ItemsToApply）
     /// </summary>
     /// <param name="target">效果的对象</param>
-    public abstract void SetItemToAppy(Card target);
+    public abstract void SetItemToApply(Card target);
 }
 
 /// <summary>

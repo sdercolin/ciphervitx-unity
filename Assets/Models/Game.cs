@@ -23,7 +23,9 @@ public class Game
     public int InducedSkillProcessCount = 0;
 
     //战斗用
-    public List<Card> UnitsInBattle = new List<Card>(); // 0为发起攻击的单位，1为被攻击的单位
+    public Card AttackingUnit = null; //攻击单位
+    public Card DefencingUnit = null; //防御单位
+    public List<Card> BattlingUnits { get { return new List<Card> { AttackingUnit, DefencingUnit }; } } //战斗单位
     public int PowerUpByCritical = 0; //必杀攻击增加的战斗力
     public int PowerUpBySupport = 0; //支援增加的战斗力
 

@@ -9,6 +9,12 @@ using System.Text;
 /// </summary>
 public abstract class Card
 {
+    public Card(int id, User controller)
+    {
+        this.Id = id;
+        this.Controller = controller;
+    }
+
     /// <summary>
     /// 卡的序列号
     /// </summary>
@@ -190,7 +196,7 @@ public abstract class Card
     /// <summary>
     /// 势力
     /// </summary>
-    protected List<SymbolEnum> symbols;
+    protected List<SymbolEnum> symbols = new List<SymbolEnum>();
 
     /// <summary>
     /// 是否具备某个势力
@@ -222,7 +228,7 @@ public abstract class Card
     /// <summary>
     /// 性别
     /// </summary>
-    protected List<GenderEnum> genders;
+    protected List<GenderEnum> genders = new List<GenderEnum>();
 
     /// <summary>
     /// 是否具备某个性别
@@ -286,7 +292,7 @@ public abstract class Card
     /// <summary>
     /// 属性
     /// </summary>
-    protected List<TypeEnum> types;
+    protected List<TypeEnum> types = new List<TypeEnum>();
 
     /// <summary>
     /// 是否具备某个属性
@@ -318,7 +324,7 @@ public abstract class Card
     /// <summary>
     /// 射程
     /// </summary>
-    protected List<RangeEnum> ranges;
+    protected List<RangeEnum> ranges = new List<RangeEnum>();
 
     /// <summary>
     /// 是否具备某个射程

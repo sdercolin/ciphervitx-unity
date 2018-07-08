@@ -18,6 +18,19 @@ public abstract class Area
     protected List<Card> list;
 
     /// <summary>
+    /// 该区域的卡片列表的浅表拷贝
+    /// </summary>
+    public List<Card> Cards
+    {
+        get
+        {
+            List<Card> cards = new List<Card>();
+            cards.AddRange(list);
+            return cards;
+        }
+    }
+
+    /// <summary>
     /// 是否包含某张卡
     /// </summary>
     /// <param name="card">卡</param>
