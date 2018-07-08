@@ -37,5 +37,10 @@ static class Request<T>
     {
         throw new NotImplementedException();
     }
+    
+    public static bool AskIfUse(T target)
+    {
+        throw new NotImplementedException();
+    }
 }
 

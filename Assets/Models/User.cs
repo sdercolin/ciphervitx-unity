@@ -116,8 +116,11 @@ public abstract class User
 
     public void Move(Card target, Skill reason)
     {
-        List<Card> targets = new List<Card> { target };
-        Move(targets, reason);
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            Move(targets, reason);
+        }
     }
 
     public void Move(List<Card> targets, Skill reason)

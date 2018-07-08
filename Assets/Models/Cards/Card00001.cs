@@ -36,11 +36,17 @@ public class Card00001 : Card
             Number = 1;
             Name = "光之王子";
             Description = "『光之王子』〖1回合1次〗【自】出击费用2以下的我方单位出击时，你可以选择1名敌方后卫区上的单位，将其移动。";
+            Optional = true;
             TypeSymbols.Add(SkillTypeSymbol.Auto);
             Keyword = SkillKeyword.Null;
         }
 
         public override bool CheckConditions()
+        {
+            return true;
+        }
+
+        public override bool CheckCost()
         {
             return true;
         }
@@ -55,25 +61,14 @@ public class Card00001 : Card
             return false;
         }
 
-        public override bool Do()
+        public override void Do()
         {
             var choices = Opponent.BackField.Cards;
             var target = Request<Card>.ChooseUpToOne(choices);
-            if (target != null)
-            {
-                Controller.Move(target, this);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            Controller.Move(target, this);
         }
 
-        public override bool PayCost()
-        {
-            return true;
-        }
+        public override void PayCost() { }
     }
 
     /// <summary>
@@ -101,7 +96,7 @@ public class Card00001 : Card
 
         public override void SetItemToApply(Card target)
         {
-            var buff = new PowerBuff(Owner, this, 20, LastingTypeEnum.UntilBattleEnds);
+            var buff = new PowerBuff(Owner, this, 20);
             ItemsToApply.Add(buff);
         }
     }

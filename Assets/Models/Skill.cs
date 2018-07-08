@@ -173,8 +173,8 @@ public abstract class ActionSkill : Skill
 /// 自动型能力的描述分为以下几部分：
 ///     1.诱发条件：写在CheckInduceConditions函数中，检查Message是否符合诱发条件，一旦被诱发，一定会在之后的某时刻被解决（即运行Solve函数）
 ///     2.实行条件：写在CheckConditions函数中，玩家选择解决该诱发能力后首先进行实行条件的判断，若不符合，则停止解决该能力，视为本回合未使用过该能力
-///     3.费用：写在PayCost函数中，判断符合实行条件的情况下，玩家可以选择支付费用，若不能支付或者选择不支付，则停止解决该能力，视为本回合未使用过该能力
-///     4.效果：写在Do函数中，支付了费用的情况下，实行该能力的效果，若为选发效果，也可以选择不发，此时停止解决该能力，视为本回合未使用过该能力
+///     3.费用：检查部分写在CheckCost函数中，若不能支付则不能发动；支付部分写在PayCost函数中
+///     4.效果：写在Do函数中，实行条件与费用检查都通过时，实行该能力的效果，若为选发效果，也可以选择不发，此时停止解决该能力，视为本回合未使用过该能力
 /// </summary>
 public abstract class AutoSkill : Skill
 {
@@ -182,6 +182,8 @@ public abstract class AutoSkill : Skill
     /// 诱发计数
     /// </summary>
     private int InducedCount = 0;
+
+    public bool Optional = false;
 
     /// <summary>
     /// 诱发
@@ -211,21 +213,24 @@ public abstract class AutoSkill : Skill
     /// </summary>
     public void Solve()
     {
-        if (CheckConditions())
+        InducedCount--;
+        if (CheckConditions() && CheckCost())
         {
-            //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-            if (PayCost())
+            if (Optional)
             {
-                if (Do())
+                if (!Request<Skill>.AskIfUse(this))
                 {
-                    if (OncePerTurn)
-                    {
-                        UsedInThisTurn = true;
-                    }
+                    return;
                 }
             }
+            //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
+            PayCost();
+            Do();
+            if (OncePerTurn)
+            {
+                UsedInThisTurn = true;
+            }
         }
-        InducedCount--;
     }
 
     public override void Read(Message message)
@@ -255,16 +260,20 @@ public abstract class AutoSkill : Skill
     public abstract bool CheckConditions();
 
     /// <summary>
+    /// 判断是否能够支付费用
+    /// </summary>
+    /// <returns>若能够，则返回true</returns>
+    public abstract bool CheckCost();
+
+    /// <summary>
     /// 支付费用
     /// </summary>
-    /// <returns>若支付了费用，则返回true</returns>
-    public abstract bool PayCost();
+    public abstract void PayCost();
 
     /// <summary>
     /// 能力实行
     /// </summary>
-    /// <returns>若能力实行，则返回true</returns>
-    public abstract bool Do();
+    public abstract void Do();
 }
 
 /// <summary>
