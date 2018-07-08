@@ -33,6 +33,11 @@ static class Request<T>
         return Choose(choices, number, number);
     }
 
+    public static List<T> Choose(List<T> choices)
+    {
+        return Choose(choices, 0, choices.Count);
+    }
+
     public static List<T> Choose(List<T> choices, int min, int max)
     {
         throw new NotImplementedException();

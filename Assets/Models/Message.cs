@@ -145,6 +145,16 @@ public class MoveMessage : Message
     }
 }
 
+public class UseBondMessage: Message
+{
+    public override void Do()
+    {
+        foreach (Card card in Targets)
+        {
+            card.FrontShown = false;
+        }
+    }
+}
 
 ///// <summary>
 ///// 消息种类

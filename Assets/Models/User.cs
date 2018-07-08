@@ -132,6 +132,25 @@ public abstract class User
         };
         TryDoMessage(moveMessage);
     }
+
+    public void UseBond(Card target, Skill reason)
+    {
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            UseBond(targets, reason);
+        }
+    }
+
+    public void UseBond(List<Card> targets, Skill reason)
+    {
+        Message useBondMessage = new UseBondMessage()
+        {
+            Targets = targets,
+            Reason = reason
+        };
+        TryDoMessage(useBondMessage);
+    }
     #endregion
 }
 
