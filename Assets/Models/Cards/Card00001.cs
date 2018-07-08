@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-/// <summary>
+﻿/// <summary>
 /// S01(S01-001) スターロード マルス
 /// </summary>
 public class Card00001 : Card
