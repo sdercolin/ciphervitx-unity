@@ -25,6 +25,8 @@ public class Card00001 : Card
         ranges.Add(RangeEnum.One);
         sk1 = new Sk1();
         Attach(sk1);
+        sk2 = new Sk2();
+        Attach(sk2);
     }
 
     /// <summary>
