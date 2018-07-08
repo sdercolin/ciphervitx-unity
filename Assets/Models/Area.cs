@@ -24,9 +24,7 @@ public abstract class Area
     {
         get
         {
-            List<Card> cards = new List<Card>();
-            cards.AddRange(list);
-            return cards;
+            return ListUtils<Card>.Clone(list);
         }
     }
 

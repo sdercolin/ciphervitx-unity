@@ -15,8 +15,7 @@ public class Message
         clone.reasonCard = reasonCard;
         clone.Reason = Reason;
         clone.SendBySelf = SendBySelf;
-        clone.Targets = new List<Card>();
-        clone.Targets.AddRange(Targets);
+        clone.Targets = ListUtils<Card>.Clone(Targets);
         clone.Value = Value;
         return clone;
     }
@@ -101,16 +100,7 @@ public class DeployMessage : Message
     public override Message Clone()
     {
         DeployMessage clone = base.Clone() as DeployMessage;
-        clone.MetaDict = new Dictionary<Card, MetaData>();
-        foreach (Card card in clone.Targets)
-        {
-            clone.MetaDict.Add(card, 
-                new MetaData()
-                {
-                    ToFrontField = MetaDict[card].ToFrontField,
-                    Actioned = MetaDict[card].Actioned
-                });
-        }
+        clone.MetaDict = DictionaryUtils<Card, MetaData>.Clone(MetaDict);
         return clone;
     }
     public override void Do()
