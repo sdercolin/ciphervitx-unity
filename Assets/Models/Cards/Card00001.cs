@@ -1,11 +1,11 @@
 ﻿/// <summary>
-/// S01(S01-001) スターロード マルス
+/// (S01) S01-001 スターロード マルス
 /// </summary>
 public class Card00001 : Card
 {
-    public Card00001(int id, User controller) : base(id, controller)
+    Card00001(int id, User controller) : base(id, controller)
     {
-        Serial = "1";
+        Serial = "00001";
         Pack = "S01";
         CardNum = "S01-001";
         Title = "星领主";
@@ -26,8 +26,7 @@ public class Card00001 : Card
 
     /// <summary>
     /// スキル1
-    /// 光の王子
-    /// 【自】【1ターンに1回】出撃コストが２以下の味方が出撃した時、後衛の敵を１体選び、移動させてもよい。
+    /// 『光の王子』【自】〖1回合1次〗出撃コストが２以下の味方が出撃した時、後衛の敵を１体選び、移動させてもよい。
     /// </summary>
     Sk1 sk1;
     public class Sk1 : AutoSkill
@@ -79,8 +78,7 @@ public class Card00001 : Card
 
     /// <summary>
     /// スキル2
-    /// ファルシオン
-    /// 【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
+    /// 『ファルシオン』【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
     /// </summary>
     Sk2 sk2;
     public class Sk2 : PermanentSkill
