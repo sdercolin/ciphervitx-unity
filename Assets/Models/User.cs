@@ -99,9 +99,35 @@ public abstract class User
 
 
     #region 动作
-    public bool Move(Card target, Skill reason)
+    /// <summary>
+    /// 尝试并实行动作
+    /// </summary>
+    /// <param name="message"></param>
+    protected void TryDoMessage(Message message)
     {
-        throw new NotImplementedException();
+        Message substitute = new EmptyMessage();
+        while (!BroadcastTry(message, ref substitute))
+        {
+            message = substitute;
+        }
+        message.Do();
+        Broadcast(message);
+    }
+
+    public void Move(Card target, Skill reason)
+    {
+        List<Card> targets = new List<Card> { target };
+        Move(targets, reason);
+    }
+
+    public void Move(List<Card> targets, Skill reason)
+    {
+        Message moveMessage = new MoveMessage()
+        {
+            Targets = targets,
+            Reason = reason
+        };
+        TryDoMessage(moveMessage);
     }
     #endregion
 }

@@ -8,6 +8,20 @@ public class Message
     /// </summary>
     public bool SendBySelf = true;
 
+    public virtual Message Clone()
+    {
+        Type messageType = GetType();
+        Message clone = Activator.CreateInstance(messageType) as Message;
+        clone.reasonCard = reasonCard;
+        clone.Reason = Reason;
+        clone.SendBySelf = SendBySelf;
+        clone.Targets = new List<Card>();
+        clone.Targets.AddRange(Targets);
+        clone.Value = Value;
+        return clone;
+    }
+
+    public virtual void Do() { }
 
     public List<Card> Targets = new List<Card>();
     public int? Value = null;
@@ -69,7 +83,29 @@ public class Message
     }
 }
 
+public class EmptyMessage : Message
+{
+    public override void Do() { }
+}
 public class DeployMessage : Message { }
+
+public class MoveMessage : Message
+{
+    public override void Do()
+    {
+        foreach (Card card in Targets)
+        {
+            if (card.BelongedRegion == card.Controller.BackField)
+            {
+                card.MoveTo(card.Controller.FrontField);
+            }
+            else if (card.BelongedRegion == card.Controller.FrontField)
+            {
+                card.MoveTo(card.Controller.BackField);
+            }
+        }
+    }
+}
 
 
 ///// <summary>
