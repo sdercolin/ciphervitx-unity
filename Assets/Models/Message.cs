@@ -103,9 +103,27 @@ public class DeployMessage : Message
         clone.MetaDict = DictionaryUtils<Card, MetaData>.Clone(MetaDict);
         return clone;
     }
+
     public override void Do()
     {
-        base.Do();
+        foreach (Card card in Targets)
+        {
+            if (Reason == null)
+            {
+                card.Controller.Game.DeploymentCount += card.DeployCost;
+            }
+            Area toArea;
+            if (MetaDict[card].ToFrontField)
+            {
+                toArea = card.Controller.FrontField;
+            }
+            else
+            {
+                toArea = card.Controller.BackField;
+            }
+            card.MoveTo(toArea);
+            card.IsHorizontal = MetaDict[card].Actioned;
+        }
     }
 }
 
