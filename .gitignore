@@ -34,3 +34,6 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+Assets/CSharpTestProject/
+packages/MSTest.TestAdapter.1.2.0/
+packages/MSTest.TestFramework.1.2.0/
