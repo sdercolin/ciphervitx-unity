@@ -3,7 +3,7 @@
 /// </summary>
 public class Card00002 : Card
 {
-    Card00002(int id, User controller) : base(id, controller)
+    public Card00002(int id, User controller) : base(id, controller)
     {
         Serial = "00002";
         Pack = "S01";
@@ -38,6 +38,7 @@ public class Card00002 : Card
             Number = 1;
             Name = "飞龙之翼";
             Description = "『飞龙之翼』【自】每次出击费用2以下的我方单位出击时，你可以选择任意名我方单位，将其移动。";
+            Optional = true;
             TypeSymbols.Add(SkillTypeSymbol.Auto);
             Keyword = SkillKeyword.Null;
         }

@@ -3,7 +3,7 @@
 /// </summary>
 public class Card00001 : Card
 {
-    Card00001(int id, User controller) : base(id, controller)
+    public Card00001(int id, User controller) : base(id, controller)
     {
         Serial = "00001";
         Pack = "S01";
@@ -36,6 +36,7 @@ public class Card00001 : Card
             Number = 1;
             Name = "光之王子";
             Description = "『光之王子』〖1回合1次〗【自】出击费用2以下的我方单位出击时，你可以选择1名敌方后卫区上的单位，将其移动。";
+            OncePerTurn = true;
             Optional = true;
             TypeSymbols.Add(SkillTypeSymbol.Auto);
             Keyword = SkillKeyword.Null;
