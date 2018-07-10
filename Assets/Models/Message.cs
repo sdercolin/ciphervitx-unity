@@ -156,6 +156,36 @@ public class UseBondMessage: Message
     }
 }
 
+public class ToBondMessage : Message
+{
+    public struct MetaData
+    {
+        public bool FrontShown;
+    }
+    public Dictionary<Card, MetaData> MetaDict = new Dictionary<Card, MetaData>();
+
+    public override Message Clone()
+    {
+        ToBondMessage clone = base.Clone() as ToBondMessage;
+        clone.MetaDict = DictionaryUtils<Card, MetaData>.Clone(MetaDict);
+        return clone;
+    }
+
+    public override void Do()
+    {
+        foreach (Card card in Targets)
+        {
+            card.MoveTo(card.Controller.Bond);
+            if(!MetaDict[card].FrontShown)
+            {
+                card.FrontShown = false;
+            }
+        }
+    }
+}
+
+public class ReadyToBondMessage : Message { }
+
 ///// <summary>
 ///// 消息种类
 ///// </summary>
