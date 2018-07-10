@@ -471,13 +471,19 @@ public abstract class SubSkill : Skill
             base.Owner = value;
             OnlyAvailableWhenFrontShown = true;
             AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
+            Attached();
         }
     }
+
     public override bool OnlyAvailableWhenFrontShown { get; set; }
     public override List<Area> AvailableAreas { get; set; }
 
+    protected virtual void Attached() { }
+    protected virtual void Detaching() { }
+
     public override void Detach()
     {
+        Detaching();
         Owner.AttachableList.Remove(this);
         Owner = null;
     }
@@ -503,62 +509,63 @@ public abstract class SubSkill : Skill
 /// <summary>
 /// 无效能力
 /// </summary>
-public class DiableSkill : SubSkill
+public class DisableSkill : SubSkill
 {
-    public DiableSkill(Skill target)
+    public DisableSkill(Skill target)
     {
         Target = target;
     }
 
     Skill Target;
 
-    public override Card Owner
+    protected override void Attached()
     {
-        get
-        {
-            return base.Owner;
-        }
-
-        set
-        {
-            base.Owner = value;
-            Target.Available = false;
-            OnlyAvailableWhenFrontShown = true;
-            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
-        }
+        Target.Available = false;
     }
-    public override void Detach()
+
+    protected override void Detaching()
     {
         Target.Available = true;
-        Owner.AttachableList.Remove(this);
-        Owner = null;
     }
 }
 
 /// <summary>
 /// 无效全部能力
 /// </summary>
-public class DiableAllSkills : SubSkill
+public class DisableAllSkills : SubSkill
 {
-    public override Card Owner
+    protected override void Attached()
     {
-        get
-        {
-            return base.Owner;
-        }
-
-        set
-        {
-            base.Owner = value;
-            base.Owner.SkillList.ForEach(skill => skill.Available = false);
-            OnlyAvailableWhenFrontShown = true;
-            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
-        }
+        Owner.SkillList.ForEach(skill => skill.Available = false);
     }
-    public override void Detach()
+
+    protected override void Detaching()
     {
         Owner.SkillList.ForEach(skill => skill.Available = true);
-        Owner.AttachableList.Remove(this);
-        Owner = null;
+    }
+}
+
+/// <summary>
+/// 不能被放置到羁绊区
+/// </summary>
+public class CanNotBePlacedInBond : SubSkill
+{
+    protected override void Attached()
+    {
+        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+    }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        if (message is ToBondMessage || message is ReadyToBondMessage)
+        {
+            if (message.Targets.Contains(Owner))
+            {
+                substitute = message.Clone();
+                substitute.Targets.Remove(Owner);
+                return false;
+            }
+        }
+        return true;
     }
 }
