@@ -101,8 +101,7 @@ public class Card00002 : Card
 
         public override void Do()
         {
-            var buff = new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds);
-            Owner.Attach(buff);
+            Owner.Attach(new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
         }
 
         public override void PayCost()

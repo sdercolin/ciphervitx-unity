@@ -97,8 +97,7 @@ public class Card00001 : Card
 
         public override void SetItemToApply(Card target)
         {
-            var buff = new PowerBuff(Owner, this, 20);
-            ItemsToApply.Add(buff);
+            ItemsToApply.Add(new PowerBuff(Owner, this, 20));
         }
     }
 }
