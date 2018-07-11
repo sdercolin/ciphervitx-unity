@@ -145,7 +145,7 @@ public class MoveMessage : Message
     }
 }
 
-public class UseBondMessage: Message
+public class UseBondMessage : Message
 {
     public override void Do()
     {
@@ -176,7 +176,7 @@ public class ToBondMessage : Message
         foreach (Card card in Targets)
         {
             card.MoveTo(card.Controller.Bond);
-            if(!MetaDict[card].FrontShown)
+            if (!MetaDict[card].FrontShown)
             {
                 card.FrontShown = false;
             }
@@ -186,7 +186,43 @@ public class ToBondMessage : Message
 
 public class ReadyToBondMessage : Message { }
 
-///// <summary>
+public class AvoidMessage : Message
+{
+    public Card AttackingUnit;
+    public Card DefendingUnit;
+    public Card CardForAvoiding;
+
+    public override Message Clone()
+    {
+        AvoidMessage clone = base.Clone() as AvoidMessage;
+        clone.AttackingUnit = AttackingUnit;
+        clone.DefendingUnit = DefendingUnit;
+        clone.CardForAvoiding = CardForAvoiding;
+        return clone;
+    }
+
+    public override void Do()
+    {
+        CardForAvoiding.MoveTo(CardForAvoiding.Controller.Retreat);
+    }
+}
+
+public class ReadyToAvoidMessage : Message
+{
+    public Card AttackingUnit;
+    public Card DefendingUnit;
+    public List<Card> CardsReadyForAvoiding;
+
+    public override Message Clone()
+    {
+        ReadyToAvoidMessage clone = base.Clone() as ReadyToAvoidMessage;
+        clone.AttackingUnit = AttackingUnit;
+        clone.DefendingUnit = DefendingUnit;
+        clone.CardsReadyForAvoiding = ListUtils<Card>.Clone(CardsReadyForAvoiding);
+        return clone;
+    }
+}
+
 ///// 消息种类
 ///// </summary>
 //public enum MessageType
