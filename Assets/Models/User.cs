@@ -83,12 +83,12 @@ public abstract class User
             return allCards;
         }
     }
-    
+
     public void ForEachCard(Action<Card> action)
     {
         AllAreas.ForEach(area => area.ForEachCard(action));
     }
-    
+
     public bool TrueForAllCard(Predicate<Card> predicate)
     {
         return AllAreas.TrueForAll(area => area.TrueForAllCard(predicate));
@@ -198,7 +198,7 @@ public class Player : User
     {
         foreach (Card card in Game.AllCards)
         {
-            if(!card.Try(message, ref substitute))
+            if (!card.Try(message, ref substitute))
             {
                 return false;
             }

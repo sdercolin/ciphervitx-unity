@@ -18,7 +18,8 @@ public abstract class Buff : IAttachable
     }
 
     protected Card owner;
-    public Card Owner {
+    public Card Owner
+    {
         get
         {
             return owner;
