@@ -585,3 +585,34 @@ public class CanNotBePlacedInBond : SubSkill
         return true;
     }
 }
+
+/// <summary>
+/// 不能被神速回避
+/// </summary>
+public class CanNotBeAvoided : SubSkill
+{
+    public CanNotBeAvoided(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
+    {
+    }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        if (message is AvoidMessage)
+        {
+            if ((message as AvoidMessage).AttackingUnit == Owner)
+            {
+                substitute = new EmptyMessage();
+                return false;
+            }
+        }
+        else if (message is ReadyToAvoidMessage)
+        {
+            if ((message as ReadyToAvoidMessage).AttackingUnit == Owner)
+            {
+                substitute = new EmptyMessage();
+                return false;
+            }
+        }
+        return true;
+    }
+}
