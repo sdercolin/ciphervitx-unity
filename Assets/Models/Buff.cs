@@ -46,6 +46,21 @@ public abstract class Buff : IAttachable
 
     public void Read(Message message)
     {
+        if (OnlyAvailableWhenFrontShown)
+        {
+            if (!Owner.FrontShown)
+            {
+                Detach();
+                return;
+            }
+        }
+
+        if (!AvailableAreas.Contains(Owner.BelongedRegion))
+        {
+            Detach();
+            return;
+        }
+
         switch (LastingType)
         {
             case LastingTypeEnum.UntilBattleEnds:
