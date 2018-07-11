@@ -449,6 +449,12 @@ public enum SkillKeyword
 /// </summary>
 public abstract class SubSkill : Skill
 {
+    public SubSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever)
+    {
+        Origin = origin;
+        LastingType = lastingType;
+    }
+
     /// <summary>
     /// 产生该附加能力的能力
     /// </summary>
@@ -469,8 +475,6 @@ public abstract class SubSkill : Skill
         set
         {
             base.Owner = value;
-            OnlyAvailableWhenFrontShown = true;
-            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
             Attached();
         }
     }
@@ -478,7 +482,11 @@ public abstract class SubSkill : Skill
     public override bool OnlyAvailableWhenFrontShown { get; set; }
     public override List<Area> AvailableAreas { get; set; }
 
-    protected virtual void Attached() { }
+    protected virtual void Attached()
+    {
+        OnlyAvailableWhenFrontShown = true;
+        AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
+    }
     protected virtual void Detaching() { }
 
     public override void Detach()
@@ -511,7 +519,7 @@ public abstract class SubSkill : Skill
 /// </summary>
 public class DisableSkill : SubSkill
 {
-    public DisableSkill(Skill target)
+    public DisableSkill(Skill target, Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Target = target;
     }
@@ -534,6 +542,10 @@ public class DisableSkill : SubSkill
 /// </summary>
 public class DisableAllSkills : SubSkill
 {
+    public DisableAllSkills(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
+    {
+    }
+
     protected override void Attached()
     {
         Owner.SkillList.ForEach(skill => skill.Available = false);
@@ -550,6 +562,10 @@ public class DisableAllSkills : SubSkill
 /// </summary>
 public class CanNotBePlacedInBond : SubSkill
 {
+    public CanNotBePlacedInBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
+    {
+    }
+
     protected override void Attached()
     {
         AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
