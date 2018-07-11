@@ -46,7 +46,7 @@ public class Card00003 : Card
 
         public override void SetItemToApply(Card target)
         {
-            Owner.Attach(new CanNotBePlacedInBond());
+            Owner.Attach(new CanNotBePlacedInBond(this));
         }
     }
 }
