@@ -45,19 +45,14 @@ public class Card00005 : Card
             return true;
         }
 
-        public override bool CheckCost()
+        public override Cost DefineCost()
         {
-            return Owner.Controller.Bond.UnusedBondsCount >= 3;
+            return Cost.UseBondCost(this, 3);
         }
 
         public override void Do()
         {
             Owner.Attach(new CanNotBeAvoided(this, LastingTypeEnum.UntilTurnEnds));
-        }
-
-        public override void PayCost()
-        {
-            PayCostUtils.UseBond(this, 3);
         }
     }
 

@@ -49,11 +49,6 @@ public class Card00004 : Card
             return true;
         }
 
-        public override bool CheckCost()
-        {
-            return true;
-        }
-
         public override bool CheckInduceConditions(Message message)
         {
             var deployMessage = message as DeployMessage;
@@ -74,7 +69,10 @@ public class Card00004 : Card
             });
         }
 
-        public override void PayCost() { }
+        public override Cost DefineCost()
+        {
+            return Cost.Null;
+        }
     }
 
     /// <summary>
@@ -98,9 +96,9 @@ public class Card00004 : Card
             return true;
         }
 
-        public override bool CheckCost()
+        public override Cost DefineCost()
         {
-            return Controller.Bond.UnusedBondsCount >= 1;
+            return Cost.UseBondCost(this, 1);
         }
 
         public override void Do()
@@ -108,11 +106,6 @@ public class Card00004 : Card
             Owner.Attach(new PowerBuff(Owner, this, -10, LastingTypeEnum.UntilTurnEnds));
             Owner.Attach(new WeaponBuff(Owner, this, true, WeaponEnum.Magic, LastingTypeEnum.UntilTurnEnds));
             Owner.Attach(new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
-        }
-
-        public override void PayCost()
-        {
-            PayCostUtils.UseBond(this, 1);
         }
     }
 }

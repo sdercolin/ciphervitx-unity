@@ -156,6 +156,8 @@ public class UseBondMessage : Message
     }
 }
 
+public class ReadyToUseBondMessage : Message { }
+
 public class ToBondMessage : Message
 {
     public struct MetaData

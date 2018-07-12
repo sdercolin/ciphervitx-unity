@@ -92,7 +92,7 @@ public abstract class Skill : IAttachable
 /// 起动型能力
 /// 起动型能力的描述分为以下几部分：
 ///     1.发动条件：写在CheckConditions函数中，若不满足则不能发动
-///     2.费用：检查部分写在CheckCost函数中，若不能支付则不能发动；支付部分写在PayCost函数中
+///     2.费用：写在Cost函数，返回Cost类对象
 ///     3.效果：写在Do函数中
 /// </summary>
 public abstract class ActionSkill : Skill
@@ -117,7 +117,8 @@ public abstract class ActionSkill : Skill
         }
         else
         {
-            return CheckCost();
+            Cost = DefineCost();
+            return Cost.Check();
         }
     }
 
@@ -127,7 +128,7 @@ public abstract class ActionSkill : Skill
     public void Solve()
     {
         //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-        PayCost();
+        Cost.Pay();
         Do();
         if (OncePerTurn)
         {
@@ -152,15 +153,10 @@ public abstract class ActionSkill : Skill
     public abstract bool CheckConditions();
 
     /// <summary>
-    /// 判断是否能够支付费用
+    /// 定义费用
     /// </summary>
-    /// <returns>若能够，则返回true</returns>
-    public abstract bool CheckCost();
-
-    /// <summary>
-    /// 支付费用
-    /// </summary>
-    public abstract void PayCost();
+    public abstract Cost DefineCost();
+    public Cost Cost;
 
     /// <summary>
     /// 实行能力
@@ -173,7 +169,7 @@ public abstract class ActionSkill : Skill
 /// 自动型能力的描述分为以下几部分：
 ///     1.诱发条件：写在CheckInduceConditions函数中，检查Message是否符合诱发条件，一旦被诱发，一定会在之后的某时刻被解决（即运行Solve函数）
 ///     2.实行条件：写在CheckConditions函数中，玩家选择解决该诱发能力后首先进行实行条件的判断，若不符合，则停止解决该能力，视为本回合未使用过该能力
-///     3.费用：检查部分写在CheckCost函数中，若不能支付则不能发动；支付部分写在PayCost函数中
+///     3.费用：写在Cost函数，返回Cost类对象
 ///     4.效果：写在Do函数中，实行条件与费用检查都通过时，实行该能力的效果，若为选发效果，也可以选择不发，此时停止解决该能力，视为本回合未使用过该能力
 /// </summary>
 public abstract class AutoSkill : Skill
@@ -214,7 +210,8 @@ public abstract class AutoSkill : Skill
     public void Solve()
     {
         InducedCount--;
-        if (CheckConditions() && CheckCost())
+        Cost = DefineCost();
+        if (CheckConditions() && Cost.Check())
         {
             if (Optional)
             {
@@ -224,7 +221,7 @@ public abstract class AutoSkill : Skill
                 }
             }
             //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-            PayCost();
+            Cost.Pay();
             Do();
             if (OncePerTurn)
             {
@@ -260,15 +257,10 @@ public abstract class AutoSkill : Skill
     public abstract bool CheckConditions();
 
     /// <summary>
-    /// 判断是否能够支付费用
+    /// 定义费用
     /// </summary>
-    /// <returns>若能够，则返回true</returns>
-    public abstract bool CheckCost();
-
-    /// <summary>
-    /// 支付费用
-    /// </summary>
-    public abstract void PayCost();
+    public abstract Cost DefineCost();
+    public Cost Cost;
 
     /// <summary>
     /// 能力实行
@@ -372,6 +364,8 @@ public abstract class SupportSkill : Skill
     /// </summary>
     public SupportSkillType Type;
 
+    public bool Optional = false;
+
     /// <summary>
     /// 能力解决，在流程中被调用
     /// </summary>
@@ -379,9 +373,18 @@ public abstract class SupportSkill : Skill
     /// <param name="AttackedUnit">被攻击单位</param>
     public void Solve(Card AttackingUnit, Card AttackedUnit)
     {
-        if (CheckConditions(AttackingUnit, AttackedUnit))
+        Cost = DefineCost();
+        if (CheckConditions(AttackingUnit, AttackedUnit) && Cost.Check())
         {
+            if (Optional)
+            {
+                if (!Request<Skill>.AskIfUse(this))
+                {
+                    return;
+                }
+            }
             //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
+            Cost.Pay();
             Do(AttackingUnit, AttackedUnit);
         }
     }
@@ -400,6 +403,12 @@ public abstract class SupportSkill : Skill
     /// <param name="AttackingUnit">攻击单位</param>
     /// <param name="AttackedUnit">被攻击单位</param>
     public abstract void Do(Card AttackingUnit, Card AttackedUnit);
+
+    /// <summary>
+    /// 定义费用
+    /// </summary>
+    public abstract Cost DefineCost();
+    public Cost Cost;
 }
 
 /// <summary>

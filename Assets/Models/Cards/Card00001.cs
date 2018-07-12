@@ -47,11 +47,6 @@ public class Card00001 : Card
             return true;
         }
 
-        public override bool CheckCost()
-        {
-            return true;
-        }
-
         public override bool CheckInduceConditions(Message message)
         {
             var deployMessage = message as DeployMessage;
@@ -62,14 +57,17 @@ public class Card00001 : Card
             return false;
         }
 
+        public override Cost DefineCost()
+        {
+            return Cost.Null;
+        }
+
         public override void Do()
         {
             var choices = Opponent.BackField.Cards;
             var target = Request<Card>.ChooseUpToOne(choices);
             Controller.Move(target, this);
         }
-
-        public override void PayCost() { }
     }
 
     /// <summary>

@@ -48,11 +48,6 @@ public class Card00002 : Card
             return true;
         }
 
-        public override bool CheckCost()
-        {
-            return true;
-        }
-
         public override bool CheckInduceConditions(Message message)
         {
             var deployMessage = message as DeployMessage;
@@ -63,14 +58,17 @@ public class Card00002 : Card
             return false;
         }
 
+        public override Cost DefineCost()
+        {
+            return Cost.Null;
+        }
+
         public override void Do()
         {
             var choices = Controller.Field.Cards;
             var targets = Request<Card>.Choose(choices);
             Controller.Move(targets, this);
         }
-
-        public override void PayCost() { }
     }
 
     /// <summary>
@@ -94,19 +92,14 @@ public class Card00002 : Card
             return true;
         }
 
-        public override bool CheckCost()
+        public override Cost DefineCost()
         {
-            return Controller.Bond.UnusedBondsCount >= 1;
+            return Cost.UseBondCost(this, 1);
         }
 
         public override void Do()
         {
             Owner.Attach(new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
-        }
-
-        public override void PayCost()
-        {
-            PayCostUtils.UseBond(this, 1);
         }
     }
 }
