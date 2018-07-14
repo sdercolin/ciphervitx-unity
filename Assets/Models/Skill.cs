@@ -298,6 +298,7 @@ public abstract class PermanentSkill : Skill
         {
             target.Attach(item);
         }
+        Targets.Add(target);
         ItemsApplied.Add(target, items.ToArray());
     }
 
