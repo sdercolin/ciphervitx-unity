@@ -201,6 +201,14 @@ public class Deck : Area
         this.Controller = Controller;
     }
 
+    public int Total = 0;
+    public void ImportCard(Card card)
+    {
+        list.Add(card);
+        card.Id = Total;
+        Total++;
+    }
+
     public override void ProcessCardIn(Card card, Area fromArea)
     {
         card.FrontShown = false;
