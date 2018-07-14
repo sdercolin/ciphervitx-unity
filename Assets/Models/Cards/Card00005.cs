@@ -3,7 +3,7 @@
 /// </summary>
 public class Card00005 : Card
 {
-    public Card00005(int id, User controller) : base(id, controller)
+    public Card00005(User controller) : base(controller)
     {
         Serial = "00005";
         Pack = "S01";
@@ -28,7 +28,7 @@ public class Card00005 : Card
     /// スキル1
     /// 『キルソード』【起】[翻面3]ターン終了まで、このユニットの攻撃は神速回避されない。
     /// </summary>
-    Sk1 sk1;
+    public Sk1 sk1;
     public class Sk1 : ActionSkill
     {
         public Sk1()
@@ -60,7 +60,7 @@ public class Card00005 : Card
     /// スキル2
     /// 『孤高の剣士』【常】このユニットと自分の主人公の他に味方が１体もいない場合、このユニットの戦闘力は＋１０される。
     /// </summary>
-    Sk2 sk2;
+    public Sk2 sk2;
     public class Sk2 : PermanentSkill
     {
         public Sk2()

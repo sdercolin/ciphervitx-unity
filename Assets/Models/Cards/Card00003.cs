@@ -3,7 +3,7 @@
 /// </summary>
 public class Card00003 : Card
 {
-    public Card00003(int id, User controller) : base(id, controller)
+    public Card00003(User controller) : base(controller)
     {
         Serial = "00003";
         Pack = "S01";
@@ -27,7 +27,7 @@ public class Card00003 : Card
     /// スキル1
     /// 『戦場の教育役』【特】このカードは絆エリアに置くことができない。
     /// </summary>
-    Sk1 sk1;
+    public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
         public Sk1()
@@ -46,7 +46,7 @@ public class Card00003 : Card
 
         public override void SetItemToApply(Card target)
         {
-            Owner.Attach(new CanNotBePlacedInBond(this));
+            ItemsToApply.Add(new CanNotBePlacedInBond(this));
         }
     }
 }

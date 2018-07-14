@@ -3,7 +3,7 @@
 /// </summary>
 public class Card00001 : Card
 {
-    public Card00001(int id, User controller) : base(id, controller)
+    public Card00001(User controller) : base(controller)
     {
         Serial = "00001";
         Pack = "S01";
@@ -28,7 +28,7 @@ public class Card00001 : Card
     /// スキル1
     /// 『光の王子』【自】〖1回合1次〗出撃コストが２以下の味方が出撃した時、後衛の敵を１体選び、移動させてもよい。
     /// </summary>
-    Sk1 sk1;
+    public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
         public Sk1()
@@ -74,7 +74,7 @@ public class Card00001 : Card
     /// スキル2
     /// 『ファルシオン』【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
     /// </summary>
-    Sk2 sk2;
+    public Sk2 sk2;
     public class Sk2 : PermanentSkill
     {
         public Sk2()

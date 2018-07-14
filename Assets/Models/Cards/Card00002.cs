@@ -3,7 +3,7 @@
 /// </summary>
 public class Card00002 : Card
 {
-    public Card00002(int id, User controller) : base(id, controller)
+    public Card00002(User controller) : base(controller)
     {
         Serial = "00002";
         Pack = "S01";
@@ -30,7 +30,7 @@ public class Card00002 : Card
     /// スキル1
     /// 『飛竜の翼』【自】出撃コストが２以下の味方が出撃するたび、味方を好きな数だけ選び、移動させてもよい。
     /// </summary>
-    Sk1 sk1;
+    public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
         public Sk1()
@@ -75,7 +75,7 @@ public class Card00002 : Card
     /// スキル2
     /// 『手槍』【起】[翻面1]ターン終了まで、このユニットに射程１-２が追加される。
     /// </summary>
-    Sk2 sk2;
+    public Sk2 sk2;
     public class Sk2 : ActionSkill
     {
         public Sk2()

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// </summary>
 public class Card00004 : Card
 {
-    public Card00004(int id, User controller) : base(id, controller)
+    public Card00004(User controller) : base(controller)
     {
         Serial = "00004";
         Pack = "S01";
@@ -29,7 +29,7 @@ public class Card00004 : Card
     /// スキル1
     /// 『タリス王国軍の隊長』【自】出撃コストが２以下の味方が出撃するたび、ターン終了まで、このユニットとその味方の戦闘力は＋１０される。
     /// </summary>
-    Sk1 sk1;
+    public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
         public Sk1()
@@ -79,7 +79,7 @@ public class Card00004 : Card
     /// スキル2
     /// 『サンダーソード』【起】[翻面1]ターン終了まで、このユニットの戦闘力は-１０され、このユニットに<魔法>と射程１-２が追加される。
     /// </summary>
-    Sk2 sk2;
+    public Sk2 sk2;
     public class Sk2 : ActionSkill
     {
         public Sk2()
