@@ -639,10 +639,10 @@ public abstract class Card
     /// <param name="message">接受到的消息</param>
     public void Read(Message message)
     {
-        AttachableList.ForEach(item =>
-        {
-            item.Read(message);
-        });
+        ListUtils.Clone(AttachableList).ForEach(item =>
+       {
+           item.Read(message);
+       });
     }
 
     /// <summary>
