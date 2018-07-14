@@ -143,7 +143,7 @@ public abstract class User
 
     public void Move(List<Card> targets, Skill reason)
     {
-        Message moveMessage = new MoveMessage()
+        MoveMessage moveMessage = new MoveMessage()
         {
             Targets = targets,
             Reason = reason
@@ -162,12 +162,38 @@ public abstract class User
 
     public void UseBond(List<Card> targets, Skill reason)
     {
-        Message useBondMessage = new UseBondMessage()
+        UseBondMessage useBondMessage = new UseBondMessage()
         {
             Targets = targets,
             Reason = reason
         };
         TryDoMessage(useBondMessage);
+    }
+
+    public void SetToBond(Card target, bool frontShown, Skill reason)
+    {
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            List<bool> frontShownTable = new List<bool> { frontShown };
+            SetToBond(targets, frontShownTable, reason);
+        }
+    }
+
+    public void SetToBond(List<Card> targets, List<bool> frontShownTable, Skill reason)
+    {
+        int count = targets.Count;
+        ToBondMessage toBondMessage = new ToBondMessage
+        {
+            Targets = targets,
+            MetaDict = new Dictionary<Card, ToBondMessage.MetaData>(),
+            Reason = reason
+        };
+        for (int i = 0; i < count; i++)
+        {
+            toBondMessage.MetaDict.Add(targets[i], new ToBondMessage.MetaData() { FrontShown = frontShownTable[i] });
+        }
+        TryDoMessage(toBondMessage);
     }
     #endregion
 }
