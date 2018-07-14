@@ -15,7 +15,7 @@ public class Message
         clone.reasonCard = reasonCard;
         clone.Reason = Reason;
         clone.SendBySelf = SendBySelf;
-        clone.Targets = ListUtils<Card>.Clone(Targets);
+        clone.Targets = ListUtils.Clone(Targets);
         clone.Value = Value;
         return clone;
     }
@@ -100,7 +100,7 @@ public class DeployMessage : Message
     public override Message Clone()
     {
         DeployMessage clone = base.Clone() as DeployMessage;
-        clone.MetaDict = DictionaryUtils<Card, MetaData>.Clone(MetaDict);
+        clone.MetaDict = DictionaryUtils.Clone(MetaDict);
         return clone;
     }
 
@@ -169,7 +169,7 @@ public class ToBondMessage : Message
     public override Message Clone()
     {
         ToBondMessage clone = base.Clone() as ToBondMessage;
-        clone.MetaDict = DictionaryUtils<Card, MetaData>.Clone(MetaDict);
+        clone.MetaDict = DictionaryUtils.Clone(MetaDict);
         return clone;
     }
 
@@ -220,7 +220,7 @@ public class ReadyToAvoidMessage : Message
         ReadyToAvoidMessage clone = base.Clone() as ReadyToAvoidMessage;
         clone.AttackingUnit = AttackingUnit;
         clone.DefendingUnit = DefendingUnit;
-        clone.CardsReadyForAvoiding = ListUtils<Card>.Clone(CardsReadyForAvoiding);
+        clone.CardsReadyForAvoiding = ListUtils.Clone(CardsReadyForAvoiding);
         return clone;
     }
 }

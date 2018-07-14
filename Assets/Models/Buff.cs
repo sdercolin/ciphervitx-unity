@@ -109,7 +109,7 @@ public class UnitNameBuff : Buff
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
     }
 }
 
@@ -138,7 +138,7 @@ public class DeployCostBuff : Buff
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
     }
 }
 
@@ -166,7 +166,7 @@ public class ClassChangeCostBuff : Buff
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
     }
 }
 
@@ -254,7 +254,7 @@ public class WeaponBuff : Buff
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
     }
 }
 
@@ -282,7 +282,7 @@ public class GenderBuff : Buff
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
     }
 }
 
@@ -310,7 +310,7 @@ public class TypeBuff : Buff
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
     }
 }
 

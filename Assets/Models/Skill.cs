@@ -68,7 +68,7 @@ public abstract class Skill : IAttachable
     public virtual void Attached()
     {
         OnlyAvailableWhenFrontShown = true;
-        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
     }
     public virtual void Detach() { }
 
@@ -591,7 +591,7 @@ public class CanNotBePlacedInBond : SubSkill
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
     }
 
     public override bool Try(Message message, ref Message substitute)

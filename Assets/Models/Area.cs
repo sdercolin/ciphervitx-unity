@@ -24,7 +24,7 @@ public abstract class Area
     {
         get
         {
-            return ListUtils<Card>.Clone(list);
+            return ListUtils.Clone(list);
         }
     }
 
