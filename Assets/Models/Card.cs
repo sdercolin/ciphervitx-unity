@@ -9,10 +9,9 @@ using System.Text;
 /// </summary>
 public abstract class Card
 {
-    public Card(int id, User controller)
+    public Card(User controller)
     {
-        this.Id = id;
-        this.Controller = controller;
+        Controller = controller;
     }
 
     /// <summary>
@@ -358,7 +357,7 @@ public abstract class Card
     /// <summary>
     /// 卡的Id，唯一识别卡的依据
     /// </summary>
-    public int Id { get; protected set; }
+    public int Id;
 
     /// <summary>
     /// 控制者
@@ -437,16 +436,6 @@ public abstract class Card
     /// 卡被击破的计数，2以上对应主人公被击破时所破坏的宝玉数量
     /// </summary>
     public int DestroyedCount = 0;
-
-    /// <summary>
-    /// 击破该卡的卡
-    /// </summary>
-    public Card DestroyedBy = null;
-
-    /// <summary>
-    /// 如果是由于能力击破，击破该卡的能力
-    /// </summary>
-    public Skill DestroyedBySkill = null;
 
     /// <summary>
     /// 卡是否在场
@@ -628,6 +617,7 @@ public abstract class Card
     {
         AttachableList.Add(item);
         item.Owner = this;
+        item.Attached();
     }
     #endregion
 

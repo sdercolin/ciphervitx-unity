@@ -6,7 +6,7 @@ public abstract class Skill : IAttachable
     /// <summary>
     /// 持有该能力的卡
     /// </summary>
-    public virtual Card Owner { get; set; }
+    public Card Owner { get; set; }
 
     /// <summary>
     /// 控制者
@@ -63,11 +63,14 @@ public abstract class Skill : IAttachable
     /// </summary>
     public List<SkillTypeSymbol> TypeSymbols = new List<SkillTypeSymbol>();
 
-    #region 不使用
     public virtual bool OnlyAvailableWhenFrontShown { get; set; }
     public virtual List<Area> AvailableAreas { get; set; }
+    public virtual void Attached()
+    {
+        OnlyAvailableWhenFrontShown = true;
+        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+    }
     public virtual void Detach() { }
-    #endregion
 
     /// <summary>
     /// 确认该能力是否对某个消息有响应并执行响应 
@@ -315,7 +318,12 @@ public abstract class PermanentSkill : Skill
 
     public override void Read(Message message)
     {
-        if (!Available || !Owner.IsOnField)
+        if (!Available)
+        {
+            DetachAll();
+            return;
+        }
+        if (!TypeSymbols.Contains(SkillTypeSymbol.Special) && !Owner.IsOnField)
         {
             DetachAll();
             return;
@@ -474,24 +482,10 @@ public abstract class SubSkill : Skill
     /// </summary>
     public LastingTypeEnum LastingType;
 
-    public override Card Owner
-    {
-        get
-        {
-            return base.Owner;
-        }
-
-        set
-        {
-            base.Owner = value;
-            Attached();
-        }
-    }
-
     public override bool OnlyAvailableWhenFrontShown { get; set; }
     public override List<Area> AvailableAreas { get; set; }
 
-    protected virtual void Attached()
+    public override void Attached()
     {
         OnlyAvailableWhenFrontShown = true;
         AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
@@ -550,13 +544,15 @@ public class DisableSkill : SubSkill
 
     Skill Target;
 
-    protected override void Attached()
+    public override void Attached()
     {
+        base.Attached();
         Target.Available = false;
     }
 
     protected override void Detaching()
     {
+        base.Detaching();
         Target.Available = true;
     }
 }
@@ -570,13 +566,15 @@ public class DisableAllSkills : SubSkill
     {
     }
 
-    protected override void Attached()
+    public override void Attached()
     {
+        base.Attached();
         Owner.SkillList.ForEach(skill => skill.Available = false);
     }
 
     protected override void Detaching()
     {
+        base.Detaching();
         Owner.SkillList.ForEach(skill => skill.Available = true);
     }
 }
@@ -590,8 +588,9 @@ public class CanNotBePlacedInBond : SubSkill
     {
     }
 
-    protected override void Attached()
+    public override void Attached()
     {
+        base.Attached();
         AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
     }
 

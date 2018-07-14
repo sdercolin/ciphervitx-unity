@@ -17,27 +17,18 @@ public abstract class Buff : IAttachable
         LastingType = lastingType;
     }
 
-    protected Card owner;
-    public Card Owner
-    {
-        get
-        {
-            return owner;
-        }
-        set
-        {
-            owner = value;
-            OnlyAvailableWhenFrontShown = true;
-            AvailableAreas = new List<Area>() { owner.Controller.FrontField, owner.Controller.BackField };
-        }
-    }
-
     public bool OnlyAvailableWhenFrontShown { get; set; }
     public List<Area> AvailableAreas { get; set; }
-
     public Card Giver;
+    public Card Owner { get; set; }
     public Skill Origin;
     public LastingTypeEnum LastingType;
+
+    public virtual void Attached()
+    {
+        OnlyAvailableWhenFrontShown = true;
+        AvailableAreas = new List<Area>() { Owner.Controller.FrontField, Owner.Controller.BackField };
+    }
 
     public void Detach()
     {
@@ -114,6 +105,12 @@ public class UnitNameBuff : Buff
     /// 附加值的值
     /// </summary>
     public string Value;
+
+    public override void Attached()
+    {
+        base.Attached();
+        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+    }
 }
 
 /// <summary>
@@ -137,6 +134,12 @@ public class DeployCostBuff : Buff
     /// 是否为“变为”类型
     /// </summary>
     public bool IsBecome;
+
+    public override void Attached()
+    {
+        base.Attached();
+        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+    }
 }
 
 /// <summary>
@@ -159,6 +162,12 @@ public class ClassChangeCostBuff : Buff
     /// 是否为“变为”类型
     /// </summary>
     public bool IsBecome;
+
+    public override void Attached()
+    {
+        base.Attached();
+        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+    }
 }
 
 /// <summary>
@@ -191,6 +200,12 @@ public class SupportBuff : Buff
     /// 附加值的值
     /// </summary>
     public int Value;
+
+    public override void Attached()
+    {
+        base.Attached();
+        AvailableAreas.Add(Owner.Controller.Support);
+    }
 }
 
 /// <summary>
@@ -235,6 +250,12 @@ public class WeaponBuff : Buff
     /// 附加值的值
     /// </summary>
     public WeaponEnum Value;
+
+    public override void Attached()
+    {
+        base.Attached();
+        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+    }
 }
 
 /// <summary>
@@ -257,6 +278,12 @@ public class GenderBuff : Buff
     /// 附加值的值
     /// </summary>
     public GenderEnum Value;
+
+    public override void Attached()
+    {
+        base.Attached();
+        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+    }
 }
 
 /// <summary>
@@ -279,6 +306,12 @@ public class TypeBuff : Buff
     /// 附加值的值
     /// </summary>
     public TypeEnum Value;
+
+    public override void Attached()
+    {
+        base.Attached();
+        AvailableAreas = ListUtils<Area>.Clone(Owner.Controller.AllAreas);
+    }
 }
 
 /// <summary>

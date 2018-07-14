@@ -9,6 +9,7 @@ public interface IAttachable
     bool OnlyAvailableWhenFrontShown { get; set; }
     List<Area> AvailableAreas { get; set; }
 
+    void Attached();
     void Detach();
     void Read(Message message);
     bool Try(Message message, ref Message substitute);
