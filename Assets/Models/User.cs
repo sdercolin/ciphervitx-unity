@@ -8,21 +8,27 @@ public abstract class User
 {
     public User(Game game)
     {
-        Deck Deck = new Deck(this);
-        Hand Hand = new Hand(this);
-        Retreat Retreat = new Retreat(this);
-        Support Support = new Support(this);
-        Bond Bond = new Bond(this);
-        Orb Orb = new Orb(this);
-        Field Field = new Field(this);
-        FrontField FrontField = new FrontField(this);
-        BackField BackField = new BackField(this);
-        Overlay Overlay = new Overlay(this);
-        AllAreas = new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
+        Deck = new Deck(this);
+        Hand = new Hand(this);
+        Retreat = new Retreat(this);
+        Support = new Support(this);
+        Bond = new Bond(this);
+        Orb = new Orb(this);
+        Field = new Field(this);
+        FrontField = new FrontField(this);
+        BackField = new BackField(this);
+        Overlay = new Overlay(this);
         Game = game;
     }
     public Game Game;
-    public List<Area> AllAreas;
+    [JsonIgnore]
+    public List<Area> AllAreas
+    {
+        get
+        {
+            return new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
+        }
+    }
     public Deck Deck;
     public Hand Hand;
     public Retreat Retreat;
@@ -33,8 +39,21 @@ public abstract class User
     public FrontField FrontField;
     public BackField BackField;
     public Overlay Overlay;
-    public User Opponent;
-    public Card Hero = null;
+    public abstract User Opponent { get; }
+    public Card Hero
+    {
+        get
+        {
+            foreach (Card card in AllCards)
+            {
+                if (card.IsHero == true)
+                {
+                    return card;
+                }
+            }
+            return null;
+        }
+    }
 
     /// <summary>
     /// 待处理的转职奖励计数
@@ -161,6 +180,14 @@ public class Player : User
 {
     public Player(Game game) : base(game) { }
 
+    public override User Opponent
+    {
+        get
+        {
+            return Game.Rival;
+        }
+    }
+
     /// <summary>
     /// 直接将消息发给对手（不广播给自己的卡）
     /// </summary>
@@ -213,6 +240,14 @@ public class Player : User
 public class Rival : User
 {
     public Rival(Game game) : base(game) { }
+
+    public override User Opponent
+    {
+        get
+        {
+            return Game.Player;
+        }
+    }
 
     /// <summary>
     /// 复现对手动作时，不再重复广播
