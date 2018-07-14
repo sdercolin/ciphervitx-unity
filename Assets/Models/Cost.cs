@@ -80,7 +80,7 @@ class UseBondCost : Cost
 
     public override void Pay()
     {
-        var targets = Request<Card>.Choose(Choices, Number);
+        var targets = Request.Choose(Choices, Number);
         Reason.Controller.UseBond(targets, Reason);
     }
 }

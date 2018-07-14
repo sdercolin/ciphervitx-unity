@@ -65,7 +65,7 @@ public class Card00001 : Card
         public override void Do()
         {
             var choices = Opponent.BackField.Cards;
-            var target = Request<Card>.ChooseUpToOne(choices);
+            var target = Request.ChooseUpToOne(choices);
             Controller.Move(target, this);
         }
     }
