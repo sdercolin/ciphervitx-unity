@@ -21,7 +21,6 @@ public abstract class User
         Game = game;
     }
     public Game Game;
-    [JsonIgnore]
     public List<Area> AllAreas
     {
         get

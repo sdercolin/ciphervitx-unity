@@ -14,7 +14,7 @@ public class MessageTest {
         Message clone1 = message1.Clone();
         Assert.IsTrue(clone1 is EmptyMessage);
 
-        var card = new Card00001(1, new Game().Player);
+        var card = new Card00001(new Game().Player);
         var targets = new List<Card>() { card };
         MoveMessage message2 = new MoveMessage()
         {
