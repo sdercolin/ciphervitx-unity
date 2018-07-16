@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Message
+public partial class Message
 {
     /// <summary>
     /// 是否是自己发送的消息
@@ -83,12 +83,12 @@ public class Message
     }
 }
 
-public class EmptyMessage : Message
+public partial class EmptyMessage : Message
 {
     public override void Do() { }
 }
 
-public class DeployMessage : Message
+public partial class DeployMessage : Message
 {
     public struct MetaData
     {
@@ -127,7 +127,7 @@ public class DeployMessage : Message
     }
 }
 
-public class MoveMessage : Message
+public partial class MoveMessage : Message
 {
     public override void Do()
     {
@@ -145,7 +145,7 @@ public class MoveMessage : Message
     }
 }
 
-public class UseBondMessage : Message
+public partial class UseBondMessage : Message
 {
     public override void Do()
     {
@@ -156,9 +156,9 @@ public class UseBondMessage : Message
     }
 }
 
-public class ReadyToUseBondMessage : Message { }
+public partial class ReadyToUseBondMessage : Message { }
 
-public class ToBondMessage : Message
+public partial class ToBondMessage : Message
 {
     public struct MetaData
     {
@@ -186,9 +186,9 @@ public class ToBondMessage : Message
     }
 }
 
-public class ReadyToBondMessage : Message { }
+public partial class ReadyToBondMessage : Message { }
 
-public class AvoidMessage : Message
+public partial class AvoidMessage : Message
 {
     public Card AttackingUnit;
     public Card DefendingUnit;
@@ -209,7 +209,7 @@ public class AvoidMessage : Message
     }
 }
 
-public class ReadyToAvoidMessage : Message
+public partial class ReadyToAvoidMessage : Message
 {
     public Card AttackingUnit;
     public Card DefendingUnit;
