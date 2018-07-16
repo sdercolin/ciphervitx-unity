@@ -8,21 +8,26 @@ public abstract class User
 {
     public User(Game game)
     {
-        Deck Deck = new Deck(this);
-        Hand Hand = new Hand(this);
-        Retreat Retreat = new Retreat(this);
-        Support Support = new Support(this);
-        Bond Bond = new Bond(this);
-        Orb Orb = new Orb(this);
-        Field Field = new Field(this);
-        FrontField FrontField = new FrontField(this);
-        BackField BackField = new BackField(this);
-        Overlay Overlay = new Overlay(this);
-        AllAreas = new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
+        Deck = new Deck(this);
+        Hand = new Hand(this);
+        Retreat = new Retreat(this);
+        Support = new Support(this);
+        Bond = new Bond(this);
+        Orb = new Orb(this);
+        Field = new Field(this);
+        FrontField = new FrontField(this);
+        BackField = new BackField(this);
+        Overlay = new Overlay(this);
         Game = game;
     }
     public Game Game;
-    public List<Area> AllAreas;
+    public List<Area> AllAreas
+    {
+        get
+        {
+            return new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
+        }
+    }
     public Deck Deck;
     public Hand Hand;
     public Retreat Retreat;
@@ -33,8 +38,21 @@ public abstract class User
     public FrontField FrontField;
     public BackField BackField;
     public Overlay Overlay;
-    public User Opponent;
-    public Card Hero = null;
+    public abstract User Opponent { get; }
+    public Card Hero
+    {
+        get
+        {
+            foreach (Card card in AllCards)
+            {
+                if (card.IsHero == true)
+                {
+                    return card;
+                }
+            }
+            return null;
+        }
+    }
 
     /// <summary>
     /// 待处理的转职奖励计数
@@ -83,12 +101,12 @@ public abstract class User
             return allCards;
         }
     }
-    
+
     public void ForEachCard(Action<Card> action)
     {
         AllAreas.ForEach(area => area.ForEachCard(action));
     }
-    
+
     public bool TrueForAllCard(Predicate<Card> predicate)
     {
         return AllAreas.TrueForAll(area => area.TrueForAllCard(predicate));
@@ -116,18 +134,66 @@ public abstract class User
 
     public void Move(Card target, Skill reason)
     {
-        List<Card> targets = new List<Card> { target };
-        Move(targets, reason);
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            Move(targets, reason);
+        }
     }
 
     public void Move(List<Card> targets, Skill reason)
     {
-        Message moveMessage = new MoveMessage()
+        MoveMessage moveMessage = new MoveMessage()
         {
             Targets = targets,
             Reason = reason
         };
         TryDoMessage(moveMessage);
+    }
+
+    public void UseBond(Card target, Skill reason)
+    {
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            UseBond(targets, reason);
+        }
+    }
+
+    public void UseBond(List<Card> targets, Skill reason)
+    {
+        UseBondMessage useBondMessage = new UseBondMessage()
+        {
+            Targets = targets,
+            Reason = reason
+        };
+        TryDoMessage(useBondMessage);
+    }
+
+    public void SetToBond(Card target, bool frontShown, Skill reason)
+    {
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            List<bool> frontShownTable = new List<bool> { frontShown };
+            SetToBond(targets, frontShownTable, reason);
+        }
+    }
+
+    public void SetToBond(List<Card> targets, List<bool> frontShownTable, Skill reason)
+    {
+        int count = targets.Count;
+        ToBondMessage toBondMessage = new ToBondMessage
+        {
+            Targets = targets,
+            MetaDict = new Dictionary<Card, ToBondMessage.MetaData>(),
+            Reason = reason
+        };
+        for (int i = 0; i < count; i++)
+        {
+            toBondMessage.MetaDict.Add(targets[i], new ToBondMessage.MetaData() { FrontShown = frontShownTable[i] });
+        }
+        TryDoMessage(toBondMessage);
     }
     #endregion
 }
@@ -138,6 +204,14 @@ public abstract class User
 public class Player : User
 {
     public Player(Game game) : base(game) { }
+
+    public override User Opponent
+    {
+        get
+        {
+            return Game.Rival;
+        }
+    }
 
     /// <summary>
     /// 直接将消息发给对手（不广播给自己的卡）
@@ -176,7 +250,7 @@ public class Player : User
     {
         foreach (Card card in Game.AllCards)
         {
-            if(!card.Try(message, ref substitute))
+            if (!card.Try(message, ref substitute))
             {
                 return false;
             }
@@ -191,6 +265,14 @@ public class Player : User
 public class Rival : User
 {
     public Rival(Game game) : base(game) { }
+
+    public override User Opponent
+    {
+        get
+        {
+            return Game.Player;
+        }
+    }
 
     /// <summary>
     /// 复现对手动作时，不再重复广播

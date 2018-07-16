@@ -24,9 +24,7 @@ public abstract class Area
     {
         get
         {
-            List<Card> cards = new List<Card>();
-            cards.AddRange(list);
-            return cards;
+            return ListUtils.Clone(list);
         }
     }
 
@@ -201,6 +199,14 @@ public class Deck : Area
     {
         list = new List<Card>();
         this.Controller = Controller;
+    }
+
+    public int Total = 0;
+    public void ImportCard(Card card)
+    {
+        list.Add(card);
+        card.Id = Total;
+        Total++;
     }
 
     public override void ProcessCardIn(Card card, Area fromArea)

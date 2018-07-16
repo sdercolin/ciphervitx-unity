@@ -11,15 +11,18 @@ public class Game
 
     public Player Player;
     public Rival Rival;
-    public bool IsMyTurn;
-    public int TurnCount = 0;
-    public Phase CurrentPhase;
 
     //诱发效果处理用
     public List<string> SkillUsedInThisGame = new List<string>();
     public List<List<Skill>> InducedSkillSetList = new List<List<Skill>>();
     public List<Skill> InducedSkillSet = new List<Skill>();
     public int InducedSkillProcessCount = 0;
+
+    //回合信息
+    public bool IsMyTurn;
+    public int TurnCount = 0;
+    public int DeploymentCount = 0;
+    public Phase CurrentPhase;
 
     //战斗用
     public Card AttackingUnit = null; //攻击单位

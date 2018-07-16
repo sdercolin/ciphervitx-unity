@@ -1,11 +1,11 @@
 ﻿/// <summary>
-/// S01(S01-001) スターロード マルス
+/// (S01) S01-001 スターロード マルス
 /// </summary>
 public class Card00001 : Card
 {
-    public Card00001(int id, User controller) : base(id, controller)
+    public Card00001(User controller) : base(controller)
     {
-        Serial = "1";
+        Serial = "00001";
         Pack = "S01";
         CardNum = "S01-001";
         Title = "星领主";
@@ -26,10 +26,9 @@ public class Card00001 : Card
 
     /// <summary>
     /// スキル1
-    /// 光の王子
-    /// 【自】【1ターンに1回】出撃コストが２以下の味方が出撃した時、後衛の敵を１体選び、移動させてもよい。
+    /// 『光の王子』【自】〖1回合1次〗出撃コストが２以下の味方が出撃した時、後衛の敵を１体選び、移動させてもよい。
     /// </summary>
-    Sk1 sk1;
+    public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
         public Sk1()
@@ -37,6 +36,8 @@ public class Card00001 : Card
             Number = 1;
             Name = "光之王子";
             Description = "『光之王子』〖1回合1次〗【自】出击费用2以下的我方单位出击时，你可以选择1名敌方后卫区上的单位，将其移动。";
+            OncePerTurn = true;
+            Optional = true;
             TypeSymbols.Add(SkillTypeSymbol.Auto);
             Keyword = SkillKeyword.Null;
         }
@@ -56,33 +57,24 @@ public class Card00001 : Card
             return false;
         }
 
-        public override bool Do()
+        public override Cost DefineCost()
         {
-            var choices = Opponent.BackField.Cards;
-            var target = Request<Card>.ChooseUpToOne(choices);
-            if (target != null)
-            {
-                Controller.Move(target, this);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return Cost.Null;
         }
 
-        public override bool PayCost()
+        public override void Do()
         {
-            return true;
+            var choices = Opponent.BackField.Cards;
+            var target = Request.ChooseUpToOne(choices);
+            Controller.Move(target, this);
         }
     }
 
     /// <summary>
     /// スキル2
-    /// ファルシオン
-    /// 【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
+    /// 『ファルシオン』【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
     /// </summary>
-    Sk2 sk2;
+    public Sk2 sk2;
     public class Sk2 : PermanentSkill
     {
         public Sk2()
@@ -103,8 +95,7 @@ public class Card00001 : Card
 
         public override void SetItemToApply(Card target)
         {
-            var buff = new PowerBuff(Owner, this, 20, LastingTypeEnum.UntilBattleEnds);
-            ItemsToApply.Add(buff);
+            ItemsToApply.Add(new PowerBuff(Owner, this, 20));
         }
     }
 }

@@ -6,7 +6,7 @@ public abstract class Skill : IAttachable
     /// <summary>
     /// 持有该能力的卡
     /// </summary>
-    public virtual Card Owner { get; set; }
+    public Card Owner { get; set; }
 
     /// <summary>
     /// 控制者
@@ -63,11 +63,14 @@ public abstract class Skill : IAttachable
     /// </summary>
     public List<SkillTypeSymbol> TypeSymbols = new List<SkillTypeSymbol>();
 
-    #region 不使用
     public virtual bool OnlyAvailableWhenFrontShown { get; set; }
     public virtual List<Area> AvailableAreas { get; set; }
+    public virtual void Attached()
+    {
+        OnlyAvailableWhenFrontShown = true;
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
+    }
     public virtual void Detach() { }
-    #endregion
 
     /// <summary>
     /// 确认该能力是否对某个消息有响应并执行响应 
@@ -92,7 +95,7 @@ public abstract class Skill : IAttachable
 /// 起动型能力
 /// 起动型能力的描述分为以下几部分：
 ///     1.发动条件：写在CheckConditions函数中，若不满足则不能发动
-///     2.费用：检查部分写在CheckCost函数中，若不能支付则不能发动；支付部分写在PayCost函数中
+///     2.费用：写在Cost函数，返回Cost类对象
 ///     3.效果：写在Do函数中
 /// </summary>
 public abstract class ActionSkill : Skill
@@ -117,7 +120,8 @@ public abstract class ActionSkill : Skill
         }
         else
         {
-            return CheckCost();
+            Cost = DefineCost();
+            return Cost.Check();
         }
     }
 
@@ -127,7 +131,7 @@ public abstract class ActionSkill : Skill
     public void Solve()
     {
         //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-        PayCost();
+        Cost.Pay();
         Do();
         if (OncePerTurn)
         {
@@ -152,15 +156,10 @@ public abstract class ActionSkill : Skill
     public abstract bool CheckConditions();
 
     /// <summary>
-    /// 判断是否能够支付费用
+    /// 定义费用
     /// </summary>
-    /// <returns>若能够，则返回true</returns>
-    public abstract bool CheckCost();
-
-    /// <summary>
-    /// 支付费用
-    /// </summary>
-    public abstract void PayCost();
+    public abstract Cost DefineCost();
+    public Cost Cost;
 
     /// <summary>
     /// 实行能力
@@ -173,8 +172,8 @@ public abstract class ActionSkill : Skill
 /// 自动型能力的描述分为以下几部分：
 ///     1.诱发条件：写在CheckInduceConditions函数中，检查Message是否符合诱发条件，一旦被诱发，一定会在之后的某时刻被解决（即运行Solve函数）
 ///     2.实行条件：写在CheckConditions函数中，玩家选择解决该诱发能力后首先进行实行条件的判断，若不符合，则停止解决该能力，视为本回合未使用过该能力
-///     3.费用：写在PayCost函数中，判断符合实行条件的情况下，玩家可以选择支付费用，若不能支付或者选择不支付，则停止解决该能力，视为本回合未使用过该能力
-///     4.效果：写在Do函数中，支付了费用的情况下，实行该能力的效果，若为选发效果，也可以选择不发，此时停止解决该能力，视为本回合未使用过该能力
+///     3.费用：写在Cost函数，返回Cost类对象
+///     4.效果：写在Do函数中，实行条件与费用检查都通过时，实行该能力的效果，若为选发效果，也可以选择不发，此时停止解决该能力，视为本回合未使用过该能力
 /// </summary>
 public abstract class AutoSkill : Skill
 {
@@ -182,6 +181,8 @@ public abstract class AutoSkill : Skill
     /// 诱发计数
     /// </summary>
     private int InducedCount = 0;
+
+    public bool Optional = false;
 
     /// <summary>
     /// 诱发
@@ -211,21 +212,25 @@ public abstract class AutoSkill : Skill
     /// </summary>
     public void Solve()
     {
-        if (CheckConditions())
+        InducedCount--;
+        Cost = DefineCost();
+        if (CheckConditions() && Cost.Check())
         {
-            //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-            if (PayCost())
+            if (Optional)
             {
-                if (Do())
+                if (!Request.AskIfUse(this))
                 {
-                    if (OncePerTurn)
-                    {
-                        UsedInThisTurn = true;
-                    }
+                    return;
                 }
             }
+            //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
+            Cost.Pay();
+            Do();
+            if (OncePerTurn)
+            {
+                UsedInThisTurn = true;
+            }
         }
-        InducedCount--;
     }
 
     public override void Read(Message message)
@@ -255,16 +260,15 @@ public abstract class AutoSkill : Skill
     public abstract bool CheckConditions();
 
     /// <summary>
-    /// 支付费用
+    /// 定义费用
     /// </summary>
-    /// <returns>若支付了费用，则返回true</returns>
-    public abstract bool PayCost();
+    public abstract Cost DefineCost();
+    public Cost Cost;
 
     /// <summary>
     /// 能力实行
     /// </summary>
-    /// <returns>若能力实行，则返回true</returns>
-    public abstract bool Do();
+    public abstract void Do();
 }
 
 /// <summary>
@@ -294,6 +298,7 @@ public abstract class PermanentSkill : Skill
         {
             target.Attach(item);
         }
+        Targets.Add(target);
         ItemsApplied.Add(target, items.ToArray());
     }
 
@@ -314,7 +319,12 @@ public abstract class PermanentSkill : Skill
 
     public override void Read(Message message)
     {
-        if (!Available || !Owner.IsOnField)
+        if (!Available)
+        {
+            DetachAll();
+            return;
+        }
+        if (!TypeSymbols.Contains(SkillTypeSymbol.Special) && !Owner.IsOnField)
         {
             DetachAll();
             return;
@@ -363,6 +373,8 @@ public abstract class SupportSkill : Skill
     /// </summary>
     public SupportSkillType Type;
 
+    public bool Optional = false;
+
     /// <summary>
     /// 能力解决，在流程中被调用
     /// </summary>
@@ -370,9 +382,18 @@ public abstract class SupportSkill : Skill
     /// <param name="AttackedUnit">被攻击单位</param>
     public void Solve(Card AttackingUnit, Card AttackedUnit)
     {
-        if (CheckConditions(AttackingUnit, AttackedUnit))
+        Cost = DefineCost();
+        if (CheckConditions(AttackingUnit, AttackedUnit) && Cost.Check())
         {
+            if (Optional)
+            {
+                if (!Request.AskIfUse(this))
+                {
+                    return;
+                }
+            }
             //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
+            Cost.Pay();
             Do(AttackingUnit, AttackedUnit);
         }
     }
@@ -391,6 +412,12 @@ public abstract class SupportSkill : Skill
     /// <param name="AttackingUnit">攻击单位</param>
     /// <param name="AttackedUnit">被攻击单位</param>
     public abstract void Do(Card AttackingUnit, Card AttackedUnit);
+
+    /// <summary>
+    /// 定义费用
+    /// </summary>
+    public abstract Cost DefineCost();
+    public Cost Cost;
 }
 
 /// <summary>
@@ -412,7 +439,8 @@ public enum SkillTypeSymbol
     Auto, //自动
     Special, //特殊
     Permanent, //常时
-    Bond //羁绊
+    Bond, //羁绊
+    Support //支援
 }
 
 /// <summary>
@@ -423,9 +451,15 @@ public enum SkillKeyword
     Null, //无
     FS, //行动技
     CCS, //转职技
-    LvS, //升级技
+    LvS2, //升级技2
+    LvS3, //升级技3
+    LvS4, //升级技4
+    LvS5, //升级技5
     US, //共斗技
-    CF //化形
+    CF, //化形
+    BS, //羁绊技
+    RM, //龙脉
+    IS, //连发技
 }
 
 /// <summary>
@@ -433,6 +467,15 @@ public enum SkillKeyword
 /// </summary>
 public abstract class SubSkill : Skill
 {
+    public SubSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever)
+    {
+        Origin = origin;
+        LastingType = lastingType;
+        Guid = System.Guid.NewGuid().ToString();
+    }
+
+    public string Guid;
+
     /// <summary>
     /// 产生该附加能力的能力
     /// </summary>
@@ -443,31 +486,40 @@ public abstract class SubSkill : Skill
     /// </summary>
     public LastingTypeEnum LastingType;
 
-    public override Card Owner
-    {
-        get
-        {
-            return base.Owner;
-        }
-
-        set
-        {
-            base.Owner = value;
-            OnlyAvailableWhenFrontShown = true;
-            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
-        }
-    }
     public override bool OnlyAvailableWhenFrontShown { get; set; }
     public override List<Area> AvailableAreas { get; set; }
 
+    public override void Attached()
+    {
+        OnlyAvailableWhenFrontShown = true;
+        AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
+    }
+    protected virtual void Detaching() { }
+
     public override void Detach()
     {
+        Detaching();
         Owner.AttachableList.Remove(this);
         Owner = null;
     }
 
     public override void Read(Message message)
     {
+        if (OnlyAvailableWhenFrontShown)
+        {
+            if (!Owner.FrontShown)
+            {
+                Detach();
+                return;
+            }
+        }
+
+        if (!AvailableAreas.Contains(Owner.BelongedRegion))
+        {
+            Detach();
+            return;
+        }
+
         switch (LastingType)
         {
             case LastingTypeEnum.UntilBattleEnds:
@@ -487,62 +539,107 @@ public abstract class SubSkill : Skill
 /// <summary>
 /// 无效能力
 /// </summary>
-public class DiableSkill : SubSkill
+public class DisableSkill : SubSkill
 {
-    public DiableSkill(Skill target)
+    public DisableSkill(Skill target, Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Target = target;
     }
 
     Skill Target;
 
-    public override Card Owner
+    public override void Attached()
     {
-        get
-        {
-            return base.Owner;
-        }
-
-        set
-        {
-            base.Owner = value;
-            Target.Available = false;
-            OnlyAvailableWhenFrontShown = true;
-            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
-        }
+        base.Attached();
+        Target.Available = false;
     }
-    public override void Detach()
+
+    protected override void Detaching()
     {
+        base.Detaching();
         Target.Available = true;
-        Owner.AttachableList.Remove(this);
-        Owner = null;
     }
 }
 
 /// <summary>
 /// 无效全部能力
 /// </summary>
-public class DiableAllSkills : SubSkill
+public class DisableAllSkills : SubSkill
 {
-    public override Card Owner
+    public DisableAllSkills(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
-        get
-        {
-            return base.Owner;
-        }
-
-        set
-        {
-            base.Owner = value;
-            base.Owner.SkillList.ForEach(skill => skill.Available = false);
-            OnlyAvailableWhenFrontShown = true;
-            AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
-        }
     }
-    public override void Detach()
+
+    public override void Attached()
     {
+        base.Attached();
+        Owner.SkillList.ForEach(skill => skill.Available = false);
+    }
+
+    protected override void Detaching()
+    {
+        base.Detaching();
         Owner.SkillList.ForEach(skill => skill.Available = true);
-        Owner.AttachableList.Remove(this);
-        Owner = null;
+    }
+}
+
+/// <summary>
+/// 不能被放置到羁绊区
+/// </summary>
+public class CanNotBePlacedInBond : SubSkill
+{
+    public CanNotBePlacedInBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
+    {
+    }
+
+    public override void Attached()
+    {
+        base.Attached();
+        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
+    }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        if (message is ToBondMessage || message is ReadyToBondMessage)
+        {
+            if (message.Targets.Contains(Owner))
+            {
+                substitute = message.Clone();
+                substitute.Targets.Remove(Owner);
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/// <summary>
+/// 不能被神速回避
+/// </summary>
+public class CanNotBeAvoided : SubSkill
+{
+    public CanNotBeAvoided(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
+    {
+    }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        if (message is AvoidMessage)
+        {
+            if ((message as AvoidMessage).AttackingUnit == Owner)
+            {
+                substitute = new EmptyMessage();
+                return false;
+            }
+        }
+        else if (message is ReadyToAvoidMessage)
+        {
+            if ((message as ReadyToAvoidMessage).AttackingUnit == Owner)
+            {
+                substitute = new EmptyMessage();
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -15,8 +15,7 @@ public class Message
         clone.reasonCard = reasonCard;
         clone.Reason = Reason;
         clone.SendBySelf = SendBySelf;
-        clone.Targets = new List<Card>();
-        clone.Targets.AddRange(Targets);
+        clone.Targets = ListUtils.Clone(Targets);
         clone.Value = Value;
         return clone;
     }
@@ -34,11 +33,12 @@ public class Message
         }
         get
         {
-            if (Reason != null && reasonCard==null)
+            if (Reason != null && reasonCard == null)
             {
                 return Reason.Owner;
             }
-            else {
+            else
+            {
                 return reasonCard;
             }
         }
@@ -87,7 +87,45 @@ public class EmptyMessage : Message
 {
     public override void Do() { }
 }
-public class DeployMessage : Message { }
+
+public class DeployMessage : Message
+{
+    public struct MetaData
+    {
+        public bool ToFrontField;
+        public bool Actioned;
+    }
+    public Dictionary<Card, MetaData> MetaDict = new Dictionary<Card, MetaData>();
+
+    public override Message Clone()
+    {
+        DeployMessage clone = base.Clone() as DeployMessage;
+        clone.MetaDict = DictionaryUtils.Clone(MetaDict);
+        return clone;
+    }
+
+    public override void Do()
+    {
+        foreach (Card card in Targets)
+        {
+            if (Reason == null)
+            {
+                card.Controller.Game.DeploymentCount += card.DeployCost;
+            }
+            Area toArea;
+            if (MetaDict[card].ToFrontField)
+            {
+                toArea = card.Controller.FrontField;
+            }
+            else
+            {
+                toArea = card.Controller.BackField;
+            }
+            card.MoveTo(toArea);
+            card.IsHorizontal = MetaDict[card].Actioned;
+        }
+    }
+}
 
 public class MoveMessage : Message
 {
@@ -107,8 +145,86 @@ public class MoveMessage : Message
     }
 }
 
+public class UseBondMessage : Message
+{
+    public override void Do()
+    {
+        foreach (Card card in Targets)
+        {
+            card.FrontShown = false;
+        }
+    }
+}
 
-///// <summary>
+public class ReadyToUseBondMessage : Message { }
+
+public class ToBondMessage : Message
+{
+    public struct MetaData
+    {
+        public bool FrontShown;
+    }
+    public Dictionary<Card, MetaData> MetaDict = new Dictionary<Card, MetaData>();
+
+    public override Message Clone()
+    {
+        ToBondMessage clone = base.Clone() as ToBondMessage;
+        clone.MetaDict = DictionaryUtils.Clone(MetaDict);
+        return clone;
+    }
+
+    public override void Do()
+    {
+        foreach (Card card in Targets)
+        {
+            card.MoveTo(card.Controller.Bond);
+            if (!MetaDict[card].FrontShown)
+            {
+                card.FrontShown = false;
+            }
+        }
+    }
+}
+
+public class ReadyToBondMessage : Message { }
+
+public class AvoidMessage : Message
+{
+    public Card AttackingUnit;
+    public Card DefendingUnit;
+    public Card CardForAvoiding;
+
+    public override Message Clone()
+    {
+        AvoidMessage clone = base.Clone() as AvoidMessage;
+        clone.AttackingUnit = AttackingUnit;
+        clone.DefendingUnit = DefendingUnit;
+        clone.CardForAvoiding = CardForAvoiding;
+        return clone;
+    }
+
+    public override void Do()
+    {
+        CardForAvoiding.MoveTo(CardForAvoiding.Controller.Retreat);
+    }
+}
+
+public class ReadyToAvoidMessage : Message
+{
+    public Card AttackingUnit;
+    public Card DefendingUnit;
+    public List<Card> CardsReadyForAvoiding;
+
+    public override Message Clone()
+    {
+        ReadyToAvoidMessage clone = base.Clone() as ReadyToAvoidMessage;
+        clone.AttackingUnit = AttackingUnit;
+        clone.DefendingUnit = DefendingUnit;
+        clone.CardsReadyForAvoiding = ListUtils.Clone(CardsReadyForAvoiding);
+        return clone;
+    }
+}
+
 ///// 消息种类
 ///// </summary>
 //public enum MessageType
