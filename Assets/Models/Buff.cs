@@ -15,8 +15,10 @@ public abstract class Buff : IAttachable
         Giver = giver;
         Origin = origin;
         LastingType = lastingType;
+        Guid = System.Guid.NewGuid().ToString();
     }
 
+    public string Guid;
     public bool OnlyAvailableWhenFrontShown { get; set; }
     public List<Area> AvailableAreas { get; set; }
     public Card Giver;

@@ -471,7 +471,10 @@ public abstract class SubSkill : Skill
     {
         Origin = origin;
         LastingType = lastingType;
+        Guid = System.Guid.NewGuid().ToString();
     }
+
+    public string Guid;
 
     /// <summary>
     /// 产生该附加能力的能力
