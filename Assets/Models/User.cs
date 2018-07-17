@@ -19,7 +19,11 @@ public abstract class User
         BackField = new BackField(this);
         Overlay = new Overlay(this);
         Game = game;
+        Guid = System.Guid.NewGuid().ToString();
     }
+
+    public string Guid;
+
     public Game Game;
     public List<Area> AllAreas
     {
@@ -73,24 +77,6 @@ public abstract class User
     /// 行动阶段结束标志
     /// </summary>
     public bool ActionPhaseEnded = false;
-
-    /// <summary>
-    /// 搜索卡片
-    /// </summary>
-    /// <param name="id">卡的id</param>
-    /// <returns>符合条件的卡</returns>
-    private Card SearchCard(int id)
-    {
-        foreach (Area area in AllAreas)
-        {
-            Card result = area.SearchCard(id);
-            if (result != null)
-            {
-                return result;
-            }
-        }
-        return null;
-    }
 
     public List<Card> AllCards
     {

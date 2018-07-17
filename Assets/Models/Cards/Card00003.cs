@@ -30,7 +30,7 @@ public class Card00003 : Card
     public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
-        public Sk1()
+        public Sk1() : base()
         {
             Number = 1;
             Name = "战场上的教育家";

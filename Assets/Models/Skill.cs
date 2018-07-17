@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public abstract class Skill : IAttachable
 {
+    public string Guid { get; set; }
+
     /// <summary>
     /// 持有该能力的卡
     /// </summary>
@@ -63,6 +65,11 @@ public abstract class Skill : IAttachable
     /// </summary>
     public List<SkillTypeSymbol> TypeSymbols = new List<SkillTypeSymbol>();
 
+    public Skill()
+    {
+        Guid = System.Guid.NewGuid().ToString();
+    }
+
     public virtual bool OnlyAvailableWhenFrontShown { get; set; }
     public virtual List<Area> AvailableAreas { get; set; }
     public virtual void Attached()
@@ -100,6 +107,8 @@ public abstract class Skill : IAttachable
 /// </summary>
 public abstract class ActionSkill : Skill
 {
+    public ActionSkill() : base() { }
+
     /// <summary>
     /// 判断该能力是否可以发动
     /// </summary>
@@ -177,6 +186,8 @@ public abstract class ActionSkill : Skill
 /// </summary>
 public abstract class AutoSkill : Skill
 {
+    public AutoSkill() : base() { }
+
     /// <summary>
     /// 诱发计数
     /// </summary>
@@ -277,6 +288,8 @@ public abstract class AutoSkill : Skill
 /// </summary>
 public abstract class PermanentSkill : Skill
 {
+    public PermanentSkill() : base() { }
+
     protected List<Card> Targets = new List<Card>();
     protected Dictionary<Card, IAttachable[]> ItemsApplied = new Dictionary<Card, IAttachable[]>();
     protected List<IAttachable> ItemsToApply = new List<IAttachable>();
@@ -368,6 +381,8 @@ public abstract class PermanentSkill : Skill
 /// </summary>
 public abstract class SupportSkill : Skill
 {
+    public SupportSkill() : base() { }
+
     /// <summary>
     /// 支援能力种类
     /// </summary>
@@ -467,14 +482,11 @@ public enum SkillKeyword
 /// </summary>
 public abstract class SubSkill : Skill
 {
-    public SubSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever)
+    public SubSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base()
     {
         Origin = origin;
         LastingType = lastingType;
-        Guid = System.Guid.NewGuid().ToString();
     }
-
-    public string Guid;
 
     /// <summary>
     /// 产生该附加能力的能力
@@ -566,9 +578,7 @@ public class DisableSkill : SubSkill
 /// </summary>
 public class DisableAllSkills : SubSkill
 {
-    public DisableAllSkills(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
-    {
-    }
+    public DisableAllSkills(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
     public override void Attached()
     {
@@ -588,9 +598,7 @@ public class DisableAllSkills : SubSkill
 /// </summary>
 public class CanNotBePlacedInBond : SubSkill
 {
-    public CanNotBePlacedInBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
-    {
-    }
+    public CanNotBePlacedInBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
     public override void Attached()
     {
@@ -618,9 +626,7 @@ public class CanNotBePlacedInBond : SubSkill
 /// </summary>
 public class CanNotBeAvoided : SubSkill
 {
-    public CanNotBeAvoided(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
-    {
-    }
+    public CanNotBeAvoided(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
     public override bool Try(Message message, ref Message substitute)
     {

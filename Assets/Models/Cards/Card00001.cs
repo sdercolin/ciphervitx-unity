@@ -31,7 +31,7 @@ public class Card00001 : Card
     public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
-        public Sk1()
+        public Sk1() : base()
         {
             Number = 1;
             Name = "光之王子";
@@ -77,7 +77,7 @@ public class Card00001 : Card
     public Sk2 sk2;
     public class Sk2 : PermanentSkill
     {
-        public Sk2()
+        public Sk2() : base()
         {
             Number = 2;
             Name = "法尔西昂";

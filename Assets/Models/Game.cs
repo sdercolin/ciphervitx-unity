@@ -56,6 +56,23 @@ public class Game
     {
         return Player.TrueForAllCard(predicate) && Rival.TrueForAllCard(predicate);
     }
+
+    /// <summary>
+    /// 搜索卡片
+    /// </summary>
+    /// <param name="guid">卡的id</param>
+    /// <returns>符合条件的卡</returns>
+    private Card GetCardByGuid(string guid)
+    {
+        foreach (Card card in AllCards)
+        {
+            if (card.Guid == guid)
+            {
+                return card;
+            }
+        }
+        return null;
+    }
 }
 
 public enum Phase

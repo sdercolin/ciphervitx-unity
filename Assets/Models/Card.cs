@@ -12,6 +12,7 @@ public abstract class Card
     public Card(User controller)
     {
         Controller = controller;
+        Guid = System.Guid.NewGuid().ToString();
     }
 
     /// <summary>
@@ -355,9 +356,9 @@ public abstract class Card
 
     #region 卡片状态
     /// <summary>
-    /// 卡的Id，唯一识别卡的依据
+    /// 卡的GuId，唯一识别卡的依据
     /// </summary>
-    public int Id;
+    public string Guid;
 
     /// <summary>
     /// 控制者

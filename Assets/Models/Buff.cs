@@ -18,7 +18,7 @@ public abstract class Buff : IAttachable
         Guid = System.Guid.NewGuid().ToString();
     }
 
-    public string Guid;
+    public string Guid { get; set; }
     public bool OnlyAvailableWhenFrontShown { get; set; }
     public List<Area> AvailableAreas { get; set; }
     public Card Giver;
