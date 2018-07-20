@@ -16,7 +16,7 @@ public abstract class Area
     public string Guid;
     public override string ToString()
     {
-        return Guid;
+        throw new NotImplementedException();
     }
     public static Area FromString(string json, Game game)
     {
