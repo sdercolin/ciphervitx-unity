@@ -9,7 +9,7 @@ using System.Collections.Generic;
 #region 反序列化工厂方法
 public partial class Message
 {
-    public static Message FromString(string json)
+    public static Message FromString(string json, Game game)
     {
         //反序列化
         throw new NotImplementedException();
