@@ -22,10 +22,18 @@ public partial class Message
 
     public virtual void Do() { }
 
-    public virtual new string ToString()
+    /// <summary>
+    /// 完成基础字段的序列化
+    /// </summary>
+    /// <returns>Json字符串</returns>
+    public override string ToString()
     {
-        //完成基础字段的序列化
-        throw new NotImplementedException();
+        string json = "";
+        json += "\"Targets\": \"" + ListUtils.ToString(Targets) + "\"";
+        json += ", \"Value\": \"" + Value.ToString() + "\"";
+        json += ", \"ReasonCard\": " + reasonCard == null ? "null" : "\"" + reasonCard.ToString() + "\"";
+        json += ", \"Reason\": " + Reason == null ? "null" : "\"" + Reason.ToString() + "\"";
+        return "{" + json + "}";
     }
 
     public List<Card> Targets = new List<Card>();
