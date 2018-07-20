@@ -4,6 +4,14 @@ using System.Collections.Generic;
 public abstract class Skill : IAttachable
 {
     public string Guid { get; set; }
+    public override string ToString()
+    {
+        throw new NotImplementedException();
+    }
+    public static Skill FromString(string json, Game game)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <summary>
     /// 持有该能力的卡

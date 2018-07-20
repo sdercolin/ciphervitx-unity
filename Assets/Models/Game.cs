@@ -62,7 +62,7 @@ public class Game
     /// </summary>
     /// <param name="guid">卡的id</param>
     /// <returns>符合条件的卡</returns>
-    private Card GetCardByGuid(string guid)
+    public Card GetCardByGuid(string guid)
     {
         foreach (Card card in AllCards)
         {

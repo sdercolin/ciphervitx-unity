@@ -23,6 +23,14 @@ public abstract class User
     }
 
     public string Guid;
+    public override string ToString()
+    {
+        throw new NotImplementedException();
+    }
+    public static User FromString(string json, Game game)
+    {
+        throw new NotImplementedException();
+    }
 
     public Game Game;
     public List<Area> AllAreas

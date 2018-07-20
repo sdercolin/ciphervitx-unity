@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 /// <summary>
 /// 所有附加值的基类
 /// </summary>
@@ -19,6 +20,15 @@ public abstract class Buff : IAttachable
     }
 
     public string Guid { get; set; }
+    public override string ToString()
+    {
+        throw new NotImplementedException();
+    }
+    public static Buff FromString(string json, Game game)
+    {
+        throw new NotImplementedException();
+    }
+
     public bool OnlyAvailableWhenFrontShown { get; set; }
     public List<Area> AvailableAreas { get; set; }
     public Card Giver;

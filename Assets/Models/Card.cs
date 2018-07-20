@@ -16,6 +16,21 @@ public abstract class Card
     }
 
     /// <summary>
+    /// 卡的GuId，唯一识别卡的依据
+    /// </summary>
+    public string Guid;
+    public override string ToString()
+    {
+        return "{\"Guid\": " + Guid + " }";
+    }
+    public static Card FromString(string json, Game game)
+    {
+        string guid = json.Substring("{\"Guid\": ".Length);
+        guid = guid.Substring(0, guid.Length - 2);
+        return game.GetCardByGuid(guid);
+    }
+    
+    /// <summary>
     /// 卡的序列号
     /// </summary>
     public string Serial { get; protected set; }
@@ -355,11 +370,6 @@ public abstract class Card
     #endregion
 
     #region 卡片状态
-    /// <summary>
-    /// 卡的GuId，唯一识别卡的依据
-    /// </summary>
-    public string Guid;
-
     /// <summary>
     /// 控制者
     /// </summary>

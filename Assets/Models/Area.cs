@@ -14,6 +14,14 @@ public abstract class Area
     }
 
     public string Guid;
+    public override string ToString()
+    {
+        return Guid;
+    }
+    public static Area FromString(string json, Game game)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <summary>
     /// 该区域的卡片列表
