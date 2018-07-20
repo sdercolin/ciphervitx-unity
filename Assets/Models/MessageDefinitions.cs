@@ -21,15 +21,7 @@ public partial class Message
 public partial class EmptyMessage
 {
     //由于没有添加属性，Clone()无需重写
-
-    public override string ToString()
-    {
-        //每个Message的派生类分别重写实现序列化
-        string baseJson = base.ToString(); //获得基本的json字符串
-        string json = baseJson.Substring(1, baseJson.Length - 2); //去掉最外层的括号
-        // 补充属性。由于EmptyMessage没有添加属性，因此跳过这个步骤
-        return "{" + json + ")"; //返回新的json字符串
-    }
+    //由于没有添加属性，ToString()无需重写
 }
 
 public partial class DeployMessage : Message
