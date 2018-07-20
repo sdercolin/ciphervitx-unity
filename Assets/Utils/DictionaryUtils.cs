@@ -14,4 +14,14 @@ public static class DictionaryUtils
         }
         return clone;
     }
+
+    public static string ToString<T1, T2>(Dictionary<T1, T2> dictionary)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static Dictionary<T1, T2> FromString<T1, T2>(string json)
+    {
+        throw new NotImplementedException();
+    }
 }
