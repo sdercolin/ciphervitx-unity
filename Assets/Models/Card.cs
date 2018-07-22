@@ -21,7 +21,7 @@ public abstract class Card
     public string Guid;
     public override string ToString()
     {
-        return "{\"Guid\": " + Guid + " }";
+        return "{\"Guid\": \"" + Guid + "\" }";
     }
     public static Card FromString(string json, Game game)
     {

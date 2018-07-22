@@ -5,6 +5,10 @@ public static class ListUtils
 {
     public static List<T> Clone<T>(List<T> list)
     {
+        if (list == null)
+        {
+            return null;
+        }
         List<T> clone = new List<T>();
         clone.AddRange(list);
         return clone;
@@ -17,11 +21,11 @@ public static class ListUtils
         {
             if (String.IsNullOrEmpty(json))
             {
-                json += item.ToString();
+                json += StringUtils.ToString(item);
             }
             else
             {
-                json += String.Format(", {0}", item);
+                json += ", " + StringUtils.ToString(item);
             }
         }
         return "[" + json + "]";

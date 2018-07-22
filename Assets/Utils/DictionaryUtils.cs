@@ -7,6 +7,10 @@ public static class DictionaryUtils
 {
     public static Dictionary<T1, T2> Clone<T1, T2>(Dictionary<T1, T2> dictionary)
     {
+        if (dictionary == null)
+        {
+            return null;
+        }
         Dictionary<T1, T2> clone = new Dictionary<T1, T2>();
         foreach (var key in dictionary.Keys)
         {

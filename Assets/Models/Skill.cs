@@ -6,7 +6,7 @@ public abstract class Skill : IAttachable
     public string Guid { get; set; }
     public override string ToString()
     {
-        throw new NotImplementedException();
+        return "{\"Guid\": \"" + Guid + "\" }";
     }
     public static Skill FromString(string json, Game game)
     {
