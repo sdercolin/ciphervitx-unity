@@ -6,53 +6,48 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class MessageTest {
+public class MessageTest
+{
 
-	[Test]
-	public void CloneTest() {
-        EmptyMessage message1 = new EmptyMessage();
-        Message clone1 = message1.Clone();
+    [Test]
+    public void CloneTest()
+    {
+        var message1 = new EmptyMessage();
+        var clone1 = message1.Clone();
         Assert.IsTrue(clone1 is EmptyMessage);
+        string message1Json = message1.ToString();
 
         var card = new Card00001(new Game().Player);
         var targets = new List<Card>() { card };
-        MoveMessage message2 = new MoveMessage()
+        var message2 = new MoveMessage()
         {
-            ReasonCard = card,
-            Targets = targets
+            Targets = targets,
+            Reason = card.sk1
         };
-        Message clone2 = message2.Clone();
+        var clone2 = message2.Clone() as MoveMessage;
         Assert.IsTrue(clone2 is MoveMessage);
-        Assert.IsTrue(clone2.ReasonCard == card);
+        Assert.IsTrue(clone2.Reason == card.sk1);
         Assert.IsFalse(clone2.Targets == targets);
         Assert.IsTrue(clone2.Targets.SequenceEqual(targets));
+        string message2Json = message2.ToString();
 
         DeployMessage message3 = new DeployMessage()
         {
-            ReasonCard = card,
             Targets = targets,
+            TargetsActioned = new List<bool>() { true },
+            TargetsToFrontField = new List<bool>() { false },
+            Reason = null
         };
-        message3.MetaDict.Add(card,
-            new DeployMessage.MetaData()
-            {
-                ToFrontField = false,
-                Actioned = true
-            });
         DeployMessage clone3 = message3.Clone() as DeployMessage;
         Assert.IsTrue(clone3 is DeployMessage);
-        Assert.IsTrue(clone3.ReasonCard == card);
+        Assert.IsTrue(clone3.Reason == null);
         Assert.IsFalse(clone3.Targets == targets);
         Assert.IsTrue(clone3.Targets.SequenceEqual(targets));
-        Assert.IsFalse(clone3.MetaDict == message3.MetaDict);
-        Assert.IsTrue(clone3.MetaDict.Keys.SequenceEqual(message3.MetaDict.Keys));
-        Assert.IsTrue(clone3.MetaDict[clone3.Targets[0]].ToFrontField == false);
-        Assert.IsTrue(clone3.MetaDict[clone3.Targets[0]].Actioned == true);
-        clone3.MetaDict[clone3.Targets[0]] = new DeployMessage.MetaData()
-        {
-            ToFrontField = false,
-            Actioned = false
-        };
-        Assert.IsTrue(clone3.MetaDict[clone3.Targets[0]].Actioned == false);
-        Assert.IsTrue(message3.MetaDict[message3.Targets[0]].Actioned == true);
+        Assert.IsTrue(clone3.TargetsActioned[0]);
+        Assert.IsFalse(clone3.TargetsToFrontField[0]);
+        clone3.TargetsActioned[0] = false;
+        Assert.IsFalse(clone3.TargetsActioned[0]);
+        Assert.IsTrue(message3.TargetsActioned[0]);
+        string message3Json = message3.ToString();
     }
 }
