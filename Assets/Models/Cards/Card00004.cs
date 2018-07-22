@@ -54,7 +54,7 @@ public class Card00004 : Card
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                Targets = message.GetTargetsTrueFor(card => card.Controller == Controller && card.DeployCost <= 2);
+                Targets = deployMessage.Filter(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
                 return Targets.Count > 0;
             }
             return false;

@@ -180,13 +180,8 @@ public abstract class User
         ToBondMessage toBondMessage = new ToBondMessage
         {
             Targets = targets,
-            MetaDict = new Dictionary<Card, ToBondMessage.MetaData>(),
-            Reason = reason
+            TargetsFrontShown = frontShownTable
         };
-        for (int i = 0; i < count; i++)
-        {
-            toBondMessage.MetaDict.Add(targets[i], new ToBondMessage.MetaData() { FrontShown = frontShownTable[i] });
-        }
         TryDoMessage(toBondMessage);
     }
     #endregion

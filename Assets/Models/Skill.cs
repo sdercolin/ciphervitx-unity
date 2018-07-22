@@ -616,12 +616,23 @@ public class CanNotBePlacedInBond : SubSkill
 
     public override bool Try(Message message, ref Message substitute)
     {
-        if (message is ToBondMessage || message is ReadyToBondMessage)
+        if (message is ToBondMessage)
         {
-            if (message.Targets.Contains(Owner))
+            var toBondMessage = message as ToBondMessage;
+            if (toBondMessage.Targets.Contains(Owner))
             {
-                substitute = message.Clone();
-                substitute.Targets.Remove(Owner);
+                substitute = toBondMessage.Clone();
+                ((ToBondMessage)substitute).Targets.Remove(Owner);
+                return false;
+            }
+        }
+        if (message is ReadyToBondMessage)
+        {
+            var readyToBondMessage = message as ReadyToBondMessage;
+            if (readyToBondMessage.Targets.Contains(Owner))
+            {
+                substitute = readyToBondMessage.Clone();
+                ((ReadyToBondMessage)substitute).Targets.Remove(Owner);
                 return false;
             }
         }

@@ -52,7 +52,7 @@ public class Card00001 : Card
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                return message.TrueForAnyTarget(card => card.Controller == Controller && card.DeployCost <= 2);
+                return deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
             }
             return false;
         }
