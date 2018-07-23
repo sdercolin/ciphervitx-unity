@@ -46,6 +46,17 @@ public class Game
         }
     }
 
+    public List<Area> AllAreas
+    {
+        get
+        {
+            List<Area> allAreas = new List<Area>();
+            allAreas.AddRange(Player.AllAreas);
+            allAreas.AddRange(Rival.AllAreas);
+            return allAreas;
+        }
+    }
+
     public void ForEachCard(Action<Card> action)
     {
         Player.ForEachCard(action);
@@ -57,11 +68,6 @@ public class Game
         return Player.TrueForAllCard(predicate) && Rival.TrueForAllCard(predicate);
     }
 
-    /// <summary>
-    /// 搜索卡片
-    /// </summary>
-    /// <param name="guid">卡的id</param>
-    /// <returns>符合条件的卡</returns>
     public Card GetCardByGuid(string guid)
     {
         foreach (Card card in AllCards)
@@ -72,6 +78,64 @@ public class Game
             }
         }
         return null;
+    }
+
+    public Area GetAreaByGuid(string guid)
+    {
+        foreach (Area area in AllAreas)
+        {
+            if (area.Guid == guid)
+            {
+                return area;
+            }
+        }
+        return null;
+    }
+
+    public User GetUserByGuid(string guid)
+    {
+        if (Player.Guid == guid)
+        {
+            return Player;
+        }
+        else if (Rival.Guid == guid)
+        {
+            return Rival;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public IAttachable GetItemByGuid(string guid)
+    {
+        foreach (Card card in AllCards)
+        {
+            foreach (var item in card.AttachableList)
+            {
+                if (item.Guid == guid)
+                {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    public object GetObject(string guid)
+    {
+        object result = GetCardByGuid(guid);
+        if(result==null){
+            result=GetAreaByGuid(guid);
+        }
+        if(result==null){
+            result=GetUserByGuid(guid);
+        }
+        if(result==null){
+            result=GetItemByGuid(guid);
+        }
+        return result;
     }
 }
 

@@ -24,7 +24,7 @@ public abstract class Buff : IAttachable
     {
         throw new NotImplementedException();
     }
-    public static Buff FromString(string json, Game game)
+    public static Buff FromString(string json)
     {
         throw new NotImplementedException();
     }

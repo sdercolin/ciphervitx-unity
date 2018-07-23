@@ -8,10 +8,6 @@ public abstract class Skill : IAttachable
     {
         return "{\"Guid\": \"" + Guid + "\" }";
     }
-    public static Skill FromString(string json, Game game)
-    {
-        throw new NotImplementedException();
-    }
 
     /// <summary>
     /// 持有该能力的卡
@@ -508,6 +504,15 @@ public abstract class SubSkill : Skill
 
     public override bool OnlyAvailableWhenFrontShown { get; set; }
     public override List<Area> AvailableAreas { get; set; }
+
+    public override string ToString(){
+        throw new NotImplementedException();
+    }
+    
+    public static Buff FromString(string json)
+    {
+        throw new NotImplementedException();
+    }
 
     public override void Attached()
     {

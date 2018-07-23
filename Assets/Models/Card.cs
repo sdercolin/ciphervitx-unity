@@ -23,12 +23,6 @@ public abstract class Card
     {
         return "{\"Guid\": \"" + Guid + "\" }";
     }
-    public static Card FromString(string json, Game game)
-    {
-        string guid = json.Substring("{\"Guid\": ".Length);
-        guid = guid.Substring(0, guid.Length - 2);
-        return game.GetCardByGuid(guid);
-    }
     
     /// <summary>
     /// 卡的序列号

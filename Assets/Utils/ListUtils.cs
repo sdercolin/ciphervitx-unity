@@ -35,4 +35,9 @@ public static class ListUtils
     {
         throw new NotImplementedException();
     }
+
+    public static List<object> FromString(string json)
+    {
+        throw new NotImplementedException();
+    }
 }

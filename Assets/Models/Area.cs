@@ -18,10 +18,6 @@ public abstract class Area
     {
         throw new NotImplementedException();
     }
-    public static Area FromString(string json, Game game)
-    {
-        throw new NotImplementedException();
-    }
 
     /// <summary>
     /// 该区域的卡片列表

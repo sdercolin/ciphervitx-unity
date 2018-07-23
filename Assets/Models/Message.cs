@@ -99,7 +99,31 @@ public class Message
 
     public static Message FromString(string json, Game game)
     {
-        //反序列化
+        string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string typename = null;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                typename = item.Replace("\"type\": \"", "").Trim('\"');
+                break;
+            }
+        }
+        if (typename == null)
+        {
+            return null;
+        }
+        Type messageType = Assembly.GetExecutingAssembly().GetType(typename);
+        var newMessage = Activator.CreateInstance(messageType) as Message;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                continue;
+            }
+            string[] splited2 = item.Trim(new char[] { '\"' }).Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            
+        }
         throw new NotImplementedException();
     }
 }
