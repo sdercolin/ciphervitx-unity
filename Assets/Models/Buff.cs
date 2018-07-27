@@ -82,7 +82,16 @@ public abstract class Buff : IAttachable
             return null;
         }
         Type buffType = Assembly.GetExecutingAssembly().GetType(typename);
-        var newBuff = Activator.CreateInstance(buffType) as Buff;
+        List<object> parameters = new List<object>();
+        List<string> parameterNames = new List<string>();
+        Dictionary<string, dynamic> otherFields = new Dictionary<string, dynamic>();
+        var constructorInfo = buffType.GetConstructors()[0];
+        foreach (var param in constructorInfo.GetParameters())
+        {
+            parameterNames.Add(param.Name);
+            parameters.Add(null);
+        }
+
         foreach (var item in splited)
         {
             if (item.Contains("\"type\": \""))
@@ -90,8 +99,21 @@ public abstract class Buff : IAttachable
                 continue;
             }
             string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            string name = splited2[0].Trim(new char[] { '\"' });
             object value = StringUtils.ParseAny(splited2[1]);
-            typeof(Buff).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newBuff, value);
+            if (parameterNames.Contains(name))
+            {
+                parameters[parameterNames.IndexOf(name)] = value;
+            }
+            else
+            {
+                otherFields.Add(name, value);
+            }
+        }
+        var newBuff = Activator.CreateInstance(buffType, parameters) as Buff;
+        foreach (var pair in otherFields)
+        {
+            typeof(Buff).GetField(pair.Key, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newBuff, pair.Value);
         }
         return newBuff;
     }
