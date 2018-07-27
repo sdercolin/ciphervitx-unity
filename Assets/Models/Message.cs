@@ -122,9 +122,10 @@ public class Message
                 continue;
             }
             string[] splited2 = item.Trim(new char[] { '\"' }).Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-            
+            object value = StringUtils.FromString(splited2[1], game);
+            typeof(Message).GetField(splited2[0], BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
         }
-        throw new NotImplementedException();
+        return newMessage;
     }
 }
 

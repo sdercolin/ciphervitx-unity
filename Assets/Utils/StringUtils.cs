@@ -51,7 +51,7 @@ public static class StringUtils
         else if (json.Length > 2 && json.First() == '[' && json.Last() == ']')
         {
             // is list
-            return ListUtils.FromString(json);
+            return ListUtils.FromString(json, game);
         }
         else if (json.Length > 2 && json.First() == '{' && json.Last() == '}')
         {

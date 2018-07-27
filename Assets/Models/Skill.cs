@@ -505,10 +505,11 @@ public abstract class SubSkill : Skill
     public override bool OnlyAvailableWhenFrontShown { get; set; }
     public override List<Area> AvailableAreas { get; set; }
 
-    public override string ToString(){
+    public override string ToString()
+    {
         throw new NotImplementedException();
     }
-    
+
     public static Buff FromString(string json)
     {
         throw new NotImplementedException();

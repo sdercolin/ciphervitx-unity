@@ -16,7 +16,7 @@ public abstract class Area
     public string Guid;
     public override string ToString()
     {
-        throw new NotImplementedException();
+        return "{\"Guid\": \"" + Guid + "\" }";
     }
 
     /// <summary>
