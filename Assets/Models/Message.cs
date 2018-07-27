@@ -91,7 +91,7 @@ public class Message
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
             if (field != null)
             {
-                json += ", \"field" + (i + 1).ToString() + "\": " + StringUtils.ToString(field);
+                json += ", \"field" + (i + 1).ToString() + "\": " + StringUtils.CreateFromAny(field);
             }
         }
         return "{" + json + "}";
@@ -121,9 +121,9 @@ public class Message
             {
                 continue;
             }
-            string[] splited2 = item.Trim(new char[] { '\"' }).Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-            object value = StringUtils.FromString(splited2[1]);
-            typeof(Message).GetField(splited2[0], BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
+            string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            object value = StringUtils.ParseAny(splited2[1]);
+            typeof(Message).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
         }
         return newMessage;
     }

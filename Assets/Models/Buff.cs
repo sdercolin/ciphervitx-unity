@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 /// <summary>
 /// 所有附加值的基类
 /// </summary>
@@ -19,22 +20,99 @@ public abstract class Buff : IAttachable
         Guid = System.Guid.NewGuid().ToString();
     }
 
+    protected string guid;
     public string Guid { get; set; }
     public override string ToString()
     {
-        throw new NotImplementedException();
+        Dictionary<string, dynamic> toSerialize = new Dictionary<string, dynamic>();
+        toSerialize.Add("type", GetType().Name);
+        toSerialize.Add("guid", Guid);
+        toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));
+        toSerialize.Add("availableAreas", StringUtils.CreateFromAny(AvailableAreas));
+        if (Giver != null)
+        {
+            toSerialize.Add("giver", Giver);
+        }
+        if (Owner != null)
+        {
+            toSerialize.Add("owner", Owner);
+        }
+        if (Origin != null)
+        {
+            toSerialize.Add("origin", Origin);
+        }
+        toSerialize.Add("lastingType", LastingType);
+        if (isAdding != null)
+        {
+            toSerialize.Add("isAdding", isAdding);
+        }
+        if (isBecoming != null)
+        {
+            toSerialize.Add("isBecoming", isBecoming);
+        }
+        if (value != null)
+        {
+            toSerialize.Add("value", value);
+        }
+        string json = String.Empty;
+        foreach (var pair in toSerialize)
+        {
+            if (String.IsNullOrEmpty(json))
+            {
+                json += ", ";
+            }
+            json += "\"" + pair.Key + "\": " + StringUtils.CreateFromAny(pair.Value);
+        }
+        return "{" + json + "}";
     }
-    public static Buff FromString(string json)
+    public static Buff CreateFromString(string json)
     {
-        throw new NotImplementedException();
+        string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string typename = null;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                typename = item.Replace("\"type\": \"", "").Trim('\"');
+                break;
+            }
+        }
+        if (typename == null)
+        {
+            return null;
+        }
+        Type buffType = Assembly.GetExecutingAssembly().GetType(typename);
+        var newBuff = Activator.CreateInstance(buffType) as Buff;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                continue;
+            }
+            string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            object value = StringUtils.ParseAny(splited2[1]);
+            typeof(Buff).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newBuff, value);
+        }
+        return newBuff;
     }
 
+    protected bool onlyAvailableWhenFrontShown;
     public bool OnlyAvailableWhenFrontShown { get; set; }
+    protected List<Area> availableAreas;
     public List<Area> AvailableAreas { get; set; }
-    public Card Giver;
+    protected Card giver;
+    public Card Giver { get; set; }
+    protected Card owner;
     public Card Owner { get; set; }
-    public Skill Origin;
-    public LastingTypeEnum LastingType;
+
+    protected Skill origin;
+    public Skill Origin { get; set; }
+    protected LastingTypeEnum lastingType;
+    public LastingTypeEnum LastingType { get; set; }
+
+    protected bool? isAdding;
+    protected bool? isBecoming;
+    protected dynamic value;
 
     public virtual void Attached()
     {
@@ -111,17 +189,17 @@ public class UnitNameBuff : Buff
     /// <summary>
     /// 是否为添加该单位名
     /// </summary>
-    public bool IsAdding;
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public string Value;
+    public string Value { get { return value; } set { base.value = value; } }
 
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = Owner.Controller.AllAreas;
     }
 }
 
@@ -130,27 +208,26 @@ public class UnitNameBuff : Buff
 /// </summary>
 public class DeployCostBuff : Buff
 {
-    public DeployCostBuff(Card giver, Skill origin, int value, bool isBecome, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public DeployCostBuff(Card giver, Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
     {
         Value = value;
-        IsBecome = isBecome;
+        IsBecoming = isBecoming;
     }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value;
-
+    public int Value { get { return value; } set { base.value = value; } }
 
     /// <summary>
     /// 是否为“变为”类型
     /// </summary>
-    public bool IsBecome;
+    public bool IsBecoming { get { return (bool)isBecoming; } set { isBecoming = value; } }
 
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = Owner.Controller.AllAreas;
     }
 }
 
@@ -159,26 +236,26 @@ public class DeployCostBuff : Buff
 /// </summary>
 public class ClassChangeCostBuff : Buff
 {
-    public ClassChangeCostBuff(Card giver, Skill origin, int value, bool isBecome, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public ClassChangeCostBuff(Card giver, Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
     {
         Value = value;
-        IsBecome = isBecome;
+        IsBecoming = isBecoming;
     }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value;
+    public int Value { get { return value; } set { base.value = value; } }
 
     /// <summary>
     /// 是否为“变为”类型
     /// </summary>
-    public bool IsBecome;
+    public bool IsBecoming { get { return (bool)isBecoming; } set { isBecoming = value; } }
 
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = Owner.Controller.AllAreas;
     }
 }
 
@@ -195,7 +272,7 @@ public class PowerBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value;
+    public int Value { get { return value; } set { base.value = value; } }
 }
 
 /// <summary>
@@ -211,7 +288,7 @@ public class SupportBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value;
+    public int Value { get { return value; } set { base.value = value; } }
 
     public override void Attached()
     {
@@ -234,12 +311,12 @@ public class SymbolBuff : Buff
     /// <summary>
     /// 是否为添加该势力
     /// </summary>
-    public bool IsAdding;
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public SymbolEnum Value;
+    public SymbolEnum Value { get { return value; } set { base.value = value; } }
 }
 
 /// <summary>
@@ -256,17 +333,17 @@ public class WeaponBuff : Buff
     /// <summary>
     /// 是否为添加该武器
     /// </summary>
-    public bool IsAdding;
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public WeaponEnum Value;
+    public WeaponEnum Value { get { return value; } set { base.value = value; } }
 
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = Owner.Controller.AllAreas;
     }
 }
 
@@ -284,17 +361,17 @@ public class GenderBuff : Buff
     /// <summary>
     /// 是否为添加该性别
     /// </summary>
-    public bool IsAdding;
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public GenderEnum Value;
+    public GenderEnum Value { get { return value; } set { base.value = value; } }
 
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = Owner.Controller.AllAreas;
     }
 }
 
@@ -312,17 +389,17 @@ public class TypeBuff : Buff
     /// <summary>
     /// 是否为添加该属性
     /// </summary>
-    public bool IsAdding;
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public TypeEnum Value;
+    public TypeEnum Value { get { return value; } set { base.value = value; } }
 
     public override void Attached()
     {
         base.Attached();
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
+        AvailableAreas = Owner.Controller.AllAreas;
     }
 }
 
@@ -340,10 +417,10 @@ public class RangeBuff : Buff
     /// <summary>
     /// 是否为添加该射程
     /// </summary>
-    public bool IsAdding;
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public RangeEnum Value;
+    public RangeEnum Value { get { return value; } set { base.value = value; } }
 }

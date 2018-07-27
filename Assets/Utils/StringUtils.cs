@@ -6,25 +6,38 @@ using System.Threading.Tasks;
 
 public static class StringUtils
 {
-    public static string ToString(dynamic item)
+    public static string CreateFromAny(dynamic item)
     {
-        if (item is System.Collections.IList)
+        if (item == null)
         {
-            return ListUtils.ToString(item);
+            return "\"null\"";
+        }
+        else if (item is int)
+        {
+            return item.ToString();
         }
         else if (item is bool)
         {
             return BooleanUtils.ToString(item);
         }
-        else
+        else if (item is System.Collections.IList)
+        {
+            return ListUtils.ToString(item);
+        }
+        else if (item is Card || item is Area || item is User || item is IAttachable)
         {
             return item.ToString();
         }
+        else
+        {
+            // is Enum or string
+            return "\"" + item.ToString() + "\"";
+        }
     }
 
-    public static object FromString(string json)
+    public static object ParseAny(string json)
     {
-        if (json == null || json == "")
+        if (json == null || json == "" || json == "\"null\"")
         {
             return null;
         }
@@ -38,15 +51,18 @@ public static class StringUtils
             // is boolean
             return boolean;
         }
-        else if (EnumUtils.TryParse(json, out Type enumType, out object enumValue))
-        {
-            // is enum
-            return enumValue;
-        }
         else if (json.Length > 2 && json.First() == '"' && json.Last() == '"')
         {
-            // is string
-            return json.Substring(1, json.Length - 2);
+            if (EnumUtils.TryParse(json, out Type enumType, out object enumValue))
+            {
+                // is enum
+                return enumValue;
+            }
+            else
+            {
+                // is string
+                return json.Substring(1, json.Length - 2);
+            }
         }
         else if (json.Length > 2 && json.First() == '[' && json.Last() == ']')
         {

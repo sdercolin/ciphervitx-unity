@@ -6,7 +6,7 @@ public abstract class Skill : IAttachable
     public string Guid { get; set; }
     public override string ToString()
     {
-        return "{\"Guid\": \"" + Guid + "\" }";
+        return "{\"guid\": \"" + Guid + "\" }";
     }
 
     /// <summary>

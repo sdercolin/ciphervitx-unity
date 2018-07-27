@@ -24,7 +24,7 @@ public abstract class User
     public string Guid;
     public override string ToString()
     {
-        return "{\"Guid\": \"" + Guid + "\" }";
+        return "{\"guid\": \"" + Guid + "\" }";
     }
 
     public List<Area> AllAreas

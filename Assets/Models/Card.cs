@@ -21,7 +21,7 @@ public abstract class Card
     public string Guid;
     public override string ToString()
     {
-        return "{\"Guid\": \"" + Guid + "\" }";
+        return "{\"guid\": \"" + Guid + "\" }";
     }
     
     /// <summary>
@@ -158,7 +158,7 @@ public abstract class Card
                 DeployCostBuff buff = x as DeployCostBuff;
                 if (buff != null)
                 {
-                    if (buff.IsBecome)
+                    if (buff.IsBecoming)
                     {
                         deployCostNow = buff.Value;
                         return;
@@ -187,7 +187,7 @@ public abstract class Card
                 ClassChangeCostBuff buff = x as ClassChangeCostBuff;
                 if (buff != null)
                 {
-                    if (buff.IsBecome)
+                    if (buff.IsBecoming)
                     {
                         classChangeCostNow = buff.Value;
                         return;

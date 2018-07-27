@@ -21,11 +21,11 @@ public static class ListUtils
         {
             if (String.IsNullOrEmpty(json))
             {
-                json += StringUtils.ToString(item);
+                json += StringUtils.CreateFromAny(item);
             }
             else
             {
-                json += ", " + StringUtils.ToString(item);
+                json += ", " + StringUtils.CreateFromAny(item);
             }
         }
         return "[" + json + "]";
@@ -42,7 +42,7 @@ public static class ListUtils
         string[] splited = json.Trim(new char[] { '[', ']' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
         foreach (var item in splited)
         {
-            result.Add(StringUtils.FromString(item));
+            result.Add(StringUtils.ParseAny(item));
         }
         return result;
     }
