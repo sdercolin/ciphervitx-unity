@@ -36,13 +36,13 @@ public static class ListUtils
         throw new NotImplementedException();
     }
 
-    public static List<object> FromString(string json, Game game)
+    public static List<object> FromString(string json)
     {
         var result = new List<object>();
         string[] splited = json.Trim(new char[] { '[', ']' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
         foreach (var item in splited)
         {
-            result.Add(StringUtils.FromString(item, game));
+            result.Add(StringUtils.FromString(item));
         }
         return result;
     }

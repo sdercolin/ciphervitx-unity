@@ -22,7 +22,7 @@ public static class StringUtils
         }
     }
 
-    public static object FromString(string json, Game game)
+    public static object FromString(string json)
     {
         if (json == null || json == "")
         {
@@ -51,7 +51,7 @@ public static class StringUtils
         else if (json.Length > 2 && json.First() == '[' && json.Last() == ']')
         {
             // is list
-            return ListUtils.FromString(json, game);
+            return ListUtils.FromString(json);
         }
         else if (json.Length > 2 && json.First() == '{' && json.Last() == '}')
         {
@@ -70,7 +70,7 @@ public static class StringUtils
             {
                 return null;
             }
-            object gameObject = game.GetObject(guid);
+            object gameObject = Game.GetObject(guid);
             if (gameObject != null)
             {
                 return gameObject;

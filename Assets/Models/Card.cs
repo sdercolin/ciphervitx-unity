@@ -370,11 +370,6 @@ public abstract class Card
     public User Controller { get; protected set; }
 
     /// <summary>
-    /// 游戏对象
-    /// </summary>
-    public Game Game { get { return Controller.Game; } }
-
-    /// <summary>
     /// 卡下方所叠放的卡
     /// </summary>
     protected List<Card> stacks = new List<Card>();

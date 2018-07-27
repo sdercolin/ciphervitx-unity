@@ -25,11 +25,6 @@ public abstract class Skill : IAttachable
     public User Opponent { get { return Owner.Controller.Opponent; } }
 
     /// <summary>
-    /// 游戏对象
-    /// </summary>
-    public Game Game { get { return Owner.Game; } }
-
-    /// <summary>
     /// 该能力在卡面上的记述顺序号
     /// </summary>
     public int Number;

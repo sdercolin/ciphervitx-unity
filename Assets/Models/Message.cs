@@ -97,7 +97,7 @@ public class Message
         return "{" + json + "}";
     }
 
-    public static Message FromString(string json, Game game)
+    public static Message FromString(string json)
     {
         string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
         string typename = null;
@@ -122,7 +122,7 @@ public class Message
                 continue;
             }
             string[] splited2 = item.Trim(new char[] { '\"' }).Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-            object value = StringUtils.FromString(splited2[1], game);
+            object value = StringUtils.FromString(splited2[1]);
             typeof(Message).GetField(splited2[0], BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
         }
         return newMessage;
@@ -146,7 +146,7 @@ public partial class DeployMessage : Message
         {
             if (Reason == null)
             {
-                card.Controller.Game.DeploymentCount += card.DeployCost;
+                Game.DeploymentCount += card.DeployCost;
             }
             Area toArea;
             if (TargetsToFrontField[Targets.IndexOf(card)])

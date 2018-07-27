@@ -1,42 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Game
+public static class Game
 {
-    public Game()
+    public static void Initialize()
     {
-        Player = new Player(this);
-        Rival = new Rival(this);
+        Player = new Player();
+        Rival = new Rival();
     }
 
-    public Player Player;
-    public Rival Rival;
+    public static Player Player;
+    public static Rival Rival;
 
     //诱发效果处理用
-    public List<string> SkillUsedInThisGame = new List<string>();
-    public List<List<Skill>> InducedSkillSetList = new List<List<Skill>>();
-    public List<Skill> InducedSkillSet = new List<Skill>();
-    public int InducedSkillProcessCount = 0;
+    public static List<string> SkillUsedInThisGame = new List<string>();
+    public static List<List<Skill>> InducedSkillSetList = new List<List<Skill>>();
+    public static List<Skill> InducedSkillSet = new List<Skill>();
+    public static int InducedSkillProcessCount = 0;
 
     //回合信息
-    public bool IsMyTurn;
-    public int TurnCount = 0;
-    public int DeploymentCount = 0;
-    public Phase CurrentPhase;
+    public static bool IsMyTurn;
+    public static int TurnCount = 0;
+    public static int DeploymentCount = 0;
+    public static Phase CurrentPhase;
 
     //战斗用
-    public Card AttackingUnit = null; //攻击单位
-    public Card DefencingUnit = null; //防御单位
-    public List<Card> BattlingUnits { get { return new List<Card> { AttackingUnit, DefencingUnit }; } } //战斗单位
-    public int PowerUpByCritical = 0; //必杀攻击增加的战斗力
-    public int PowerUpBySupport = 0; //支援增加的战斗力
+    public static Card AttackingUnit = null; //攻击单位
+    public static Card DefencingUnit = null; //防御单位
+    public static List<Card> BattlingUnits { get { return new List<Card> { AttackingUnit, DefencingUnit }; } } //战斗单位
+    public static int PowerUpByCritical = 0; //必杀攻击增加的战斗力
+    public static int PowerUpBySupport = 0; //支援增加的战斗力
 
     //等待延时用
-    public bool DoNotWait = false;
-    public bool WaitingFlag = false;
-    public int WaitingTime = 3000;
+    public static bool DoNotWait = false;
+    public static bool WaitingFlag = false;
+    public static int WaitingTime = 3000;
 
-    public List<Card> AllCards
+    public static List<Card> AllCards
     {
         get
         {
@@ -46,7 +46,7 @@ public class Game
         }
     }
 
-    public List<Area> AllAreas
+    public static List<Area> AllAreas
     {
         get
         {
@@ -57,18 +57,18 @@ public class Game
         }
     }
 
-    public void ForEachCard(Action<Card> action)
+    public static void ForEachCard(Action<Card> action)
     {
         Player.ForEachCard(action);
         Rival.ForEachCard(action);
     }
 
-    public bool TrueForAllCard(Predicate<Card> predicate)
+    public static bool TrueForAllCard(Predicate<Card> predicate)
     {
         return Player.TrueForAllCard(predicate) && Rival.TrueForAllCard(predicate);
     }
 
-    public Card GetCardByGuid(string guid)
+    public static Card GetCardByGuid(string guid)
     {
         foreach (Card card in AllCards)
         {
@@ -80,7 +80,7 @@ public class Game
         return null;
     }
 
-    public Area GetAreaByGuid(string guid)
+    public static Area GetAreaByGuid(string guid)
     {
         foreach (Area area in AllAreas)
         {
@@ -92,7 +92,7 @@ public class Game
         return null;
     }
 
-    public User GetUserByGuid(string guid)
+    public static User GetUserByGuid(string guid)
     {
         if (Player.Guid == guid)
         {
@@ -108,7 +108,7 @@ public class Game
         }
     }
 
-    public IAttachable GetItemByGuid(string guid)
+    public static IAttachable GetItemByGuid(string guid)
     {
         foreach (Card card in AllCards)
         {
@@ -123,7 +123,7 @@ public class Game
         return null;
     }
 
-    public object GetObject(string guid)
+    public static object GetObject(string guid)
     {
         object result = GetCardByGuid(guid);
         if(result==null){
