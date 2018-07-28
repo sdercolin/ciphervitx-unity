@@ -6,11 +6,7 @@ public abstract class Skill : IAttachable
     public string Guid { get; set; }
     public override string ToString()
     {
-        return "{\"Guid\": \"" + Guid + "\" }";
-    }
-    public static Skill FromString(string json, Game game)
-    {
-        throw new NotImplementedException();
+        return "{\"guid\": \"" + Guid + "\" }";
     }
 
     /// <summary>
@@ -27,11 +23,6 @@ public abstract class Skill : IAttachable
     /// 控制者的对手
     /// </summary>
     public User Opponent { get { return Owner.Controller.Opponent; } }
-
-    /// <summary>
-    /// 游戏对象
-    /// </summary>
-    public Game Game { get { return Owner.Game; } }
 
     /// <summary>
     /// 该能力在卡面上的记述顺序号
@@ -508,6 +499,16 @@ public abstract class SubSkill : Skill
 
     public override bool OnlyAvailableWhenFrontShown { get; set; }
     public override List<Area> AvailableAreas { get; set; }
+
+    public override string ToString()
+    {
+        throw new NotImplementedException();
+    }
+
+    public static Buff FromString(string json)
+    {
+        throw new NotImplementedException();
+    }
 
     public override void Attached()
     {

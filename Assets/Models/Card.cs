@@ -21,13 +21,7 @@ public abstract class Card
     public string Guid;
     public override string ToString()
     {
-        return "{\"Guid\": \"" + Guid + "\" }";
-    }
-    public static Card FromString(string json, Game game)
-    {
-        string guid = json.Substring("{\"Guid\": ".Length);
-        guid = guid.Substring(0, guid.Length - 2);
-        return game.GetCardByGuid(guid);
+        return "{\"guid\": \"" + Guid + "\" }";
     }
     
     /// <summary>
@@ -164,7 +158,7 @@ public abstract class Card
                 DeployCostBuff buff = x as DeployCostBuff;
                 if (buff != null)
                 {
-                    if (buff.IsBecome)
+                    if (buff.IsBecoming)
                     {
                         deployCostNow = buff.Value;
                         return;
@@ -193,7 +187,7 @@ public abstract class Card
                 ClassChangeCostBuff buff = x as ClassChangeCostBuff;
                 if (buff != null)
                 {
-                    if (buff.IsBecome)
+                    if (buff.IsBecoming)
                     {
                         classChangeCostNow = buff.Value;
                         return;
@@ -374,11 +368,6 @@ public abstract class Card
     /// 控制者
     /// </summary>
     public User Controller { get; protected set; }
-
-    /// <summary>
-    /// 游戏对象
-    /// </summary>
-    public Game Game { get { return Controller.Game; } }
 
     /// <summary>
     /// 卡下方所叠放的卡

@@ -17,15 +17,37 @@ public static class BooleanUtils
             return "\"false\"";
         }
     }
-
-    public static bool FromString(string json)
+    public static bool? FromString(string json)
     {
-        if(json== "\"true\"")
+        if (json == "\"true\"")
         {
+            return true;
+        }
+        else if (json == "\"false\"")
+        {
+            return false;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static bool TryParse(string json, out bool value)
+    {
+        if (json == "\"true\"")
+        {
+            value = true;
+            return true;
+        }
+        else if (json == "\"false\"")
+        {
+            value = false;
             return true;
         }
         else
         {
+            value = false;
             return false;
         }
     }

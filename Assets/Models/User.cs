@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class User
 {
-    public User(Game game)
+    public User()
     {
         Deck = new Deck(this);
         Hand = new Hand(this);
@@ -18,21 +18,15 @@ public abstract class User
         FrontField = new FrontField(this);
         BackField = new BackField(this);
         Overlay = new Overlay(this);
-        Game = game;
         Guid = System.Guid.NewGuid().ToString();
     }
 
     public string Guid;
     public override string ToString()
     {
-        throw new NotImplementedException();
-    }
-    public static User FromString(string json, Game game)
-    {
-        throw new NotImplementedException();
+        return "{\"guid\": \"" + Guid + "\" }";
     }
 
-    public Game Game;
     public List<Area> AllAreas
     {
         get
@@ -192,7 +186,7 @@ public abstract class User
 /// </summary>
 public class Player : User
 {
-    public Player(Game game) : base(game) { }
+    public Player() : base() { }
 
     public override User Opponent
     {
@@ -253,7 +247,7 @@ public class Player : User
 /// </summary>
 public class Rival : User
 {
-    public Rival(Game game) : base(game) { }
+    public Rival() : base() { }
 
     public override User Opponent
     {

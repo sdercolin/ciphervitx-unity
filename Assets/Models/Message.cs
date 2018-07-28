@@ -91,16 +91,41 @@ public class Message
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
             if (field != null)
             {
-                json += ", \"field" + (i + 1).ToString() + "\": " + StringUtils.ToString(field);
+                json += ", \"field" + (i + 1).ToString() + "\": " + StringUtils.CreateFromAny(field);
             }
         }
         return "{" + json + "}";
     }
 
-    public static Message FromString(string json, Game game)
+    public static Message FromString(string json)
     {
-        //反序列化
-        throw new NotImplementedException();
+        string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string typename = null;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                typename = item.Replace("\"type\": \"", "").Trim('\"');
+                break;
+            }
+        }
+        if (typename == null)
+        {
+            return null;
+        }
+        Type messageType = Assembly.GetExecutingAssembly().GetType(typename);
+        var newMessage = Activator.CreateInstance(messageType) as Message;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                continue;
+            }
+            string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            object value = StringUtils.ParseAny(splited2[1]);
+            typeof(Message).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
+        }
+        return newMessage;
     }
 }
 
@@ -121,7 +146,7 @@ public partial class DeployMessage : Message
         {
             if (Reason == null)
             {
-                card.Controller.Game.DeploymentCount += card.DeployCost;
+                Game.DeploymentCount += card.DeployCost;
             }
             Area toArea;
             if (TargetsToFrontField[Targets.IndexOf(card)])
