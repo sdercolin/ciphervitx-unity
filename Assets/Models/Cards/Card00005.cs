@@ -31,7 +31,7 @@ public class Card00005 : Card
     public Sk1 sk1;
     public class Sk1 : ActionSkill
     {
-        public Sk1()
+        public Sk1() : base()
         {
             Number = 1;
             Name = "必杀刃";
@@ -63,7 +63,7 @@ public class Card00005 : Card
     public Sk2 sk2;
     public class Sk2 : PermanentSkill
     {
-        public Sk2()
+        public Sk2() : base()
         {
             Number = 2;
             Name = "孤高的剑士";

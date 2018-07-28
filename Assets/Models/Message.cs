@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 public class Message
 {
@@ -8,60 +9,73 @@ public class Message
     /// </summary>
     public bool SendBySelf = true;
 
+    /// <summary>
+    /// 数据
+    /// </summary>
+    private static int fieldNumber = 10;
+    protected dynamic field1 = null;
+    protected dynamic field2 = null;
+    protected dynamic field3 = null;
+    protected dynamic field4 = null;
+    protected dynamic field5 = null;
+    protected dynamic field6 = null;
+    protected dynamic field7 = null;
+    protected dynamic field8 = null;
+    protected dynamic field9 = null;
+    protected dynamic field10 = null;
+
     public virtual Message Clone()
     {
         Type messageType = GetType();
         Message clone = Activator.CreateInstance(messageType) as Message;
-        clone.reasonCard = reasonCard;
-        clone.Reason = Reason;
         clone.SendBySelf = SendBySelf;
-        clone.Targets = ListUtils.Clone(Targets);
-        clone.Value = Value;
+        for (int i = 0; i < fieldNumber; i++)
+        {
+            dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+            if (field != null)
+            {
+                if (field is System.Collections.IList)
+                {
+                    clone.GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(clone, ListUtils.Clone(field));
+                }
+                else
+                {
+                    clone.GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(clone, field);
+                }
+            }
+        }
         return clone;
     }
 
     public virtual void Do() { }
-
-    public List<Card> Targets = new List<Card>();
-    public int? Value = null;
-    protected Card reasonCard = null;
-    public Card ReasonCard
+    public List<T> Filter<T>(List<T> list, Predicate<T> predicate)
     {
-        set
+        List<T> results = new List<T>();
+        foreach (var item in list)
         {
-            reasonCard = value;
-        }
-        get
-        {
-            if (Reason != null && reasonCard == null)
+            if (predicate(item))
             {
-                return Reason.Owner;
-            }
-            else
-            {
-                return reasonCard;
+                results.Add(item);
             }
         }
+        return results;
     }
-    public Skill Reason = null;
-
-    public bool TrueForAnyTarget(Predicate<Card> predicate)
+    public bool TrueForAny<T>(List<T> list, Predicate<T> predicate)
     {
-        foreach (Card card in Targets)
+        foreach (var item in list)
         {
-            if (predicate(card))
+            if (predicate(item))
             {
                 return true;
             }
         }
         return false;
     }
-
-    public bool TrueForAllTargets(Predicate<Card> predicate)
+    public bool TrueForAll<T>(List<T> list, Predicate<T> predicate)
     {
-        foreach (Card card in Targets)
+        foreach (var item in list)
         {
-            if (!predicate(card))
+            if (!predicate(item))
             {
                 return false;
             }
@@ -69,51 +83,73 @@ public class Message
         return true;
     }
 
-    public List<Card> GetTargetsTrueFor(Predicate<Card> predicate)
+    public override string ToString()
     {
-        List<Card> results = new List<Card>();
-        foreach (Card card in Targets)
+        string json = "\"type\": \"" + GetType().Name + "\"";
+        for (int i = 0; i < fieldNumber; i++)
         {
-            if (predicate(card))
+            dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+            if (field != null)
             {
-                results.Add(card);
+                json += ", \"field" + (i + 1).ToString() + "\": " + StringUtils.CreateFromAny(field);
             }
         }
-        return results;
+        return "{" + json + "}";
+    }
+
+    public static Message FromString(string json)
+    {
+        string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string typename = null;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                typename = item.Replace("\"type\": \"", "").Trim('\"');
+                break;
+            }
+        }
+        if (typename == null)
+        {
+            return null;
+        }
+        Type messageType = Assembly.GetExecutingAssembly().GetType(typename);
+        var newMessage = Activator.CreateInstance(messageType) as Message;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                continue;
+            }
+            string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            object value = StringUtils.ParseAny(splited2[1]);
+            typeof(Message).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
+        }
+        return newMessage;
     }
 }
 
-public class EmptyMessage : Message
+public partial class EmptyMessage : Message
 {
     public override void Do() { }
 }
 
-public class DeployMessage : Message
+public partial class DeployMessage : Message
 {
-    public struct MetaData
-    {
-        public bool ToFrontField;
-        public bool Actioned;
-    }
-    public Dictionary<Card, MetaData> MetaDict = new Dictionary<Card, MetaData>();
-
-    public override Message Clone()
-    {
-        DeployMessage clone = base.Clone() as DeployMessage;
-        clone.MetaDict = DictionaryUtils.Clone(MetaDict);
-        return clone;
-    }
-
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public List<bool> TargetsToFrontField { get { return field2; } set { field2 = value; } }
+    public List<bool> TargetsActioned { get { return field3; } set { field3 = value; } }
+    public Skill Reason { get { return field4; } set { field4 = value; } }
     public override void Do()
     {
         foreach (Card card in Targets)
         {
             if (Reason == null)
             {
-                card.Controller.Game.DeploymentCount += card.DeployCost;
+                Game.DeploymentCount += card.DeployCost;
             }
             Area toArea;
-            if (MetaDict[card].ToFrontField)
+            if (TargetsToFrontField[Targets.IndexOf(card)])
             {
                 toArea = card.Controller.FrontField;
             }
@@ -122,13 +158,15 @@ public class DeployMessage : Message
                 toArea = card.Controller.BackField;
             }
             card.MoveTo(toArea);
-            card.IsHorizontal = MetaDict[card].Actioned;
+            card.IsHorizontal = TargetsActioned[Targets.IndexOf(card)];
         }
     }
 }
 
-public class MoveMessage : Message
+public partial class MoveMessage : Message
 {
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
     public override void Do()
     {
         foreach (Card card in Targets)
@@ -145,8 +183,10 @@ public class MoveMessage : Message
     }
 }
 
-public class UseBondMessage : Message
+public partial class UseBondMessage : Message
 {
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
     public override void Do()
     {
         foreach (Card card in Targets)
@@ -156,29 +196,23 @@ public class UseBondMessage : Message
     }
 }
 
-public class ReadyToUseBondMessage : Message { }
-
-public class ToBondMessage : Message
+public partial class ReadyToUseBondMessage : Message
 {
-    public struct MetaData
-    {
-        public bool FrontShown;
-    }
-    public Dictionary<Card, MetaData> MetaDict = new Dictionary<Card, MetaData>();
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+}
 
-    public override Message Clone()
-    {
-        ToBondMessage clone = base.Clone() as ToBondMessage;
-        clone.MetaDict = DictionaryUtils.Clone(MetaDict);
-        return clone;
-    }
-
+public partial class ToBondMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public List<bool> TargetsFrontShown { get { return field2; } set { field2 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
         foreach (Card card in Targets)
         {
             card.MoveTo(card.Controller.Bond);
-            if (!MetaDict[card].FrontShown)
+            if (!TargetsFrontShown[Targets.IndexOf(card)])
             {
                 card.FrontShown = false;
             }
@@ -186,34 +220,29 @@ public class ToBondMessage : Message
     }
 }
 
-public class ReadyToBondMessage : Message { }
-
-public class AvoidMessage : Message
+public partial class ReadyToBondMessage : Message
 {
-    public Card AttackingUnit;
-    public Card DefendingUnit;
-    public Card CardForAvoiding;
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public List<bool> TargetsFrontShown { get { return field2; } set { field2 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
+}
 
-    public override Message Clone()
-    {
-        AvoidMessage clone = base.Clone() as AvoidMessage;
-        clone.AttackingUnit = AttackingUnit;
-        clone.DefendingUnit = DefendingUnit;
-        clone.CardForAvoiding = CardForAvoiding;
-        return clone;
-    }
-
+public partial class AvoidMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+    public Card CardForAvoiding { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
         CardForAvoiding.MoveTo(CardForAvoiding.Controller.Retreat);
     }
 }
 
-public class ReadyToAvoidMessage : Message
+public partial class ReadyToAvoidMessage : Message
 {
-    public Card AttackingUnit;
-    public Card DefendingUnit;
-    public List<Card> CardsReadyForAvoiding;
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+    public List<Card> CardsReadyForAvoiding { get { return field3; } set { field3 = value; } }
 
     public override Message Clone()
     {

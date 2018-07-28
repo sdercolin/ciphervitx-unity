@@ -32,7 +32,7 @@ public class Card00004 : Card
     public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
-        public Sk1()
+        public Sk1() : base()
         {
             Number = 1;
             Name = "塔利斯王国军的队长";
@@ -54,7 +54,7 @@ public class Card00004 : Card
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                Targets = message.GetTargetsTrueFor(card => card.Controller == Controller && card.DeployCost <= 2);
+                Targets = deployMessage.Filter(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
                 return Targets.Count > 0;
             }
             return false;
@@ -82,7 +82,7 @@ public class Card00004 : Card
     public Sk2 sk2;
     public class Sk2 : ActionSkill
     {
-        public Sk2()
+        public Sk2() : base()
         {
             Number = 2;
             Name = "雷之剑";

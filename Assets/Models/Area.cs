@@ -10,6 +10,13 @@ public abstract class Area
     {
         list = new List<Card>();
         this.Controller = Controller;
+        Guid = System.Guid.NewGuid().ToString();
+    }
+
+    public string Guid;
+    public override string ToString()
+    {
+        return "{\"guid\": \"" + Guid + "\" }";
     }
 
     /// <summary>
@@ -161,24 +168,6 @@ public abstract class Area
         return result;
     }
 
-    /// <summary>
-    /// 查找某张卡
-    /// </summary>
-    /// <param name="id">卡的Id</param>
-    /// <returns>唯一持有该Id的卡</returns>
-    public Card SearchCard(int id)
-    {
-        Card result = null;
-        list.ForEach(card =>
-        {
-            if (card.Id == id)
-            {
-                result = card;
-            }
-        });
-        return result;
-    }
-
     public virtual void ForEachCard(Action<Card> action)
     {
         list.ForEach(action);
@@ -201,12 +190,9 @@ public class Deck : Area
         this.Controller = Controller;
     }
 
-    public int Total = 0;
     public void ImportCard(Card card)
     {
         list.Add(card);
-        card.Id = Total;
-        Total++;
     }
 
     public override void ProcessCardIn(Card card, Area fromArea)

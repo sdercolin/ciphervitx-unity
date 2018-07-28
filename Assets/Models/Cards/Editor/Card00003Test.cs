@@ -9,8 +9,8 @@ public class Card00003Test {
 
 	[Test]
 	public void SkillTest() {
-        var game = new Game();
-        var player = game.Player as Player;
+        Game.Initialize();
+        var player = Game.Player as Player;
         var card = new Card00003(player);
         player.Deck.ImportCard(card);
         card.Read(new EmptyMessage());

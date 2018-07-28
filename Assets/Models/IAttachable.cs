@@ -5,6 +5,7 @@ using System.Text;
 
 public interface IAttachable
 {
+    string Guid { get; set; }
     Card Owner { get; set; }
     bool OnlyAvailableWhenFrontShown { get; set; }
     List<Area> AvailableAreas { get; set; }

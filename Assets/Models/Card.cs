@@ -12,8 +12,18 @@ public abstract class Card
     public Card(User controller)
     {
         Controller = controller;
+        Guid = System.Guid.NewGuid().ToString();
     }
 
+    /// <summary>
+    /// 卡的GuId，唯一识别卡的依据
+    /// </summary>
+    public string Guid;
+    public override string ToString()
+    {
+        return "{\"guid\": \"" + Guid + "\" }";
+    }
+    
     /// <summary>
     /// 卡的序列号
     /// </summary>
@@ -148,7 +158,7 @@ public abstract class Card
                 DeployCostBuff buff = x as DeployCostBuff;
                 if (buff != null)
                 {
-                    if (buff.IsBecome)
+                    if (buff.IsBecoming)
                     {
                         deployCostNow = buff.Value;
                         return;
@@ -177,7 +187,7 @@ public abstract class Card
                 ClassChangeCostBuff buff = x as ClassChangeCostBuff;
                 if (buff != null)
                 {
-                    if (buff.IsBecome)
+                    if (buff.IsBecoming)
                     {
                         classChangeCostNow = buff.Value;
                         return;
@@ -355,19 +365,9 @@ public abstract class Card
 
     #region 卡片状态
     /// <summary>
-    /// 卡的Id，唯一识别卡的依据
-    /// </summary>
-    public int Id;
-
-    /// <summary>
     /// 控制者
     /// </summary>
     public User Controller { get; protected set; }
-
-    /// <summary>
-    /// 游戏对象
-    /// </summary>
-    public Game Game { get { return Controller.Game; } }
 
     /// <summary>
     /// 卡下方所叠放的卡

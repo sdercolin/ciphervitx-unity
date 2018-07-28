@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class User
 {
-    public User(Game game)
+    public User()
     {
         Deck = new Deck(this);
         Hand = new Hand(this);
@@ -18,9 +18,15 @@ public abstract class User
         FrontField = new FrontField(this);
         BackField = new BackField(this);
         Overlay = new Overlay(this);
-        Game = game;
+        Guid = System.Guid.NewGuid().ToString();
     }
-    public Game Game;
+
+    public string Guid;
+    public override string ToString()
+    {
+        return "{\"guid\": \"" + Guid + "\" }";
+    }
+
     public List<Area> AllAreas
     {
         get
@@ -73,24 +79,6 @@ public abstract class User
     /// 行动阶段结束标志
     /// </summary>
     public bool ActionPhaseEnded = false;
-
-    /// <summary>
-    /// 搜索卡片
-    /// </summary>
-    /// <param name="id">卡的id</param>
-    /// <returns>符合条件的卡</returns>
-    private Card SearchCard(int id)
-    {
-        foreach (Area area in AllAreas)
-        {
-            Card result = area.SearchCard(id);
-            if (result != null)
-            {
-                return result;
-            }
-        }
-        return null;
-    }
 
     public List<Card> AllCards
     {
@@ -186,13 +174,8 @@ public abstract class User
         ToBondMessage toBondMessage = new ToBondMessage
         {
             Targets = targets,
-            MetaDict = new Dictionary<Card, ToBondMessage.MetaData>(),
-            Reason = reason
+            TargetsFrontShown = frontShownTable
         };
-        for (int i = 0; i < count; i++)
-        {
-            toBondMessage.MetaDict.Add(targets[i], new ToBondMessage.MetaData() { FrontShown = frontShownTable[i] });
-        }
         TryDoMessage(toBondMessage);
     }
     #endregion
@@ -203,7 +186,7 @@ public abstract class User
 /// </summary>
 public class Player : User
 {
-    public Player(Game game) : base(game) { }
+    public Player() : base() { }
 
     public override User Opponent
     {
@@ -264,7 +247,7 @@ public class Player : User
 /// </summary>
 public class Rival : User
 {
-    public Rival(Game game) : base(game) { }
+    public Rival() : base() { }
 
     public override User Opponent
     {
