@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 public abstract class Skill : IAttachable
 {
@@ -500,14 +501,47 @@ public abstract class SubSkill : Skill
     public override bool OnlyAvailableWhenFrontShown { get; set; }
     public override List<Area> AvailableAreas { get; set; }
 
-    public override string ToString()
-    {
-        throw new NotImplementedException();
-    }
+    private static int fieldNumber = 10;
+    protected dynamic field1 = null;
+    protected dynamic field2 = null;
+    protected dynamic field3 = null;
+    protected dynamic field4 = null;
+    protected dynamic field5 = null;
 
-    public static Buff FromString(string json)
-    {
-        throw new NotImplementedException();
+    public override string ToString()
+    {        
+        Dictionary<string, dynamic> toSerialize = new Dictionary<string, dynamic>();
+        toSerialize.Add("type", GetType().Name);
+        toSerialize.Add("guid", Guid);
+        toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));
+        toSerialize.Add("availableAreas", StringUtils.CreateFromAny(AvailableAreas));
+        if (Owner != null)
+        {
+            toSerialize.Add("owner", Owner);
+        }
+        if (Origin != null)
+        {
+            toSerialize.Add("origin", Origin);
+        }
+        toSerialize.Add("lastingType", LastingType);
+        for (int i = 0; i < fieldNumber; i++)
+        {
+            dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+            if (field != null)
+            {
+                toSerialize.Add("field" + (i + 1).ToString(),StringUtils.CreateFromAny(field));
+            }
+        }
+        string json = String.Empty;
+        foreach (var pair in toSerialize)
+        {
+            if (String.IsNullOrEmpty(json))
+            {
+                json += ", ";
+            }
+            json += "\"" + pair.Key + "\": " + StringUtils.CreateFromAny(pair.Value);
+        }
+        return "{" + json + "}";
     }
 
     public override void Attached()
