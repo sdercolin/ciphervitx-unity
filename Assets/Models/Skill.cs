@@ -509,7 +509,7 @@ public abstract class SubSkill : Skill
     protected dynamic field5 = null;
 
     public override string ToString()
-    {        
+    {
         Dictionary<string, dynamic> toSerialize = new Dictionary<string, dynamic>();
         toSerialize.Add("type", GetType().Name);
         toSerialize.Add("guid", Guid);
@@ -529,7 +529,7 @@ public abstract class SubSkill : Skill
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
             if (field != null)
             {
-                toSerialize.Add("field" + (i + 1).ToString(),StringUtils.CreateFromAny(field));
+                toSerialize.Add("field" + (i + 1).ToString(), StringUtils.CreateFromAny(field));
             }
         }
         string json = String.Empty;
@@ -596,12 +596,9 @@ public abstract class SubSkill : Skill
 /// </summary>
 public class DisableSkill : SubSkill
 {
-    public DisableSkill(Skill target, Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
-    {
-        Target = target;
-    }
+    public DisableSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
-    Skill Target;
+    Skill Target { get { return field1; } set { field1 = value; } }
 
     public override void Attached()
     {
