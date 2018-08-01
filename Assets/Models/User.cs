@@ -158,6 +158,15 @@ public abstract class User
         TryDoMessage(useBondMessage);
     }
 
+    public void StartTurn()
+    {
+        StartTurnMessage startTurnMessage = new StartTurnMessage()
+        {
+            TurnPlayer = this
+        };
+        TryDoMessage(startTurnMessage);
+    }
+
     public void SetToBond(Card target, bool frontShown, Skill reason)
     {
         if (target != null)
@@ -177,6 +186,35 @@ public abstract class User
             TargetsFrontShown = frontShownTable
         };
         TryDoMessage(toBondMessage);
+    }
+
+    public void RefreshUnit(Card target, Skill reason)
+    {
+        if (target != null)
+        {
+            RefreshUnit(new List<Card>() { target }, reason);
+        }
+    }
+
+    public void RefreshUnit(List<Card> targets, Skill reason)
+    {
+        RefreshUnitMessage refreshUnitMessage = new RefreshUnitMessage()
+        {
+            Targets = targets,
+            Reason = reason
+        };
+        TryDoMessage(refreshUnitMessage);
+    }
+
+    public void DrawCard(int number, Skill reason = null)
+    {
+        DrawCardMessage drawCardMessage = new DrawCardMessage()
+        {
+            Player = this,
+            Number = number,
+            Reason = reason
+        };
+        TryDoMessage(drawCardMessage);
     }
     #endregion
 }

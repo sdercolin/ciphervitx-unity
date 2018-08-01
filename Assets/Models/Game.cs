@@ -12,14 +12,8 @@ public static class Game
     public static Player Player;
     public static Rival Rival;
 
-    //诱发效果处理用
-    public static List<string> SkillUsedInThisGame = new List<string>();
-    public static List<List<Skill>> InducedSkillSetList = new List<List<Skill>>();
-    public static List<Skill> InducedSkillSet = new List<Skill>();
-    public static int InducedSkillProcessCount = 0;
-
     //回合信息
-    public static bool IsMyTurn;
+    public static User TurnPlayer;
     public static int TurnCount = 0;
     public static int DeploymentCount = 0;
     public static Phase CurrentPhase;
@@ -30,11 +24,6 @@ public static class Game
     public static List<Card> BattlingUnits { get { return new List<Card> { AttackingUnit, DefencingUnit }; } } //战斗单位
     public static int PowerUpByCritical = 0; //必杀攻击增加的战斗力
     public static int PowerUpBySupport = 0; //支援增加的战斗力
-
-    //等待延时用
-    public static bool DoNotWait = false;
-    public static bool WaitingFlag = false;
-    public static int WaitingTime = 3000;
 
     public static List<Card> AllCards
     {
@@ -126,16 +115,56 @@ public static class Game
     public static object GetObject(string guid)
     {
         object result = GetCardByGuid(guid);
-        if(result==null){
-            result=GetAreaByGuid(guid);
+        if (result == null)
+        {
+            result = GetAreaByGuid(guid);
         }
-        if(result==null){
-            result=GetUserByGuid(guid);
+        if (result == null)
+        {
+            result = GetUserByGuid(guid);
         }
-        if(result==null){
-            result=GetItemByGuid(guid);
+        if (result == null)
+        {
+            result = GetItemByGuid(guid);
         }
         return result;
+    }
+
+    public static void Start(bool ifFirstPlay)
+    {
+        if (ifFirstPlay)
+        {
+            TurnPlayer = Player;
+            DoBeginningPhase();
+        }
+        else
+        {
+            WaitTurn();
+        }
+    }
+
+    private static void WaitTurn()
+    {
+        //Wait until rival turn ends
+        DoBeginningPhase();
+    }
+
+    private static void DoBeginningPhase()
+    {
+        TurnPlayer.StartTurn();
+        DoAutoCheckTiming();
+        TurnPlayer.RefreshUnit(TurnPlayer.Field.Filter(card => card.IsHorizontal), null);
+        DoAutoCheckTiming();
+        if (TurnCount > 1)
+        {
+            TurnPlayer.DrawCard(1);
+            DoAutoCheckTiming();
+        }
+    }
+
+    private static void DoAutoCheckTiming()
+    {
+
     }
 }
 
