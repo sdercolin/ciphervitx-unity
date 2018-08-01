@@ -205,11 +205,12 @@ public class Deck : Area
 
     public override void ProcessCardOut(Card card, Area toArea)
     {
+        base.ProcessCardOut(card, toArea);
         if (list.Count == 0)
         {
-            //割り込み処理：补充卡组
+            Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
+            Shuffle();
         }
-        base.ProcessCardOut(card, toArea);
     }
 }
 
