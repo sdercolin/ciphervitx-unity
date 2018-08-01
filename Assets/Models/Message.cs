@@ -146,7 +146,7 @@ public class DeployMessage : Message
         {
             if (Reason == null)
             {
-                Game.DeploymentCount += card.DeployCost;
+                card.Controller.DeployAndCCCostCount += card.DeployCost;
             }
             Area toArea;
             if (TargetsToFrontField[Targets.IndexOf(card)])

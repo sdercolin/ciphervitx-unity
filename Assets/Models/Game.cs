@@ -15,7 +15,6 @@ public static class Game
     //回合信息
     public static User TurnPlayer;
     public static int TurnCount = 0;
-    public static int DeploymentCount = 0;
     public static Phase CurrentPhase;
 
     //战斗用
