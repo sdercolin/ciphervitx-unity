@@ -24,7 +24,7 @@ public class Message
     protected dynamic field9 = null;
     protected dynamic field10 = null;
 
-    public virtual Message Clone()
+    public Message Clone()
     {
         Type messageType = GetType();
         Message clone = Activator.CreateInstance(messageType) as Message;
@@ -129,12 +129,12 @@ public class Message
     }
 }
 
-public partial class EmptyMessage : Message
+public class EmptyMessage : Message
 {
     public override void Do() { }
 }
 
-public partial class DeployMessage : Message
+public class DeployMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public List<bool> TargetsToFrontField { get { return field2; } set { field2 = value; } }
@@ -163,7 +163,7 @@ public partial class DeployMessage : Message
     }
 }
 
-public partial class MoveMessage : Message
+public class MoveMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
@@ -183,7 +183,7 @@ public partial class MoveMessage : Message
     }
 }
 
-public partial class UseBondMessage : Message
+public class UseBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
@@ -196,13 +196,13 @@ public partial class UseBondMessage : Message
     }
 }
 
-public partial class ReadyToUseBondMessage : Message
+public class ReadyToUseBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
 }
 
-public partial class ToBondMessage : Message
+public class ToBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public List<bool> TargetsFrontShown { get { return field2; } set { field2 = value; } }
@@ -220,14 +220,14 @@ public partial class ToBondMessage : Message
     }
 }
 
-public partial class ReadyToBondMessage : Message
+public class ReadyToBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public List<bool> TargetsFrontShown { get { return field2; } set { field2 = value; } }
     public Skill Reason { get { return field3; } set { field3 = value; } }
 }
 
-public partial class AvoidMessage : Message
+public class AvoidMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
@@ -238,20 +238,11 @@ public partial class AvoidMessage : Message
     }
 }
 
-public partial class ReadyToAvoidMessage : Message
+public class ReadyToAvoidMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
     public List<Card> CardsReadyForAvoiding { get { return field3; } set { field3 = value; } }
-
-    public override Message Clone()
-    {
-        ReadyToAvoidMessage clone = base.Clone() as ReadyToAvoidMessage;
-        clone.AttackingUnit = AttackingUnit;
-        clone.DefendingUnit = DefendingUnit;
-        clone.CardsReadyForAvoiding = ListUtils.Clone(CardsReadyForAvoiding);
-        return clone;
-    }
 }
 
 ///// 消息种类
