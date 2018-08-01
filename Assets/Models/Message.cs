@@ -205,14 +205,14 @@ public class ReadyToUseBondMessage : Message
 public class ToBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public List<bool> TargetsFrontShown { get { return field2; } set { field2 = value; } }
+    public bool TargetFrontShown { get { return field2; } set { field2 = value; } }
     public Skill Reason { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
         foreach (Card card in Targets)
         {
             card.MoveTo(card.Controller.Bond);
-            if (!TargetsFrontShown[Targets.IndexOf(card)])
+            if (!TargetFrontShown)
             {
                 card.FrontShown = false;
             }
@@ -223,7 +223,7 @@ public class ToBondMessage : Message
 public class ReadyToBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public List<bool> TargetsFrontShown { get { return field2; } set { field2 = value; } }
+    public bool TargetFrontShown { get { return field2; } set { field2 = value; } }
     public Skill Reason { get { return field3; } set { field3 = value; } }
 }
 
@@ -253,6 +253,16 @@ public class StartTurnMessage : Message
         Game.TurnPlayer = TurnPlayer;
         Game.CurrentPhase = Phase.BeginningPhase;
         Game.TurnCount++;
+        TurnPlayer.DeployAndCCCostCount = 0;
+    }
+}
+
+public class GoToBondPhaseMessage : Message
+{
+    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        Game.CurrentPhase = Phase.BondPhase;
     }
 }
 

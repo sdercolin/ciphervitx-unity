@@ -161,6 +161,14 @@ public static class Game
         }
     }
 
+    private static void DoBondPhase()
+    {
+        TurnPlayer.GoToBondPhase();
+        DoAutoCheckTiming();
+        TurnPlayer.ChooseSetToBond(TurnPlayer.Hand.Cards, true, 0, 1);
+        DoAutoCheckTiming();
+    }
+
     private static void DoAutoCheckTiming()
     {
 
