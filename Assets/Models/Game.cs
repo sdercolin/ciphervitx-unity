@@ -24,6 +24,11 @@ public static class Game
     public static int PowerUpByCritical = 0; //必杀攻击增加的战斗力
     public static int PowerUpBySupport = 0; //支援增加的战斗力
 
+    //自动处理检查时点相关
+    public static List<Card> CCBonusList = new List<Card>(); //存放触发了CC Bonus的卡
+
+
+
     public static List<Card> AllCards
     {
         get
@@ -42,6 +47,14 @@ public static class Game
             allAreas.AddRange(Player.AllAreas);
             allAreas.AddRange(Rival.AllAreas);
             return allAreas;
+        }
+    }
+
+    public static List<User> AllUsers
+    {
+        get
+        {
+            return new List<User>() { Player, Rival };
         }
     }
 
@@ -169,9 +182,90 @@ public static class Game
         DoAutoCheckTiming();
     }
 
+    //自動処理チェックタイミング
     private static void DoAutoCheckTiming()
     {
+        while (true)
+        {
+            DoCCBonusProcess();
+            while (DoRuleProcess()) { }
+            if (!DoInducedSkillProcess())
+            {
+                break;
+            }
+        }
+    }
 
+    //クラスチェンジボーナス処理
+    private static void DoCCBonusProcess()
+    {
+        int playerCount = 0;
+        int rivalCount = 0;
+        foreach (var card in CCBonusList)
+        {
+            if (card.Controller == Player)
+            {
+                playerCount++;
+            }
+            else
+            {
+                rivalCount++;
+            }
+        }
+        if (playerCount > 0)
+        {
+            Player.DrawCard(playerCount);
+        }
+        if (rivalCount > 0)
+        {
+            Rival.DrawCard(rivalCount);
+        }
+        CCBonusList.Clear();
+    }
+
+    //ルール処理
+    private static bool DoRuleProcess()
+    {
+        bool done = false;
+        while (DoSameNameProcess())
+        {
+            done = true;
+        }
+        return done;
+    }
+
+    //同名処理
+    private static bool DoSameNameProcess()
+    {
+        List<Card> sameNameCards = new List<Card>();
+        List<string> nameChecked = new List<string>();
+        foreach (var user in AllUsers)
+        {
+            foreach (var card in user.Field.Cards)
+            {
+                foreach (var name in card.AllUnitNames)
+                {
+                    if (nameChecked.Contains(name))
+                    {
+                        continue;
+                    }
+                    nameChecked.Add(name);
+                    if (user.Field.SearchCard(name).Count > 1)
+                    {
+                        if (user.DoSameNameProcess(user.Field.SearchCard(name), name))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static bool DoInducedSkillProcess()
+    {
+        throw new NotImplementedException();
     }
 }
 

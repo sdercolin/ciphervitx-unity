@@ -209,7 +209,7 @@ public abstract class User
                 TargetFrontShown = frontShown
             };
             readyToBondMessage = TryDoMessage(readyToBondMessage) as ReadyToBondMessage;
-            if (readyToBondMessage.Targets.Count > 0)
+            if (readyToBondMessage != null && readyToBondMessage.Targets.Count > 0)
             {
                 SetToBond(Request.Choose(readyToBondMessage.Targets, min, max), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
             }
@@ -246,6 +246,41 @@ public abstract class User
             Reason = reason
         };
         TryDoMessage(drawCardMessage);
+    }
+
+    public bool DoSameNameProcess(List<Card> units, string name)
+    {
+        ReadyForSameNameProcessMessage readyForSameNameProcessMessage = new ReadyForSameNameProcessMessage()
+        {
+            Targets = units,
+            Name = name
+        };
+        readyForSameNameProcessMessage = TryDoMessage(readyForSameNameProcessMessage) as ReadyForSameNameProcessMessage;
+        if (readyForSameNameProcessMessage != null && readyForSameNameProcessMessage.Targets.Count > 1)
+        {
+            Card savedUnit;
+            if (readyForSameNameProcessMessage.Targets.Contains(Hero))
+            {
+                savedUnit = Hero;
+            }
+            else
+            {
+                savedUnit = Request.ChooseOne(readyForSameNameProcessMessage.Targets);
+            }
+            List<Card> confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
+            confirmedTarget.Remove(savedUnit);
+            SameNameProcessMessage sameNameProcessMessage = new SameNameProcessMessage()
+            {
+                Targets = confirmedTarget,
+                Name = name
+            };
+            TryDoMessage(sameNameProcessMessage);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     #endregion
 }
