@@ -40,19 +40,23 @@ public static class StringUtils
         {
             return null;
         }
-        if (int.TryParse(json, out int integer))
+        int integer;
+        bool boolean;
+        Type enumType;
+        object enumValue;
+        if (int.TryParse(json, out integer))
         {
             // is integer
             return integer;
         }
-        else if (BooleanUtils.TryParse(json, out bool boolean))
+        else if (BooleanUtils.TryParse(json, out boolean))
         {
             // is boolean
             return boolean;
         }
         else if (json.Length > 2 && json.First() == '"' && json.Last() == '"')
         {
-            if (EnumUtils.TryParse(json, out Type enumType, out object enumValue))
+            if (EnumUtils.TryParse(json, out enumType, out enumValue))
             {
                 // is enum
                 return enumValue;
