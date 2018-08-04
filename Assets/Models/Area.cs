@@ -27,7 +27,7 @@ public abstract class Area
     /// <summary>
     /// 该区域的卡片列表的浅表拷贝
     /// </summary>
-    public List<Card> Cards
+    public virtual List<Card> Cards
     {
         get
         {
@@ -62,7 +62,7 @@ public abstract class Area
     {
         card.AttachableList.ForEach(item =>
         {
-            if(!item.AvailableAreas.Contains(this))
+            if (!item.AvailableAreas.Contains(this))
             {
                 item.Detach();
             }
@@ -168,14 +168,19 @@ public abstract class Area
         return result;
     }
 
-    public virtual void ForEachCard(Action<Card> action)
+    public void ForEachCard(Action<Card> action)
     {
-        list.ForEach(action);
+        Cards.ForEach(action);
     }
 
-    public virtual bool TrueForAllCard(Predicate<Card> predicate)
+    public bool TrueForAllCard(Predicate<Card> predicate)
     {
-        return list.TrueForAll(predicate);
+        return Cards.TrueForAll(predicate);
+    }
+
+    public List<Card> Filter(Predicate<Card> match)
+    {
+        return Cards.FindAll(match);
     }
 }
 
@@ -205,11 +210,12 @@ public class Deck : Area
 
     public override void ProcessCardOut(Card card, Area toArea)
     {
+        base.ProcessCardOut(card, toArea);
         if (list.Count == 0)
         {
-            //割り込み処理：补充卡组
+            Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
+            Shuffle();
         }
-        base.ProcessCardOut(card, toArea);
     }
 }
 
@@ -374,15 +380,12 @@ public class Field : Area
         this.Controller = Controller;
     }
 
-    public override void ForEachCard(Action<Card> action)
+    public override List<Card> Cards
     {
-        Controller.FrontField.ForEachCard(action);
-        Controller.BackField.ForEachCard(action);
-    }
-
-    public override bool TrueForAllCard(Predicate<Card> predicate)
-    {
-        return Controller.FrontField.TrueForAllCard(predicate) && Controller.BackField.TrueForAllCard(predicate);
+        get
+        {
+            return ListUtils.Combine(Controller.BackField.Cards, Controller.FrontField.Cards);
+        }
     }
 
     public bool HasSameNameCardWith(Card card)

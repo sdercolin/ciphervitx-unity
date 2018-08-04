@@ -109,7 +109,7 @@ public abstract class User
     /// 尝试并实行动作
     /// </summary>
     /// <param name="message"></param>
-    protected void TryDoMessage(Message message)
+    protected Message TryDoMessage(Message message)
     {
         Message substitute = new EmptyMessage();
         while (!BroadcastTry(message, ref substitute))
@@ -118,6 +118,7 @@ public abstract class User
         }
         message.Do();
         Broadcast(message);
+        return message;
     }
 
     public void Move(Card target, Skill reason)
@@ -150,33 +151,136 @@ public abstract class User
 
     public void UseBond(List<Card> targets, Skill reason)
     {
-        UseBondMessage useBondMessage = new UseBondMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            Reason = reason
-        };
-        TryDoMessage(useBondMessage);
+            UseBondMessage useBondMessage = new UseBondMessage()
+            {
+                Targets = targets,
+                Reason = reason
+            };
+            TryDoMessage(useBondMessage);
+        }
     }
 
-    public void SetToBond(Card target, bool frontShown, Skill reason)
+    public void StartTurn()
+    {
+        StartTurnMessage startTurnMessage = new StartTurnMessage()
+        {
+            TurnPlayer = this
+        };
+        TryDoMessage(startTurnMessage);
+    }
+
+    public void GoToBondPhase()
+    {
+
+    }
+
+    public void SetToBond(Card target, bool frontShown, Skill reason = null)
     {
         if (target != null)
         {
             List<Card> targets = new List<Card> { target };
-            List<bool> frontShownTable = new List<bool> { frontShown };
-            SetToBond(targets, frontShownTable, reason);
+            SetToBond(targets, frontShown, reason);
         }
     }
 
-    public void SetToBond(List<Card> targets, List<bool> frontShownTable, Skill reason)
+    public void SetToBond(List<Card> targets, bool frontShown, Skill reason = null)
     {
-        int count = targets.Count;
-        ToBondMessage toBondMessage = new ToBondMessage
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            TargetsFrontShown = frontShownTable
+            ToBondMessage toBondMessage = new ToBondMessage
+            {
+                Targets = targets,
+                TargetFrontShown = frontShown,
+                Reason = reason
+            };
+            TryDoMessage(toBondMessage);
+        }
+    }
+
+    public void ChooseSetToBond(List<Card> targets, bool frontShown, int min, int max, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            ReadyToBondMessage readyToBondMessage = new ReadyToBondMessage
+            {
+                Targets = targets,
+                TargetFrontShown = frontShown
+            };
+            readyToBondMessage = TryDoMessage(readyToBondMessage) as ReadyToBondMessage;
+            if (readyToBondMessage != null && readyToBondMessage.Targets.Count > 0)
+            {
+                SetToBond(Request.Choose(readyToBondMessage.Targets, min, max), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
+            }
+        }
+    }
+
+    public void RefreshUnit(Card target, Skill reason)
+    {
+        if (target != null)
+        {
+            RefreshUnit(new List<Card>() { target }, reason);
+        }
+    }
+
+    public void RefreshUnit(List<Card> targets, Skill reason)
+    {
+        if (targets.Count > 0)
+        {
+            RefreshUnitMessage refreshUnitMessage = new RefreshUnitMessage()
+            {
+                Targets = targets,
+                Reason = reason
+            };
+            TryDoMessage(refreshUnitMessage);
+        }
+    }
+
+    public void DrawCard(int number, Skill reason = null)
+    {
+        DrawCardMessage drawCardMessage = new DrawCardMessage()
+        {
+            Player = this,
+            Number = number,
+            Reason = reason
         };
-        TryDoMessage(toBondMessage);
+        TryDoMessage(drawCardMessage);
+    }
+
+    public bool DoSameNameProcess(List<Card> units, string name)
+    {
+        ReadyForSameNameProcessMessage readyForSameNameProcessMessage = new ReadyForSameNameProcessMessage()
+        {
+            Targets = units,
+            Name = name
+        };
+        readyForSameNameProcessMessage = TryDoMessage(readyForSameNameProcessMessage) as ReadyForSameNameProcessMessage;
+        if (readyForSameNameProcessMessage != null && readyForSameNameProcessMessage.Targets.Count > 1)
+        {
+            Card savedUnit;
+            if (readyForSameNameProcessMessage.Targets.Contains(Hero))
+            {
+                savedUnit = Hero;
+            }
+            else
+            {
+                savedUnit = Request.ChooseOne(readyForSameNameProcessMessage.Targets);
+            }
+            List<Card> confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
+            confirmedTarget.Remove(savedUnit);
+            SameNameProcessMessage sameNameProcessMessage = new SameNameProcessMessage()
+            {
+                Targets = confirmedTarget,
+                Name = name
+            };
+            TryDoMessage(sameNameProcessMessage);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     #endregion
 }

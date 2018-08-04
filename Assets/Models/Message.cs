@@ -24,7 +24,7 @@ public class Message
     protected dynamic field9 = null;
     protected dynamic field10 = null;
 
-    public virtual Message Clone()
+    public Message Clone()
     {
         Type messageType = GetType();
         Message clone = Activator.CreateInstance(messageType) as Message;
@@ -129,12 +129,12 @@ public class Message
     }
 }
 
-public partial class EmptyMessage : Message
+public class EmptyMessage : Message
 {
     public override void Do() { }
 }
 
-public partial class DeployMessage : Message
+public class DeployMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public List<bool> TargetsToFrontField { get { return field2; } set { field2 = value; } }
@@ -146,7 +146,7 @@ public partial class DeployMessage : Message
         {
             if (Reason == null)
             {
-                Game.DeploymentCount += card.DeployCost;
+                card.Controller.DeployAndCCCostCount += card.DeployCost;
             }
             Area toArea;
             if (TargetsToFrontField[Targets.IndexOf(card)])
@@ -163,7 +163,7 @@ public partial class DeployMessage : Message
     }
 }
 
-public partial class MoveMessage : Message
+public class MoveMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
@@ -183,7 +183,7 @@ public partial class MoveMessage : Message
     }
 }
 
-public partial class UseBondMessage : Message
+public class UseBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
@@ -196,23 +196,23 @@ public partial class UseBondMessage : Message
     }
 }
 
-public partial class ReadyToUseBondMessage : Message
+public class ReadyToUseBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
 }
 
-public partial class ToBondMessage : Message
+public class ToBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public List<bool> TargetsFrontShown { get { return field2; } set { field2 = value; } }
+    public bool TargetFrontShown { get { return field2; } set { field2 = value; } }
     public Skill Reason { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
         foreach (Card card in Targets)
         {
             card.MoveTo(card.Controller.Bond);
-            if (!TargetsFrontShown[Targets.IndexOf(card)])
+            if (!TargetFrontShown)
             {
                 card.FrontShown = false;
             }
@@ -220,14 +220,14 @@ public partial class ToBondMessage : Message
     }
 }
 
-public partial class ReadyToBondMessage : Message
+public class ReadyToBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public List<bool> TargetsFrontShown { get { return field2; } set { field2 = value; } }
+    public bool TargetFrontShown { get { return field2; } set { field2 = value; } }
     public Skill Reason { get { return field3; } set { field3 = value; } }
 }
 
-public partial class AvoidMessage : Message
+public class AvoidMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
@@ -238,19 +238,78 @@ public partial class AvoidMessage : Message
     }
 }
 
-public partial class ReadyToAvoidMessage : Message
+public class ReadyToAvoidMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
     public List<Card> CardsReadyForAvoiding { get { return field3; } set { field3 = value; } }
+}
 
-    public override Message Clone()
+public class StartTurnMessage : Message
+{
+    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public override void Do()
     {
-        ReadyToAvoidMessage clone = base.Clone() as ReadyToAvoidMessage;
-        clone.AttackingUnit = AttackingUnit;
-        clone.DefendingUnit = DefendingUnit;
-        clone.CardsReadyForAvoiding = ListUtils.Clone(CardsReadyForAvoiding);
-        return clone;
+        Game.TurnPlayer = TurnPlayer;
+        Game.CurrentPhase = Phase.BeginningPhase;
+        Game.TurnCount++;
+        TurnPlayer.DeployAndCCCostCount = 0;
+    }
+}
+
+public class GoToBondPhaseMessage : Message
+{
+    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        Game.CurrentPhase = Phase.BondPhase;
+    }
+}
+
+public class RefreshUnitMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public override void Do()
+    {
+        foreach (var unit in Targets)
+        {
+            unit.IsHorizontal = false;
+        }
+    }
+}
+
+public class DrawCardMessage : Message
+{
+    public int Number { get { return field1; } set { field1 = value; } }
+    public User Player { get { return field2; } set { field2 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
+
+    public override void Do()
+    {
+        for (int i = 0; i < Number; i++)
+        {
+            Player.Deck.Cards[0].MoveTo(Player.Hand);
+        }
+    }
+}
+
+public class ReadyForSameNameProcessMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public string Name { get { return field2; } set { field2 = value; } }
+}
+
+public class SameNameProcessMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public string Name { get { return field2; } set { field2 = value; } }
+
+    public override void Do()
+    {
+        Targets.ForEach(card=>{
+            card.MoveTo(card.Controller.Retreat);
+        });
     }
 }
 

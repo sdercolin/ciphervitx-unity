@@ -14,6 +14,14 @@ public static class ListUtils
         return clone;
     }
 
+    public static List<T> Combine<T>(List<T> listA,List<T> listB)
+    {
+        List<T> combined =new List<T>();
+        combined.AddRange(listA);
+        combined.AddRange(listB);
+        return combined;
+    }
+
     public static string ToString<T>(List<T> list)
     {
         string json = String.Empty;
