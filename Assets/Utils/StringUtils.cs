@@ -149,7 +149,6 @@ public static class StringUtils
         var newObject = Activator.CreateInstance(type, parameters);
         foreach (var pair in otherFields)
         {
-            Type fieldType = type;
             bool isSet = false;
             while (type != typeof(object))
             {

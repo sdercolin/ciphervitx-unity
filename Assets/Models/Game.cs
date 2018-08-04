@@ -237,7 +237,6 @@ public static class Game
     //同名処理
     private static bool DoSameNameProcess()
     {
-        List<Card> sameNameCards = new List<Card>();
         List<string> nameChecked = new List<string>();
         foreach (var user in AllUsers)
         {
