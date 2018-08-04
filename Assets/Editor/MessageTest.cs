@@ -17,7 +17,8 @@ public class MessageTest
         Assert.IsTrue(clone1 is EmptyMessage);
         string message1Json = message1.ToString();
 
-        var card = new Card00001(new Game().Player);
+        Game.Initialize();
+        var card = new Card00001(Game.Player);
         var targets = new List<Card>() { card };
         var message2 = new MoveMessage()
         {
