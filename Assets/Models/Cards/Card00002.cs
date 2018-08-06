@@ -66,7 +66,7 @@ public class Card00002 : Card
         public override void Do()
         {
             var choices = Controller.Field.Cards;
-            var targets = Request.Choose(choices);
+            var targets = Request.Choose(choices, Controller);
             Controller.Move(targets, this);
         }
     }

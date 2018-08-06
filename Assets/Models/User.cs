@@ -211,7 +211,7 @@ public abstract class User
             readyToBondMessage = TryDoMessage(readyToBondMessage) as ReadyToBondMessage;
             if (readyToBondMessage != null && readyToBondMessage.Targets.Count > 0)
             {
-                SetToBond(Request.Choose(readyToBondMessage.Targets, min, max), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
+                SetToBond(Request.Choose(readyToBondMessage.Targets, min, max, this), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
             }
         }
     }
@@ -265,7 +265,7 @@ public abstract class User
             }
             else
             {
-                savedUnit = Request.ChooseOne(readyForSameNameProcessMessage.Targets);
+                savedUnit = Request.ChooseOne(readyForSameNameProcessMessage.Targets, this);
             }
             List<Card> confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
             confirmedTarget.Remove(savedUnit);

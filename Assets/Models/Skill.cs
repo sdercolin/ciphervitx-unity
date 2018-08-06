@@ -229,7 +229,7 @@ public abstract class AutoSkill : Skill
         {
             if (Optional)
             {
-                if (!Request.AskIfUse(this))
+                if (!Request.AskIfUse(this, Controller))
                 {
                     return;
                 }
@@ -402,7 +402,7 @@ public abstract class SupportSkill : Skill
         {
             if (Optional)
             {
-                if (!Request.AskIfUse(this))
+                if (!Request.AskIfUse(this, Controller))
                 {
                     return;
                 }
