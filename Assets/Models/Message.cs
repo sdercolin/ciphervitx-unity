@@ -307,7 +307,8 @@ public class SameNameProcessMessage : Message
 
     public override void Do()
     {
-        Targets.ForEach(card=>{
+        Targets.ForEach(card =>
+        {
             card.MoveTo(card.Controller.Retreat);
         });
     }

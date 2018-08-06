@@ -317,7 +317,7 @@ public static class Game
             }
             inducedSkillList.Remove(skillSelected);
             bool solved = skillSelected.Solve();
-            if(inducedSkillList.Count>0)
+            if (inducedSkillList.Count > 0)
             {
                 InducedSkillSetList.Insert(index, inducedSkillList);
             }

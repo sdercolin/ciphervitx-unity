@@ -510,7 +510,7 @@ public abstract class SubSkill : Skill
     /// 持续类型
     /// </summary>
     public LastingTypeEnum LastingType;
-    
+
     private static int fieldNumber = 10;
     protected dynamic field1 = null;
     protected dynamic field2 = null;
@@ -552,7 +552,7 @@ public abstract class SubSkill : Skill
         }
         return "{" + json + "}";
     }
-    
+
     protected virtual void Detaching() { }
 
     public override void Detach()

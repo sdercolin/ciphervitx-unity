@@ -23,7 +23,7 @@ public abstract class Card
     {
         return "{\"guid\": \"" + Guid + "\" }";
     }
-    
+
     /// <summary>
     /// 卡的序列号
     /// </summary>

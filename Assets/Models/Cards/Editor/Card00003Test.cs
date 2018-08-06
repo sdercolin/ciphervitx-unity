@@ -5,10 +5,12 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Card00003Test {
+public class Card00003Test
+{
 
-	[Test]
-	public void SkillTest() {
+    [Test]
+    public void SkillTest()
+    {
         Game.Initialize();
         var player = Game.Player as Player;
         var card = new Card00003(player);

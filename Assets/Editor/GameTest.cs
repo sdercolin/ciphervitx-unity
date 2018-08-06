@@ -3,10 +3,12 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
-public class GameTest {
+public class GameTest
+{
 
     [Test]
-    public void DoBeginningPhaseTest() {
+    public void DoBeginningPhaseTest()
+    {
         Game.Initialize();
         Game.TurnPlayer = Game.Player;
         var card1 = CardFactory.CreateCard(1, Game.Player);
