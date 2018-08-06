@@ -15,7 +15,8 @@ public class MessageTest
         var message1 = new EmptyMessage();
         var clone1 = message1.Clone();
         Assert.IsTrue(clone1 is EmptyMessage);
-        string message1Json = message1.ToString();
+        //string message1Json = message1.ToString();
+        //Debug.Log(message1Json);
 
         Game.Initialize();
         var card = new Card00001(Game.Player);
@@ -30,7 +31,8 @@ public class MessageTest
         Assert.IsTrue(clone2.Reason == card.sk1);
         Assert.IsFalse(clone2.Targets == targets);
         Assert.IsTrue(clone2.Targets.SequenceEqual(targets));
-        string message2Json = message2.ToString();
+        //string message2Json = message2.ToString();
+        //Debug.Log(message2Json);
 
         DeployMessage message3 = new DeployMessage()
         {
@@ -49,6 +51,7 @@ public class MessageTest
         clone3.TargetsActioned[0] = false;
         Assert.IsFalse(clone3.TargetsActioned[0]);
         Assert.IsTrue(message3.TargetsActioned[0]);
-        string message3Json = message3.ToString();
+        //string message3Json = message3.ToString();
+        //Debug.Log(message2Json);
     }
 }
