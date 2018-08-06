@@ -70,13 +70,9 @@ public abstract class Skill : IAttachable
         Guid = System.Guid.NewGuid().ToString();
     }
 
-    public virtual bool OnlyAvailableWhenFrontShown { get; set; }
-    public virtual List<Area> AvailableAreas { get; set; }
-    public virtual void Attached()
-    {
-        OnlyAvailableWhenFrontShown = true;
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
-    }
+    public bool OnlyAvailableWhenFrontShown { get; set; } = true;
+
+    public virtual void Attached() { }
     public virtual void Detach() { }
 
     /// <summary>
@@ -514,10 +510,7 @@ public abstract class SubSkill : Skill
     /// 持续类型
     /// </summary>
     public LastingTypeEnum LastingType;
-
-    public override bool OnlyAvailableWhenFrontShown { get; set; }
-    public override List<Area> AvailableAreas { get; set; }
-
+    
     private static int fieldNumber = 10;
     protected dynamic field1 = null;
     protected dynamic field2 = null;
@@ -531,7 +524,6 @@ public abstract class SubSkill : Skill
         toSerialize.Add("type", GetType().Name);
         toSerialize.Add("guid", Guid);
         toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));
-        toSerialize.Add("availableAreas", StringUtils.CreateFromAny(AvailableAreas));
         if (Owner != null)
         {
             toSerialize.Add("owner", Owner);
@@ -560,12 +552,7 @@ public abstract class SubSkill : Skill
         }
         return "{" + json + "}";
     }
-
-    public override void Attached()
-    {
-        OnlyAvailableWhenFrontShown = true;
-        AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
-    }
+    
     protected virtual void Detaching() { }
 
     public override void Detach()
@@ -584,12 +571,6 @@ public abstract class SubSkill : Skill
                 Detach();
                 return;
             }
-        }
-
-        if (!AvailableAreas.Contains(Owner.BelongedRegion))
-        {
-            Detach();
-            return;
         }
 
         switch (LastingType)
@@ -656,12 +637,6 @@ public class DisableAllSkills : SubSkill
 public class CanNotBePlacedInBond : SubSkill
 {
     public CanNotBePlacedInBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
-    }
 
     public override bool Try(Message message, ref Message substitute)
     {

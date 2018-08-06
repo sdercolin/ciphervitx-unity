@@ -58,16 +58,7 @@ public abstract class Area
     /// </summary>
     public User Controller;
 
-    public virtual void ProcessCardIn(Card card, Area fromArea)
-    {
-        card.AttachableList.ForEach(item =>
-        {
-            if (!item.AvailableAreas.Contains(this))
-            {
-                item.Detach();
-            }
-        });
-    }
+    public virtual void ProcessCardIn(Card card, Area fromArea) { }
     public virtual void ProcessCardOut(Card card, Area toArea) { }
 
     /// <summary>
@@ -202,15 +193,13 @@ public class Deck : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
+        card.Reset();
         card.FrontShown = false;
-        card.IsHorizontal = false;
         card.Visible = false;
-        base.ProcessCardIn(card, fromArea);
     }
 
     public override void ProcessCardOut(Card card, Area toArea)
     {
-        base.ProcessCardOut(card, toArea);
         if (list.Count == 0)
         {
             Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
@@ -232,10 +221,8 @@ public class Hand : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
-        card.IsHorizontal = false;
+        card.Reset();
         card.Visible = false;
-        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -252,10 +239,7 @@ public class Retreat : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
-        card.IsHorizontal = false;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
+        card.Reset();
     }
 }
 
@@ -272,10 +256,7 @@ public class Support : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
-        card.IsHorizontal = false;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
+        card.Reset();
     }
 }
 
@@ -343,10 +324,8 @@ public class Bond : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
+        card.Reset();
         card.IsHorizontal = true;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -363,10 +342,9 @@ public class Orb : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
+        card.Reset();
         card.FrontShown = false;
-        card.IsHorizontal = false;
         card.Visible = false;
-        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -412,20 +390,8 @@ public class FrontField : Area
     {
         if (!(fromArea is BackField))
         {
-            card.IsHorizontal = false;
+            card.Reset();
         }
-        card.FrontShown = true;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
-        if (!(toArea is BackField))
-        {
-            //离场
-        }
-        base.ProcessCardOut(card, toArea);
     }
 }
 
@@ -444,20 +410,8 @@ public class BackField : Area
     {
         if (!(fromArea is FrontField))
         {
-            card.IsHorizontal = false;
+            card.Reset();
         }
-        card.FrontShown = true;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
-        if (!(toArea is FrontField))
-        {
-            //离场
-        }
-        base.ProcessCardOut(card, toArea);
     }
 }
 
@@ -474,9 +428,6 @@ public class Overlay : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
-        card.IsHorizontal = false;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
+        card.Reset();
     }
 }

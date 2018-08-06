@@ -619,6 +619,25 @@ public abstract class Card
         item.Owner = this;
         item.Attached();
     }
+
+    /// <summary>
+    /// 重置所有状态
+    /// </summary>
+    public void Reset()
+    {
+        DestroyedCount = 0;
+        IsHorizontal = false;
+        FrontShown = true;
+        Visible = true;
+        foreach (var item in BuffList)
+        {
+            item.Detach();
+        }
+        foreach (var item in SubSkillList)
+        {
+            item.Detach();
+        }
+    }
     #endregion
 
     #region 别名

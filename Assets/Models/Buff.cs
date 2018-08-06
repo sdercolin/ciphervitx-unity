@@ -28,7 +28,6 @@ public abstract class Buff : IAttachable
         toSerialize.Add("type", GetType().Name);
         toSerialize.Add("guid", Guid);
         toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));
-        toSerialize.Add("availableAreas", StringUtils.CreateFromAny(AvailableAreas));
         if (Giver != null)
         {
             toSerialize.Add("giver", Giver);
@@ -65,11 +64,8 @@ public abstract class Buff : IAttachable
         }
         return "{" + json + "}";
     }
+    public bool OnlyAvailableWhenFrontShown { get; set; } = true;
 
-    protected bool onlyAvailableWhenFrontShown;
-    public bool OnlyAvailableWhenFrontShown { get; set; }
-    protected List<Area> availableAreas;
-    public List<Area> AvailableAreas { get; set; }
     protected Card giver;
     public Card Giver { get; set; }
     protected Card owner;
@@ -84,11 +80,7 @@ public abstract class Buff : IAttachable
     protected bool? isBecoming;
     protected dynamic value;
 
-    public virtual void Attached()
-    {
-        OnlyAvailableWhenFrontShown = true;
-        AvailableAreas = new List<Area>() { Owner.Controller.FrontField, Owner.Controller.BackField };
-    }
+    public virtual void Attached() { }
 
     public void Detach()
     {
@@ -105,12 +97,6 @@ public abstract class Buff : IAttachable
                 Detach();
                 return;
             }
-        }
-
-        if (!AvailableAreas.Contains(Owner.BelongedRegion))
-        {
-            Detach();
-            return;
         }
 
         switch (LastingType)
@@ -165,12 +151,6 @@ public class UnitNameBuff : Buff
     /// 附加值的值
     /// </summary>
     public string Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
 }
 
 /// <summary>
@@ -193,12 +173,6 @@ public class DeployCostBuff : Buff
     /// 是否为“变为”类型
     /// </summary>
     public bool IsBecoming { get { return (bool)isBecoming; } set { isBecoming = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
 }
 
 /// <summary>
@@ -221,12 +195,6 @@ public class ClassChangeCostBuff : Buff
     /// 是否为“变为”类型
     /// </summary>
     public bool IsBecoming { get { return (bool)isBecoming; } set { isBecoming = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
 }
 
 /// <summary>
@@ -259,12 +227,6 @@ public class SupportBuff : Buff
     /// 附加值的值
     /// </summary>
     public int Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas.Add(Owner.Controller.Support);
-    }
 }
 
 /// <summary>
@@ -309,12 +271,6 @@ public class WeaponBuff : Buff
     /// 附加值的值
     /// </summary>
     public WeaponEnum Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
 }
 
 /// <summary>
@@ -337,12 +293,6 @@ public class GenderBuff : Buff
     /// 附加值的值
     /// </summary>
     public GenderEnum Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
 }
 
 /// <summary>
@@ -365,12 +315,6 @@ public class TypeBuff : Buff
     /// 附加值的值
     /// </summary>
     public TypeEnum Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
 }
 
 /// <summary>
