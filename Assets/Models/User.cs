@@ -80,6 +80,11 @@ public abstract class User
     /// </summary>
     public bool ActionPhaseEnded = false;
 
+    /// <summary>
+    /// 附加能力列表
+    /// </summary>
+    public List<SubSkill> SubSkillList = new List<SubSkill>();
+
     public List<Card> AllCards
     {
         get
