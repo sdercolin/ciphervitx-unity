@@ -365,7 +365,7 @@ public abstract class PermanentSkill : Skill
             if (CanTarget(card) && !Targets.Contains(card))
             {
                 ItemsToApply.Clear();
-                SetItemToApply(card);
+                SetItemToApply();
                 Attach(card, ItemsToApply);
             }
             else if (!CanTarget(card) && Targets.Contains(card))
@@ -390,8 +390,7 @@ public abstract class PermanentSkill : Skill
     /// <summary>
     /// 准备待设置的附加量或附加能力（需填入ItemsToApply）
     /// </summary>
-    /// <param name="target">效果的对象</param>
-    public abstract void SetItemToApply(Card target);
+    public abstract void SetItemToApply();
 }
 
 /// <summary>

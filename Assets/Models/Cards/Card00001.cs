@@ -93,7 +93,7 @@ public class Card00001 : Card
                 && Game.DefencingUnit.HasType(TypeEnum.Dragon);
         }
 
-        public override void SetItemToApply(Card target)
+        public override void SetItemToApply()
         {
             ItemsToApply.Add(new PowerBuff(Owner, this, 20));
         }

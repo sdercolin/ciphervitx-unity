@@ -78,7 +78,7 @@ public class Card00005 : Card
                 && card.Controller.Field.TrueForAllCard(unit => unit == Owner || unit.IsHero);
         }
 
-        public override void SetItemToApply(Card target)
+        public override void SetItemToApply()
         {
             ItemsToApply.Add(new PowerBuff(Owner, this, 10));
         }
