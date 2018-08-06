@@ -40,12 +40,19 @@ public static class Request
 
     public static List<T> Choose<T>(List<T> choices, int min, int max, User targetUser)
     {
-        throw new NotImplementedException();
+        // TO DO
+        var results = new List<T>();
+        for (int i = 0; i < min; i++)
+        {
+            results.Add(choices[i]);
+        }
+        return results;
     }
 
     public static bool AskIfUse<T>(T target, User targetUser)
     {
-        throw new NotImplementedException();
+        // TO DO
+        return true;
     }
 }
 
