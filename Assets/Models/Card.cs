@@ -480,15 +480,15 @@ public abstract class Card
     {
         get
         {
-            List<Skill> buffList = new List<Skill>();
+            List<Skill> skillList = new List<Skill>();
             foreach (var item in AttachableList)
             {
-                if (item is Skill)
+                if (item is Skill && !(item is SubSkill))
                 {
-                    buffList.Add(item as Skill);
+                    skillList.Add(item as Skill);
                 }
             }
-            return buffList;
+            return skillList;
         }
     }
 
