@@ -203,8 +203,22 @@ public abstract class AutoSkill : Skill
         if (Available && (!UsedInThisTurn))
         {
             InducedCount++;
-            //Owner.Controller.Owner.Game.InducedSkillSet.Add(this);
+            if (Game.InducedSkillSetList.Count == 0)
+            {
+                Game.InducedSkillSetList.Add(new List<AutoSkill>());
+            }
+            List<AutoSkill> skillSet = Game.InducedSkillSetList[Game.InducedSkillSetList.Count - 1];
+            skillSet.Add(this);
         }
+    }
+
+    private void UnInduceAll()
+    {
+        foreach (var skillSet in Game.InducedSkillSetList)
+        {
+            skillSet.RemoveAll(skill => skill == this);
+        }
+        Game.InducedSkillSetList.RemoveAll(set => set.Count == 0);
     }
 
     /// <summary>
@@ -221,7 +235,7 @@ public abstract class AutoSkill : Skill
     /// <summary>
     /// 能力解决
     /// </summary>
-    public void Solve()
+    public bool Solve()
     {
         InducedCount--;
         Cost = DefineCost();
@@ -231,7 +245,7 @@ public abstract class AutoSkill : Skill
             {
                 if (!Request.AskIfUse(this, Controller))
                 {
-                    return;
+                    return false;
                 }
             }
             //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
@@ -240,8 +254,12 @@ public abstract class AutoSkill : Skill
             if (OncePerTurn)
             {
                 UsedInThisTurn = true;
+                InducedCount = 0;
+                UnInduceAll();
             }
+            return true;
         }
+        return false;
     }
 
     public override void Read(Message message)

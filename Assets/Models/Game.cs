@@ -26,6 +26,7 @@ public static class Game
 
     //自动处理检查时点相关
     public static List<Card> CCBonusList = new List<Card>(); //存放触发了CC Bonus的卡
+    public static List<List<AutoSkill>> InducedSkillSetList = new List<List<AutoSkill>>(); //存放处于诱发状态的能力组
 
 
 
@@ -189,11 +190,10 @@ public static class Game
         {
             DoCCBonusProcess();
             while (DoRuleProcess()) { }
-            break;
-            //if (!DoInducedSkillProcess())
-            //{
-            //    break;
-            //}
+            if (!DoInducedSkillProcess())
+            {
+                break;
+            }
         }
     }
 
@@ -265,7 +265,54 @@ public static class Game
 
     public static bool DoInducedSkillProcess()
     {
-        throw new NotImplementedException();
+        if (InducedSkillSetList.Count == 0)
+        {
+            return false;
+        }
+        int index = InducedSkillSetList.Count - 1;
+        var inducedSkillList = InducedSkillSetList[index];
+        InducedSkillSetList[index] = new List<AutoSkill>();
+        if (inducedSkillList.Count > 0)
+        {
+            var myInducedSkillList = new List<AutoSkill>();
+            var hisInducedSkillList = new List<AutoSkill>();
+            foreach (var skill in inducedSkillList)
+            {
+                if (skill.Controller == Player)
+                {
+                    myInducedSkillList.Add(skill);
+                }
+                else
+                {
+                    hisInducedSkillList.Add(skill);
+                }
+            }
+            AutoSkill skillSelected;
+            if (myInducedSkillList.Count > 0)
+            {
+                skillSelected = Request.ChooseOne(myInducedSkillList, Player);
+            }
+            else if (hisInducedSkillList.Count > 0)
+            {
+                skillSelected = Request.ChooseOne(hisInducedSkillList, Rival);
+            }
+            else
+            {
+                return false;
+            }
+            inducedSkillList.Remove(skillSelected);
+            bool solved = skillSelected.Solve();
+            if(inducedSkillList.Count>0)
+            {
+                InducedSkillSetList.Insert(index, inducedSkillList);
+            }
+            InducedSkillSetList.RemoveAll(set => set.Count == 0);
+            return solved;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
