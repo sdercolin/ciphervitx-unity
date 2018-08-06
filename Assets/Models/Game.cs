@@ -155,13 +155,13 @@ public static class Game
         }
     }
 
-    private static void WaitTurn()
+    public static void WaitTurn()
     {
         //Wait until rival turn ends
         DoBeginningPhase();
     }
 
-    private static void DoBeginningPhase()
+    public static void DoBeginningPhase()
     {
         TurnPlayer.StartTurn();
         DoAutoCheckTiming();
@@ -174,7 +174,7 @@ public static class Game
         }
     }
 
-    private static void DoBondPhase()
+    public static void DoBondPhase()
     {
         TurnPlayer.GoToBondPhase();
         DoAutoCheckTiming();
@@ -183,21 +183,22 @@ public static class Game
     }
 
     //自動処理チェックタイミング
-    private static void DoAutoCheckTiming()
+    public static void DoAutoCheckTiming()
     {
         while (true)
         {
             DoCCBonusProcess();
             while (DoRuleProcess()) { }
-            if (!DoInducedSkillProcess())
-            {
-                break;
-            }
+            break;
+            //if (!DoInducedSkillProcess())
+            //{
+            //    break;
+            //}
         }
     }
 
     //クラスチェンジボーナス処理
-    private static void DoCCBonusProcess()
+    public static void DoCCBonusProcess()
     {
         int playerCount = 0;
         int rivalCount = 0;
@@ -224,7 +225,7 @@ public static class Game
     }
 
     //ルール処理
-    private static bool DoRuleProcess()
+    public static bool DoRuleProcess()
     {
         bool done = false;
         while (DoSameNameProcess())
@@ -235,7 +236,7 @@ public static class Game
     }
 
     //同名処理
-    private static bool DoSameNameProcess()
+    public static bool DoSameNameProcess()
     {
         List<string> nameChecked = new List<string>();
         foreach (var user in AllUsers)
@@ -262,7 +263,7 @@ public static class Game
         return false;
     }
 
-    private static bool DoInducedSkillProcess()
+    public static bool DoInducedSkillProcess()
     {
         throw new NotImplementedException();
     }
