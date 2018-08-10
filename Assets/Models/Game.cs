@@ -318,7 +318,7 @@ public static class Game
         }
         if (cardsToSendToRetreat.Count > 0)
         {
-            var sameNameProcessMessage = new SameNameProcessMessage()
+            var sameNameProcessMessage = new SendToRetreatSameNameProcessMessage()
             {
                 Targets = cardsToSendToRetreat
             };
