@@ -105,27 +105,7 @@ public abstract class User
         return AllAreas.TrueForAll(area => area.TrueForAllCard(predicate));
     }
 
-    public abstract void Broadcast(Message message);
-    public abstract bool BroadcastTry(Message message, ref Message substitute);
-
-
     #region 动作
-    /// <summary>
-    /// 尝试并实行动作
-    /// </summary>
-    /// <param name="message"></param>
-    protected Message TryDoMessage(Message message)
-    {
-        Message substitute = new EmptyMessage();
-        while (!BroadcastTry(message, ref substitute))
-        {
-            message = substitute;
-        }
-        message.Do();
-        Broadcast(message);
-        return message;
-    }
-
     public void Move(Card target, Skill reason)
     {
         if (target != null)
@@ -142,7 +122,7 @@ public abstract class User
             Targets = targets,
             Reason = reason
         };
-        TryDoMessage(moveMessage);
+        Game.DoMessage(moveMessage);
     }
 
     public void UseBond(Card target, Skill reason)
@@ -163,7 +143,7 @@ public abstract class User
                 Targets = targets,
                 Reason = reason
             };
-            TryDoMessage(useBondMessage);
+            Game.DoMessage(useBondMessage);
         }
     }
 
@@ -173,7 +153,7 @@ public abstract class User
         {
             TurnPlayer = this
         };
-        TryDoMessage(startTurnMessage);
+        Game.DoMessage(startTurnMessage);
     }
 
     public void GoToBondPhase()
@@ -200,7 +180,7 @@ public abstract class User
                 TargetFrontShown = frontShown,
                 Reason = reason
             };
-            TryDoMessage(toBondMessage);
+            Game.DoMessage(toBondMessage);
         }
     }
 
@@ -213,7 +193,7 @@ public abstract class User
                 Targets = targets,
                 TargetFrontShown = frontShown
             };
-            readyToBondMessage = TryDoMessage(readyToBondMessage) as ReadyToBondMessage;
+            readyToBondMessage = Game.TryDoMessage(readyToBondMessage) as ReadyToBondMessage;
             if (readyToBondMessage != null && readyToBondMessage.Targets.Count > 0)
             {
                 SetToBond(Request.Choose(readyToBondMessage.Targets, min, max, this), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
@@ -238,7 +218,7 @@ public abstract class User
                 Targets = targets,
                 Reason = reason
             };
-            TryDoMessage(refreshUnitMessage);
+            Game.DoMessage(refreshUnitMessage);
         }
     }
 
@@ -250,17 +230,17 @@ public abstract class User
             Number = number,
             Reason = reason
         };
-        TryDoMessage(drawCardMessage);
+        Game.DoMessage(drawCardMessage);
     }
 
-    public bool DoSameNameProcess(List<Card> units, string name)
+    public List<Card> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
-        ReadyForSameNameProcessMessage readyForSameNameProcessMessage = new ReadyForSameNameProcessMessage()
+        ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = new ReadyForSameNameProcessPartialMessage()
         {
             Targets = units,
             Name = name
         };
-        readyForSameNameProcessMessage = TryDoMessage(readyForSameNameProcessMessage) as ReadyForSameNameProcessMessage;
+        readyForSameNameProcessMessage = Game.TryDoMessage(readyForSameNameProcessMessage) as ReadyForSameNameProcessPartialMessage;
         if (readyForSameNameProcessMessage != null && readyForSameNameProcessMessage.Targets.Count > 1)
         {
             Card savedUnit;
@@ -274,17 +254,11 @@ public abstract class User
             }
             List<Card> confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
             confirmedTarget.Remove(savedUnit);
-            SameNameProcessMessage sameNameProcessMessage = new SameNameProcessMessage()
-            {
-                Targets = confirmedTarget,
-                Name = name
-            };
-            TryDoMessage(sameNameProcessMessage);
-            return true;
+            return confirmedTarget;
         }
         else
         {
-            return false;
+            return new List<Card>();
         }
     }
     #endregion
@@ -304,51 +278,6 @@ public class Player : User
             return Game.Rival;
         }
     }
-
-    /// <summary>
-    /// 直接将消息发给对手（不广播给自己的卡）
-    /// </summary>
-    /// <param name="message">消息</param>
-    //public void Tell(Message message) { throw new NotImplementedException(); }
-
-    /// <summary>
-    /// 直接将消息发给对手并等待特定类型的回复（不广播给自己的卡）
-    /// </summary>
-    /// <param name="message">消息</param>
-    /// <param name="responsetype">要求对方回复的消息种类</param>
-    /// <returns>对方的回复</returns>
-    //internal Message Ask(Message message, MessageType responsetype) { throw new NotImplementedException(); }
-
-    /// <summary>
-    /// 广播消息
-    /// </summary>
-    /// <param name="message">消息</param>
-    public override void Broadcast(Message message)
-    {
-        //发送消息给对方
-        Game.ForEachCard(card =>
-        {
-            card.Read(message);
-        });
-    }
-
-    /// <summary>
-    /// 广播询问是否允许某操作
-    /// </summary>
-    /// <param name="message">表示该操作的消息</param>
-    /// <param name="substitute">拒绝该操作时表示作为代替的动作的的消息</param>
-    /// <returns>如允许，则返回True</returns>
-    public override bool BroadcastTry(Message message, ref Message substitute)
-    {
-        foreach (Card card in Game.AllCards)
-        {
-            if (!card.Try(message, ref substitute))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
 }
 
 /// <summary>
@@ -365,23 +294,4 @@ public class Rival : User
             return Game.Player;
         }
     }
-
-    /// <summary>
-    /// 复现对手动作时，不再重复广播
-    /// </summary>
-    public override void Broadcast(Message message) { }
-
-    /// <summary>
-    /// 复现对手动作时不需要Try
-    /// </summary>
-    public override bool BroadcastTry(Message message, ref Message substitute)
-    {
-        return true;
-    }
-
-    /// <summary>
-    /// 接受消息并重复其动作
-    /// </summary>
-    /// <param name="response"></param>
-    //internal void DoAsMessage(Message response) { }
 }

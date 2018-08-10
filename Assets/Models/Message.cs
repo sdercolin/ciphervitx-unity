@@ -294,7 +294,7 @@ public class DrawCardMessage : Message
     }
 }
 
-public class ReadyForSameNameProcessMessage : Message
+public class ReadyForSameNameProcessPartialMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public string Name { get { return field2; } set { field2 = value; } }
@@ -303,7 +303,6 @@ public class ReadyForSameNameProcessMessage : Message
 public class SameNameProcessMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public string Name { get { return field2; } set { field2 = value; } }
 
     public override void Do()
     {

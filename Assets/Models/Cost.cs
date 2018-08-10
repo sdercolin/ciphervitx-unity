@@ -66,7 +66,7 @@ class UseBondCost : Cost
             Targets = choices,
         };
         Message substitute = readyToUseBondMessage.Clone();
-        Reason.Controller.BroadcastTry(readyToUseBondMessage, ref substitute);
+        Game.BroadcastTry(readyToUseBondMessage, ref substitute);
         if (substitute is ReadyToUseBondMessage)
         {
             if ((substitute as ReadyToUseBondMessage).Targets.Count >= Number)

@@ -143,6 +143,64 @@ public static class Game
         return result;
     }
 
+
+    /// <summary>
+    /// 广播消息
+    /// </summary>
+    /// <param name="message">消息</param>
+    public static void Broadcast(Message message)
+    {
+        //TO DO:发送消息给对方
+        ForEachCard(card =>
+        {
+            card.Read(message);
+        });
+    }
+
+    /// <summary>
+    /// 尝试并实现消息定义的操作
+    /// </summary>
+    /// <param name="message"></param>
+    public static Message TryDoMessage(Message message)
+    {
+        Message substitute = new EmptyMessage();
+        while (!BroadcastTry(message, ref substitute))
+        {
+            message = substitute;
+        }
+        message.Do();
+        Broadcast(message);
+        return message;
+    }
+
+    /// <summary>
+    /// 实现消息定义的操作
+    /// </summary>
+    /// <param name="message"></param>
+    public static void DoMessage(Message message)
+    {
+        message.Do();
+        Broadcast(message);
+    }
+
+    /// <summary>
+    /// 广播询问是否允许某操作
+    /// </summary>
+    /// <param name="message">表示该操作的消息</param>
+    /// <param name="substitute">拒绝该操作时表示作为代替的动作的的消息</param>
+    /// <returns>如允许，则返回True</returns>
+    public static bool BroadcastTry(Message message, ref Message substitute)
+    {
+        foreach (Card card in AllCards)
+        {
+            if (!card.Try(message, ref substitute))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void Start(bool ifFirstPlay)
     {
         if (ifFirstPlay)
@@ -239,6 +297,7 @@ public static class Game
     public static bool DoSameNameProcess()
     {
         List<string> nameChecked = new List<string>();
+        List<Card> cardsToSendToRetreat = new List<Card>();
         foreach (var user in AllUsers)
         {
             foreach (var card in user.Field.Cards)
@@ -252,13 +311,19 @@ public static class Game
                     nameChecked.Add(name);
                     if (user.Field.SearchCard(name).Count > 1)
                     {
-                        if (user.DoSameNameProcess(user.Field.SearchCard(name), name))
-                        {
-                            return true;
-                        }
+                        cardsToSendToRetreat.AddRange(user.ChooseDiscardedCardsSameNameProcess(user.Field.SearchCard(name), name));
                     }
                 }
             }
+        }
+        if (cardsToSendToRetreat.Count > 0)
+        {
+            var sameNameProcessMessage = new SameNameProcessMessage()
+            {
+                Targets = cardsToSendToRetreat
+            };
+            DoMessage(sameNameProcessMessage);
+            return true;
         }
         return false;
     }
