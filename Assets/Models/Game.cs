@@ -398,6 +398,23 @@ public static class Game
         return processed;
     }
 
+    //敗北処理
+    public static void LoseProcess()
+    {
+        List<User> losingUsers = new List<User>();
+        foreach (var user in AllUsers)
+        {
+            if ((user.Field.Contains(user.Hero)) || (user.Deck.Count == 0 && user.Retreat.Count == 0))
+            {
+                losingUsers.Add(user);
+            }
+        }
+        if (losingUsers.Count > 0)
+        {
+            Over(losingUsers);
+        }
+    }
+
     //自動型スキル誘発処理
     public static bool DoInducedSkillProcess()
     {
@@ -465,6 +482,11 @@ public static class Game
         /// 状態であったものとして扱い、次回以降の「１０.２.」において、選択する
         /// ことができます。
         ///
+    }
+
+    public static void Over(List<User> losingUsers)
+    {
+        //TO DO: Game Over
     }
 }
 
