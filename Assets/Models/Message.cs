@@ -322,10 +322,16 @@ public class ReadyForDestructionProcessMessage : Message
 public class ObtainOrbDestructionProcessMessage : Message
 {
     public Card Target { get { return field1; } set { field1 = value; } }
+    public Card Reason { get { return field2; } set { field2 = value; } }
 
     public override void Do()
     {
         Target.MoveTo(Target.Controller.Hand);
+        Reason.DestroyedCount--;
+        if (Reason.IsHero && Reason.Controller.Orb.Count == 0)
+        {
+            Reason.DestroyedCount = 0;
+        }
     }
 }
 
@@ -335,7 +341,11 @@ public class SendToRetreatDestructionProcessMessage : Message
 
     public override void Do()
     {
-        Targets.ForEach(target => target.MoveTo(target.Controller.Retreat));
+        Targets.ForEach(target =>
+        {
+            target.MoveTo(target.Controller.Retreat);
+            target.DestroyedCount = 0;
+        });
     }
 }
 

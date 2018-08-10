@@ -331,6 +331,7 @@ public static class Game
     //撃破処理
     public static bool DestructionProcess()
     {
+        bool processed = false;
         List<Card> cardsToSendToRetreat = new List<Card>();
         Dictionary<User, int> orbsDetructionCountDict = new Dictionary<User, int>();
         foreach (var card in AllCards)
@@ -367,17 +368,34 @@ public static class Game
             foreach (var pair in orbsDetructionCountDict)
             {
                 var user = pair.Key;
-                var count = Math.Min(pair.Value, user.Orb.Count);
-                for (int i = 0; i < count; i++)
+                var count = pair.Value;
+                if (user.Orb.Count == 0 && count > 0)
                 {
-                    DoMessage(new ObtainOrbDestructionProcessMessage()
+                    cardsToSendToRetreat.Add(user.Hero);
+                }
+                else
+                {
+                    count = Math.Min(count, user.Orb.Count);
+                    for (int i = 0; i < count; i++)
                     {
-                        Target = Request.ChooseOne(user.Orb.Cards, user)
-                    });
+                        DoMessage(new ObtainOrbDestructionProcessMessage()
+                        {
+                            Target = Request.ChooseOne(user.Orb.Cards, user)
+                        });
+                        processed = true;
+                    }
                 }
             }
+            if (cardsToSendToRetreat.Count > 0)
+            {
+                DoMessage(new SendToRetreatDestructionProcessMessage()
+                {
+                    Targets = cardsToSendToRetreat
+                });
+                processed = true;
+            }
         }
-        return false;
+        return processed;
     }
 
     //自動型スキル誘発処理
