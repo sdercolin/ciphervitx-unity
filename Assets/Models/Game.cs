@@ -399,7 +399,7 @@ public static class Game
     }
 
     //敗北処理
-    public static void LoseProcess()
+    public static void LosingProcess()
     {
         List<User> losingUsers = new List<User>();
         foreach (var user in AllUsers)
