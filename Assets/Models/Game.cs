@@ -433,15 +433,18 @@ public static class Game
         List<Card> cardsToSendToRetreat = new List<Card>();
         foreach (var card in AllCards)
         {
-            foreach (IForbidPosition item in card.SubSkillList)
+            foreach (var item in card.SubSkillList)
             {
-                foreach (var areaType in item.ForbiddenAreaTypes)
+                if (item is IForbidPosition)
                 {
-                    if (card.BelongedRegion.GetType() == areaType)
+                    foreach (var areaType in ((IForbidPosition)item).ForbiddenAreaTypes)
                     {
-                        if (!cardsToSendToRetreat.Contains(card))
+                        if (card.BelongedRegion.GetType() == areaType)
                         {
-                            cardsToSendToRetreat.Add(card);
+                            if (!cardsToSendToRetreat.Contains(card))
+                            {
+                                cardsToSendToRetreat.Add(card);
+                            }
                         }
                     }
                 }
