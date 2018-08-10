@@ -285,12 +285,24 @@ public static class Game
     //ルール処理
     public static bool DoRuleProcess()
     {
-        bool done = false;
-        while (DoSameNameProcess())
+        if (DoSameNameProcess())
         {
-            done = true;
+            return true;
         }
-        return done;
+        if (DoDestructionProcess())
+        {
+            return true;
+        }
+        DoLosingProcess();
+        if (DoPositionProcess())
+        {
+            return true;
+        }
+        if (DoMarchingProcess())
+        {
+            return true;
+        }
+        return false;
     }
 
     //同名処理
@@ -329,7 +341,7 @@ public static class Game
     }
 
     //撃破処理
-    public static bool DestructionProcess()
+    public static bool DoDestructionProcess()
     {
         bool processed = false;
         List<Card> cardsToSendToRetreat = new List<Card>();
@@ -399,7 +411,7 @@ public static class Game
     }
 
     //敗北処理
-    public static void LosingProcess()
+    public static void DoLosingProcess()
     {
         List<User> losingUsers = new List<User>();
         foreach (var user in AllUsers)
@@ -416,7 +428,7 @@ public static class Game
     }
 
     //配置処理
-    public static bool PositionProcess()
+    public static bool DoPositionProcess()
     {
         List<Card> cardsToSendToRetreat = new List<Card>();
         foreach (var card in AllCards)
@@ -450,7 +462,7 @@ public static class Game
     }
 
     //進軍処理
-    public static bool MarchingProcess()
+    public static bool DoMarchingProcess()
     {
         if (TurnPlayer.Opponent.FrontField.Count == 0 && TurnPlayer.Opponent.BackField.Count > 0)
         {
