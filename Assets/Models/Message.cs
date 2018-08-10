@@ -313,6 +313,32 @@ public class SameNameProcessMessage : Message
     }
 }
 
+public class ReadyForDestructionProcessMessage : Message
+{
+    public List<Card> CardsToSendToRetreat { get { return field1; } set { field1 = value; } }
+    public Dictionary<User, int> OrbsDetructionCountDict { get { return field2; } set { field2 = value; } }
+}
+
+public class ObtainOrbDestructionProcessMessage : Message
+{
+    public Card Target { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        Target.MoveTo(Target.Controller.Hand);
+    }
+}
+
+public class SendToRetreatDestructionProcessMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        Targets.ForEach(target => target.MoveTo(target.Controller.Retreat));
+    }
+}
+
 ///// 消息种类
 ///// </summary>
 //public enum MessageType

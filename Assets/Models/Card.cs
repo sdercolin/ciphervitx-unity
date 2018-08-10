@@ -438,6 +438,11 @@ public abstract class Card
     public int DestroyedCount = 0;
 
     /// <summary>
+    /// 卡被击破的原因
+    /// </summary>
+    public DestructionReasonTag DestructionReasonTag = DestructionReasonTag.Null;
+
+    /// <summary>
     /// 卡是否在场
     /// </summary>
     /// <returns></returns>
@@ -745,4 +750,11 @@ public enum RangeEnum
     Three, //3
     OnetoTwo, //1-2
     OnetoThree //1-3
+}
+
+public enum DestructionReasonTag
+{
+    Null,
+    ByBattle,
+    BySkill
 }

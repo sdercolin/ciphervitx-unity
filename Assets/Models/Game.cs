@@ -327,6 +327,60 @@ public static class Game
         }
         return false;
     }
+
+    //撃破処理
+    public static bool DestructionProcess()
+    {
+        List<Card> cardsToSendToRetreat = new List<Card>();
+        Dictionary<User, int> orbsDetructionCountDict = new Dictionary<User, int>();
+        foreach (var card in AllCards)
+        {
+            if (card.DestroyedCount > 0)
+            {
+                if (card.IsHero)
+                {
+                    if (orbsDetructionCountDict.ContainsKey(card.Controller))
+                    {
+                        orbsDetructionCountDict[card.Controller] += card.DestroyedCount;
+                    }
+                    else
+                    {
+                        orbsDetructionCountDict.Add(card.Controller, card.DestroyedCount);
+                    }
+                }
+                else
+                {
+                    cardsToSendToRetreat.Add(card);
+                }
+            }
+        }
+        var readyForDestructionProcessMessage = new ReadyForDestructionProcessMessage()
+        {
+            CardsToSendToRetreat = cardsToSendToRetreat,
+            OrbsDetructionCountDict = orbsDetructionCountDict
+        };
+        readyForDestructionProcessMessage = TryDoMessage(readyForDestructionProcessMessage) as ReadyForDestructionProcessMessage;
+        if (readyForDestructionProcessMessage != null)
+        {
+            cardsToSendToRetreat = readyForDestructionProcessMessage.CardsToSendToRetreat;
+            orbsDetructionCountDict = readyForDestructionProcessMessage.OrbsDetructionCountDict;
+            foreach (var pair in orbsDetructionCountDict)
+            {
+                var user = pair.Key;
+                var count = Math.Min(pair.Value, user.Orb.Count);
+                for (int i = 0; i < count; i++)
+                {
+                    DoMessage(new ObtainOrbDestructionProcessMessage()
+                    {
+                        Target = Request.ChooseOne(user.Orb.Cards, user)
+                    });
+                }
+            }
+        }
+        return false;
+    }
+
+    //自動型スキル誘発処理
     public static bool DoInducedSkillProcess()
     {
         if (InducedSkillSetList.Count == 0)
