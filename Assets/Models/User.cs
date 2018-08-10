@@ -27,13 +27,7 @@ public abstract class User
         return "{\"guid\": \"" + Guid + "\" }";
     }
 
-    public List<Area> AllAreas
-    {
-        get
-        {
-            return new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
-        }
-    }
+    public List<Area> AllAreas { get => new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay }; }
     public Deck Deck;
     public Hand Hand;
     public Retreat Retreat;
@@ -45,20 +39,7 @@ public abstract class User
     public BackField BackField;
     public Overlay Overlay;
     public abstract User Opponent { get; }
-    public Card Hero
-    {
-        get
-        {
-            foreach (Card card in AllCards)
-            {
-                if (card.IsHero == true)
-                {
-                    return card;
-                }
-            }
-            return null;
-        }
-    }
+    public Card Hero { get => AllCards.Find(card => card.IsHero); }
 
     /// <summary>
     /// 待处理的转职奖励计数
@@ -117,12 +98,11 @@ public abstract class User
 
     public void Move(List<Card> targets, Skill reason)
     {
-        MoveMessage moveMessage = new MoveMessage()
+        Game.DoMessage(new MoveMessage()
         {
             Targets = targets,
             Reason = reason
-        };
-        Game.DoMessage(moveMessage);
+        });
     }
 
     public void UseBond(Card target, Skill reason)
@@ -138,22 +118,20 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            UseBondMessage useBondMessage = new UseBondMessage()
+            Game.DoMessage(new UseBondMessage()
             {
                 Targets = targets,
                 Reason = reason
-            };
-            Game.DoMessage(useBondMessage);
+            });
         }
     }
 
     public void StartTurn()
     {
-        StartTurnMessage startTurnMessage = new StartTurnMessage()
+        Game.DoMessage(new StartTurnMessage()
         {
             TurnPlayer = this
-        };
-        Game.DoMessage(startTurnMessage);
+        });
     }
 
     public void GoToBondPhase()
@@ -174,13 +152,12 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            ToBondMessage toBondMessage = new ToBondMessage
+            Game.DoMessage(new ToBondMessage
             {
                 Targets = targets,
                 TargetFrontShown = frontShown,
                 Reason = reason
-            };
-            Game.DoMessage(toBondMessage);
+            });
         }
     }
 
@@ -188,12 +165,11 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            ReadyToBondMessage readyToBondMessage = new ReadyToBondMessage
+            ReadyToBondMessage readyToBondMessage = Game.TryDoMessage(new ReadyToBondMessage
             {
                 Targets = targets,
                 TargetFrontShown = frontShown
-            };
-            readyToBondMessage = Game.TryDoMessage(readyToBondMessage) as ReadyToBondMessage;
+            }) as ReadyToBondMessage;
             if (readyToBondMessage != null && readyToBondMessage.Targets.Count > 0)
             {
                 SetToBond(Request.Choose(readyToBondMessage.Targets, min, max, this), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
@@ -213,34 +189,31 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            RefreshUnitMessage refreshUnitMessage = new RefreshUnitMessage()
+            Game.DoMessage(new RefreshUnitMessage()
             {
                 Targets = targets,
                 Reason = reason
-            };
-            Game.DoMessage(refreshUnitMessage);
+            });
         }
     }
 
     public void DrawCard(int number, Skill reason = null)
     {
-        DrawCardMessage drawCardMessage = new DrawCardMessage()
+        Game.DoMessage(new DrawCardMessage()
         {
             Player = this,
             Number = number,
             Reason = reason
-        };
-        Game.DoMessage(drawCardMessage);
+        });
     }
 
     public List<Card> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
-        ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = new ReadyForSameNameProcessPartialMessage()
+        ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryDoMessage(new ReadyForSameNameProcessPartialMessage()
         {
             Targets = units,
             Name = name
-        };
-        readyForSameNameProcessMessage = Game.TryDoMessage(readyForSameNameProcessMessage) as ReadyForSameNameProcessPartialMessage;
+        }) as ReadyForSameNameProcessPartialMessage;
         if (readyForSameNameProcessMessage != null && readyForSameNameProcessMessage.Targets.Count > 1)
         {
             Card savedUnit;
@@ -271,13 +244,7 @@ public class Player : User
 {
     public Player() : base() { }
 
-    public override User Opponent
-    {
-        get
-        {
-            return Game.Rival;
-        }
-    }
+    public override User Opponent { get => Game.Rival; }
 }
 
 /// <summary>
@@ -287,11 +254,5 @@ public class Rival : User
 {
     public Rival() : base() { }
 
-    public override User Opponent
-    {
-        get
-        {
-            return Game.Player;
-        }
-    }
+    public override User Opponent { get => Game.Player; }
 }

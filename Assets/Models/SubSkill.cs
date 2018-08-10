@@ -108,7 +108,7 @@ public class DisableSkill : SubSkill
 {
     public DisableSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
-    Skill Target { get { return field1; } set { field1 = value; } }
+    Skill Target { get => field1; set => field1 = value; }
 
     public override void Attached()
     {

@@ -20,7 +20,7 @@ public static class Game
     //战斗用
     public static Card AttackingUnit = null; //攻击单位
     public static Card DefencingUnit = null; //防御单位
-    public static List<Card> BattlingUnits { get { return new List<Card> { AttackingUnit, DefencingUnit }; } } //战斗单位
+    public static List<Card> BattlingUnits { get => new List<Card> { AttackingUnit, DefencingUnit }; } //战斗单位
     public static int PowerUpByCritical = 0; //必杀攻击增加的战斗力
     public static int PowerUpBySupport = 0; //支援增加的战斗力
 
@@ -28,36 +28,11 @@ public static class Game
     public static List<Card> CCBonusList = new List<Card>(); //存放触发了CC Bonus的卡
     public static List<List<AutoSkill>> InducedSkillSetList = new List<List<AutoSkill>>(); //存放处于诱发状态的能力组
 
+    public static List<Card> AllCards { get => ListUtils.Combine(Player.AllCards, Rival.AllCards); }
 
+    public static List<Area> AllAreas { get => ListUtils.Combine(Player.AllAreas, Rival.AllAreas); }
 
-    public static List<Card> AllCards
-    {
-        get
-        {
-            List<Card> allCards = new List<Card>();
-            ForEachCard(card => allCards.Add(card));
-            return allCards;
-        }
-    }
-
-    public static List<Area> AllAreas
-    {
-        get
-        {
-            List<Area> allAreas = new List<Area>();
-            allAreas.AddRange(Player.AllAreas);
-            allAreas.AddRange(Rival.AllAreas);
-            return allAreas;
-        }
-    }
-
-    public static List<User> AllUsers
-    {
-        get
-        {
-            return new List<User>() { Player, Rival };
-        }
-    }
+    public static List<User> AllUsers { get => new List<User>() { Player, Rival }; }
 
     public static void ForEachCard(Action<Card> action)
     {
@@ -72,54 +47,27 @@ public static class Game
 
     public static Card GetCardByGuid(string guid)
     {
-        foreach (Card card in AllCards)
-        {
-            if (card.Guid == guid)
-            {
-                return card;
-            }
-        }
-        return null;
+        return AllCards.Find(card => card.Guid == guid);
     }
 
     public static Area GetAreaByGuid(string guid)
     {
-        foreach (Area area in AllAreas)
-        {
-            if (area.Guid == guid)
-            {
-                return area;
-            }
-        }
-        return null;
+        return AllAreas.Find(area => area.Guid == guid);
     }
 
     public static User GetUserByGuid(string guid)
     {
-        if (Player.Guid == guid)
-        {
-            return Player;
-        }
-        else if (Rival.Guid == guid)
-        {
-            return Rival;
-        }
-        else
-        {
-            return null;
-        }
+        return AllUsers.Find(user => user.Guid == guid);
     }
 
     public static IAttachable GetItemByGuid(string guid)
     {
         foreach (Card card in AllCards)
         {
-            foreach (var item in card.AttachableList)
+            var itemFound = card.AttachableList.Find(item => item.Guid == guid);
+            if (itemFound != null)
             {
-                if (item.Guid == guid)
-                {
-                    return item;
-                }
+                return itemFound;
             }
         }
         return null;

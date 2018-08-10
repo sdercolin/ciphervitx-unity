@@ -136,10 +136,10 @@ public class EmptyMessage : Message
 
 public class DeployMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public List<bool> TargetsToFrontField { get { return field2; } set { field2 = value; } }
-    public List<bool> TargetsActioned { get { return field3; } set { field3 = value; } }
-    public Skill Reason { get { return field4; } set { field4 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
+    public List<bool> TargetsToFrontField { get => field2; set => field2 = value; }
+    public List<bool> TargetsActioned { get => field3; set => field3 = value; }
+    public Skill Reason { get => field4; set => field4 = value; }
     public override void Do()
     {
         foreach (Card card in Targets)
@@ -165,8 +165,8 @@ public class DeployMessage : Message
 
 public class MoveMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
+    public Skill Reason { get => field2; set => field2 = value; }
     public override void Do()
     {
         foreach (Card card in Targets)
@@ -185,8 +185,8 @@ public class MoveMessage : Message
 
 public class UseBondMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
+    public Skill Reason { get => field2; set => field2 = value; }
     public override void Do()
     {
         foreach (Card card in Targets)
@@ -198,15 +198,15 @@ public class UseBondMessage : Message
 
 public class ReadyToUseBondMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
+    public Skill Reason { get => field2; set => field2 = value; }
 }
 
 public class ToBondMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public bool TargetFrontShown { get { return field2; } set { field2 = value; } }
-    public Skill Reason { get { return field3; } set { field3 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
+    public bool TargetFrontShown { get => field2; set => field2 = value; }
+    public Skill Reason { get => field3; set => field3 = value; }
     public override void Do()
     {
         foreach (Card card in Targets)
@@ -222,16 +222,16 @@ public class ToBondMessage : Message
 
 public class ReadyToBondMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public bool TargetFrontShown { get { return field2; } set { field2 = value; } }
-    public Skill Reason { get { return field3; } set { field3 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
+    public bool TargetFrontShown { get => field2; set => field2 = value; }
+    public Skill Reason { get => field3; set => field3 = value; }
 }
 
 public class AvoidMessage : Message
 {
-    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
-    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
-    public Card CardForAvoiding { get { return field3; } set { field3 = value; } }
+    public Card AttackingUnit { get => field1; set => field1 = value; }
+    public Card DefendingUnit { get => field2; set => field2 = value; }
+    public Card CardForAvoiding { get => field3; set => field3 = value; }
     public override void Do()
     {
         CardForAvoiding.MoveTo(CardForAvoiding.Controller.Retreat);
@@ -240,14 +240,14 @@ public class AvoidMessage : Message
 
 public class ReadyToAvoidMessage : Message
 {
-    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
-    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
-    public List<Card> CardsReadyForAvoiding { get { return field3; } set { field3 = value; } }
+    public Card AttackingUnit { get => field1; set => field1 = value; }
+    public Card DefendingUnit { get => field2; set => field2 = value; }
+    public List<Card> CardsReadyForAvoiding { get => field3; set => field3 = value; }
 }
 
 public class StartTurnMessage : Message
 {
-    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public User TurnPlayer { get => field1; set => field1 = value; }
     public override void Do()
     {
         Game.TurnPlayer = TurnPlayer;
@@ -259,7 +259,7 @@ public class StartTurnMessage : Message
 
 public class GoToBondPhaseMessage : Message
 {
-    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public User TurnPlayer { get => field1; set => field1 = value; }
     public override void Do()
     {
         Game.CurrentPhase = Phase.BondPhase;
@@ -268,8 +268,8 @@ public class GoToBondPhaseMessage : Message
 
 public class RefreshUnitMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
+    public Skill Reason { get => field2; set => field2 = value; }
     public override void Do()
     {
         foreach (var unit in Targets)
@@ -281,9 +281,9 @@ public class RefreshUnitMessage : Message
 
 public class DrawCardMessage : Message
 {
-    public int Number { get { return field1; } set { field1 = value; } }
-    public User Player { get { return field2; } set { field2 = value; } }
-    public Skill Reason { get { return field3; } set { field3 = value; } }
+    public int Number { get => field1; set => field1 = value; }
+    public User Player { get => field2; set => field2 = value; }
+    public Skill Reason { get => field3; set => field3 = value; }
 
     public override void Do()
     {
@@ -296,13 +296,13 @@ public class DrawCardMessage : Message
 
 public class ReadyForSameNameProcessPartialMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public string Name { get { return field2; } set { field2 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
+    public string Name { get => field2; set => field2 = value; }
 }
 
 public class SendToRetreatSameNameProcessMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
 
     public override void Do()
     {
@@ -315,14 +315,14 @@ public class SendToRetreatSameNameProcessMessage : Message
 
 public class ReadyForDestructionProcessMessage : Message
 {
-    public List<Card> CardsToSendToRetreat { get { return field1; } set { field1 = value; } }
-    public Dictionary<User, int> OrbsDetructionCountDict { get { return field2; } set { field2 = value; } }
+    public List<Card> CardsToSendToRetreat { get => field1; set => field1 = value; }
+    public Dictionary<User, int> OrbsDetructionCountDict { get => field2; set => field2 = value; }
 }
 
 public class ObtainOrbDestructionProcessMessage : Message
 {
-    public Card Target { get { return field1; } set { field1 = value; } }
-    public Card Reason { get { return field2; } set { field2 = value; } }
+    public Card Target { get => field1; set => field1 = value; }
+    public Card Reason { get => field2; set => field2 = value; }
 
     public override void Do()
     {
@@ -337,7 +337,7 @@ public class ObtainOrbDestructionProcessMessage : Message
 
 public class SendToRetreatDestructionProcessMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
 
     public override void Do()
     {
@@ -351,7 +351,7 @@ public class SendToRetreatDestructionProcessMessage : Message
 
 public class SendToRetreatPositionProcessMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
 
     public override void Do()
     {
@@ -364,7 +364,7 @@ public class SendToRetreatPositionProcessMessage : Message
 
 public class MoveMarchingProcessMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public List<Card> Targets { get => field1; set => field1 = value; }
 
     public override void Do()
     {

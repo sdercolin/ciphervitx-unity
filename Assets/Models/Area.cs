@@ -27,13 +27,7 @@ public abstract class Area
     /// <summary>
     /// 该区域的卡片列表的浅表拷贝
     /// </summary>
-    public virtual List<Card> Cards
-    {
-        get
-        {
-            return ListUtils.Clone(list);
-        }
-    }
+    public virtual List<Card> Cards { get => ListUtils.Clone(list); }
 
     /// <summary>
     /// 是否包含某张卡
@@ -45,13 +39,7 @@ public abstract class Area
         return list.Contains(card);
     }
 
-    public int Count
-    {
-        get
-        {
-            return list.Count;
-        }
-    }
+    public int Count { get => list.Count; }
 
     /// <summary>
     /// 控制者
@@ -274,40 +262,12 @@ public class Bond : Area
     /// <summary>
     /// 未翻面的羁绊卡数量
     /// </summary>
-    public int UnusedBondsCount
-    {
-        get
-        {
-            int count = 0;
-            foreach (Card bond in list)
-            {
-                if (bond.FrontShown)
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-    }
+    public int UnusedBondsCount { get => UnusedBonds.Count; }
 
     /// <summary>
     /// 未翻面的羁绊卡列表
     /// </summary>
-    public List<Card> UnusedBonds
-    {
-        get
-        {
-            List<Card> result = new List<Card>();
-            foreach (Card bond in base.list)
-            {
-                if (bond.FrontShown)
-                {
-                    result.Add(bond);
-                }
-            }
-            return result;
-        }
-    }
+    public List<Card> UnusedBonds { get => list.FindAll(bond => bond.FrontShown); }
 
     /// <summary>
     /// 是否包含具备某势力的卡
@@ -358,21 +318,12 @@ public class Field : Area
         this.Controller = Controller;
     }
 
-    public override List<Card> Cards
-    {
-        get
-        {
-            return ListUtils.Combine(Controller.BackField.Cards, Controller.FrontField.Cards);
-        }
-    }
+    public override List<Card> Cards { get => ListUtils.Combine(Controller.BackField.Cards, Controller.FrontField.Cards); }
 
     public bool HasSameNameCardWith(Card card)
     {
         return !TrueForAllCard(x => !x.HasSameUnitNameWith(card));
     }
-
-    public override void ProcessCardIn(Card card, Area fromArea) { }
-    public override void ProcessCardOut(Card card, Area toArea) { }
 }
 
 /// <summary>

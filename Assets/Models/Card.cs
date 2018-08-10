@@ -382,35 +382,17 @@ public abstract class Card
     /// <summary>
     /// 等级
     /// </summary>
-    public int Level
-    {
-        get
-        {
-            return stacks.Count + 1;
-        }
-    }
+    public int Level { get => stacks.Count + 1; }
 
     /// <summary>
     /// 是否已升级
     /// </summary>
-    public bool IsLevelUped
-    {
-        get
-        {
-            return Level > 1;
-        }
-    }
+    public bool IsLevelUped { get => Level > 1; }
 
     /// <summary>
     /// 是否已转职
     /// </summary>
-    public bool IsClassChanged
-    {
-        get
-        {
-            return IsLevelUped && ClassChangeCost > 0;
-        }
-    }
+    public bool IsClassChanged { get => IsLevelUped && ClassChangeCost > 0; }
 
     /// <summary>
     /// 卡是否横置
@@ -446,32 +428,13 @@ public abstract class Card
     /// 卡是否在场
     /// </summary>
     /// <returns></returns>
-    public bool IsOnField
-    {
-        get
-        {
-            return BelongedRegion is FrontField || BelongedRegion is BackField;
-        }
-    }
+    public bool IsOnField { get => BelongedRegion is FrontField || BelongedRegion is BackField; }
 
     /// <summary>
     /// 获取卡所在的区域
     /// </summary>
     /// <returns>卡所在的区域</returns>
-    public Area BelongedRegion
-    {
-        get
-        {
-            foreach (Area area in Controller.AllAreas)
-            {
-                if (area.Contains(this))
-                {
-                    return area;
-                }
-            }
-            return null;
-        }
-    }
+    public Area BelongedRegion { get => Controller.AllAreas.Find(area => area.Contains(this)); }
 
     /// <summary>
     /// 附加列表
@@ -649,12 +612,12 @@ public abstract class Card
     /// <summary>
     /// 我方
     /// </summary>
-    public User Player { get { return Controller; } }
+    public User Player { get => Controller; }
 
     /// <summary>
     /// 对手
     /// </summary>
-    public User Rival { get { return Controller.Opponent; } }
+    public User Rival { get => Controller.Opponent; }
     #endregion
 
     /// <summary>

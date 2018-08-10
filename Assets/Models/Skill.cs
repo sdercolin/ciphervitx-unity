@@ -18,12 +18,12 @@ public abstract class Skill : IAttachable
     /// <summary>
     /// 控制者
     /// </summary>
-    public User Controller { get { return Owner.Controller; } }
+    public User Controller { get => Owner.Controller; }
 
     /// <summary>
     /// 控制者的对手
     /// </summary>
-    public User Opponent { get { return Owner.Controller.Opponent; } }
+    public User Opponent { get => Owner.Controller.Opponent; }
 
     /// <summary>
     /// 该能力在卡面上的记述顺序号
