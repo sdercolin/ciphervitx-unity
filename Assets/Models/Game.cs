@@ -449,6 +449,23 @@ public static class Game
         }
     }
 
+    //進軍処理
+    public static bool MarchingProcess()
+    {
+        if (TurnPlayer.Opponent.FrontField.Count == 0 && TurnPlayer.Opponent.BackField.Count > 0)
+        {
+            DoMessage(new MoveMarchingProcessMessage()
+            {
+                Targets = TurnPlayer.Opponent.BackField.Cards
+            });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     //自動型スキル誘発処理
     public static bool DoInducedSkillProcess()
     {
