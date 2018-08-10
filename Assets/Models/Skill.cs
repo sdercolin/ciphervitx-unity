@@ -487,6 +487,8 @@ public enum SkillKeyword
     CF, //化形
     BS, //羁绊技
     RM, //龙脉
+    HS, //英雄技
+    TS, //双子技
     IS, //连发技
 }
 
