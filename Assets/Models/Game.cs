@@ -415,6 +415,40 @@ public static class Game
         }
     }
 
+    //配置処理
+    public static bool PositionProcess()
+    {
+        List<Card> cardsToSendToRetreat = new List<Card>();
+        foreach (var card in AllCards)
+        {
+            foreach (IForbidPosition item in card.SubSkillList)
+            {
+                foreach (var areaType in item.ForbiddenAreaTypes)
+                {
+                    if (card.BelongedRegion.GetType() == areaType)
+                    {
+                        if (!cardsToSendToRetreat.Contains(card))
+                        {
+                            cardsToSendToRetreat.Add(card);
+                        }
+                    }
+                }
+            }
+        }
+        if (cardsToSendToRetreat.Count > 0)
+        {
+            DoMessage(new SendToRetreatPositionProcessMessage()
+            {
+                Targets = cardsToSendToRetreat
+            });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     //自動型スキル誘発処理
     public static bool DoInducedSkillProcess()
     {

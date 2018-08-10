@@ -146,9 +146,11 @@ public class DisableAllSkills : SubSkill
 /// <summary>
 /// 不能被放置到羁绊区
 /// </summary>
-public class CanNotBePlacedInBond : SubSkill
+public class CanNotBePlacedInBond : SubSkill, IForbidPosition
 {
     public CanNotBePlacedInBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    public List<Type> ForbiddenAreaTypes { get => new List<Type>() { typeof(Bond) }; }
 
     public override bool Try(Message message, ref Message substitute)
     {

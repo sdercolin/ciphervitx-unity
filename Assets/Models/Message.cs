@@ -349,6 +349,19 @@ public class SendToRetreatDestructionProcessMessage : Message
     }
 }
 
+public class SendToRetreatPositionProcessMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        Targets.ForEach(target =>
+        {
+            target.MoveTo(target.Controller.Retreat);
+        });
+    }
+}
+
 ///// 消息种类
 ///// </summary>
 //public enum MessageType
