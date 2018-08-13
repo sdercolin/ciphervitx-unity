@@ -212,5 +212,12 @@ public class AllowSameNameDeployment : SubSkill
         }
         return true;
     }
+}
 
+/// <summary>
+/// 不会被后卫区上的敌方单位攻击
+/// </summary>
+public class WillNotBeAttackedFromBackField : SubSkill
+{
+    public WillNotBeAttackedFromBackField(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 }
