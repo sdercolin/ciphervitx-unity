@@ -136,9 +136,50 @@ public abstract class User
 
     public void GoToBondPhase()
     {
-
+        Game.DoMessage(new GoToBondPhaseMessage()
+        {
+            TurnPlayer = this
+        });
     }
 
+    public void GoToDeploymentPhase()
+    {
+        Game.DoMessage(new GoToDeploymentPhaseMessage()
+        {
+            TurnPlayer = this
+        });
+    }
+
+    public void GoToActionPhase()
+    {
+        Game.DoMessage(new GoToActionPhaseMessage()
+        {
+            TurnPlayer = this
+        });
+    }
+
+    public void EndTurn()
+    {
+        Game.DoMessage(new EndTurnMessage()
+        {
+            TurnPlayer = this
+        });
+    }
+
+    public void ClearStatusEndingTurn()
+    {
+        Game.DoMessage(new ClearStatusEndingTurnMessage()
+        {
+            TurnPlayer = this
+        });
+    }
+
+    public void SwitchTurn()
+    {
+        Game.DoMessage(new SwitchTurnMessage(){
+
+        });
+    }
     public void SetToBond(Card target, bool frontShown, Skill reason = null)
     {
         if (target != null)

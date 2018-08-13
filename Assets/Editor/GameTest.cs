@@ -20,7 +20,7 @@ public class GameTest
         Assert.IsTrue(card1.IsHorizontal);
         Assert.IsTrue(!card2.IsHorizontal);
 
-        Game.DoBeginningPhase();
+        Game.StartTurn();
 
         Assert.IsTrue(!card1.IsHorizontal);
         Assert.IsTrue(!card2.IsHorizontal);

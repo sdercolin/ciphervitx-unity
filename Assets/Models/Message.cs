@@ -266,6 +266,55 @@ public class GoToBondPhaseMessage : Message
     }
 }
 
+public class GoToDeploymentPhaseMessage : Message
+{
+    public User TurnPlayer { get => field1; set => field1 = value; }
+    public override void Do()
+    {
+        Game.CurrentPhase = Phase.DeploymentPhase;
+    }
+}
+
+public class GoToActionPhaseMessage : Message
+{
+    public User TurnPlayer { get => field1; set => field1 = value; }
+    public override void Do()
+    {
+        Game.CurrentPhase = Phase.ActionPhase;
+    }
+}
+
+public class EndTurnMessage : Message
+{
+    public User TurnPlayer { get => field1; set => field1 = value; }
+    public override void Do()
+    {
+        Game.CurrentPhase = Phase.EndPhase;
+    }
+}
+
+public class ClearStatusEndingTurnMessage : Message
+{
+    public User TurnPlayer { get => field1; set => field1 = value; }
+    public override void Do()
+    {
+        Game.ForEachCard(card =>
+        {
+            card.ClearStatusEndingTurn();
+        });
+    }
+}
+public class SwitchTurnMessage : Message
+{
+    public User NextTurnPlayer { get => field1; set => field1 = value; }
+    public override void Do()
+    {
+        if (Game.Player == NextTurnPlayer)
+        {
+            Game.StartTurn();
+        }
+    }
+}
 public class RefreshUnitMessage : Message
 {
     public List<Card> Targets { get => field1; set => field1 = value; }

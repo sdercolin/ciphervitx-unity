@@ -390,9 +390,19 @@ public abstract class Card
     public bool IsLevelUped { get => Level > 1; }
 
     /// <summary>
+    /// 在本回合中是否已升级
+    /// </summary>
+    public bool IsLevelUpedInThisTurn;
+
+    /// <summary>
     /// 是否已转职
     /// </summary>
     public bool IsClassChanged { get => IsLevelUped && ClassChangeCost > 0; }
+
+    /// <summary>
+    /// 在本回合中是否已转职
+    /// </summary>
+    public bool IsClassChangedInThisTurn;
 
     /// <summary>
     /// 卡是否横置
@@ -597,6 +607,8 @@ public abstract class Card
         IsHorizontal = false;
         FrontShown = true;
         Visible = true;
+        IsLevelUpedInThisTurn = false;
+        IsClassChangedInThisTurn = false;
         foreach (var item in BuffList)
         {
             item.Detach();
@@ -604,6 +616,54 @@ public abstract class Card
         foreach (var item in SubSkillList)
         {
             item.Detach();
+        }
+        foreach (var item in SkillList)
+        {
+            item.UsedInThisTurn = false;
+        }
+    }
+
+    public void ClearStatusEndingTurn()
+    {
+        IsLevelUpedInThisTurn = false;
+        IsClassChangedInThisTurn = false;
+        foreach (var item in BuffList)
+        {
+            switch (item.LastingType)
+            {
+                case LastingTypeEnum.UntilTurnEnds:
+                    item.Detach();
+                    break;
+                case LastingTypeEnum.UntilNextOpponentTurnEnds:
+                    if (item.Origin != null && item.Origin.Controller != Game.TurnPlayer)
+                    {
+                        item.Detach();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        foreach (var item in SubSkillList)
+        {
+            switch (item.LastingType)
+            {
+                case LastingTypeEnum.UntilTurnEnds:
+                    item.Detach();
+                    break;
+                case LastingTypeEnum.UntilNextOpponentTurnEnds:
+                    if (item.Origin != null && item.Origin.Controller != Game.TurnPlayer)
+                    {
+                        item.Detach();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        foreach (var item in SkillList)
+        {
+            item.UsedInThisTurn = false;
         }
     }
     #endregion

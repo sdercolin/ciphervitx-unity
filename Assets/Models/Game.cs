@@ -151,46 +151,87 @@ public static class Game
 
     public static void Start(bool ifFirstPlay)
     {
+        //Called by UI
         if (ifFirstPlay)
         {
             TurnPlayer = Player;
-            DoBeginningPhase();
+            StartTurn();
         }
         else
         {
-            WaitTurn();
+            TurnPlayer = Rival;
+            //Release
         }
     }
 
-    public static void WaitTurn()
+    public static void StartTurn()
     {
-        //Wait until rival turn ends
+        //Called by Message when opponent ends turn
         DoBeginningPhase();
     }
 
-    public static void DoBeginningPhase()
+    private static void DoBeginningPhase()
     {
-        TurnPlayer.StartTurn();
+        Player.StartTurn();
         DoAutoCheckTiming();
-        TurnPlayer.RefreshUnit(TurnPlayer.Field.Filter(card => card.IsHorizontal), null);
+        Player.RefreshUnit(Player.Field.Filter(card => card.IsHorizontal), null);
         DoAutoCheckTiming();
         if (TurnCount > 1)
         {
-            TurnPlayer.DrawCard(1);
+            Player.DrawCard(1);
             DoAutoCheckTiming();
         }
+        DoBondPhase();
     }
 
-    public static void DoBondPhase()
+    private static void DoBondPhase()
     {
-        TurnPlayer.GoToBondPhase();
+        Player.GoToBondPhase();
         DoAutoCheckTiming();
-        TurnPlayer.ChooseSetToBond(TurnPlayer.Hand.Cards, true, 0, 1);
+        Player.ChooseSetToBond(Player.Hand.Cards, true, 0, 1);
         DoAutoCheckTiming();
+        StartDeploymentPhase();
+    }
+
+    private static void StartDeploymentPhase()
+    {
+        Player.GoToDeploymentPhase();
+        DoAutoCheckTiming();
+        //Release
+    }
+
+    public static void EndDeploymentPhase()
+    {
+        //Called by UI
+        DoAutoCheckTiming();
+        StartActionPhase();
+    }
+
+    private static void StartActionPhase()
+    {
+        TurnPlayer.GoToActionPhase();
+        DoAutoCheckTiming();
+        //Release
+    }
+
+    public static void EndActionPhase()
+    {
+        //Called by UI
+        DoAutoCheckTiming();
+        DoEndPhase();
+    }
+
+    private static void DoEndPhase()
+    {
+        Player.EndTurn();
+        DoAutoCheckTiming();
+        Player.ClearStatusEndingTurn();
+        Player.SwitchTurn();
+        //Release
     }
 
     //自動処理チェックタイミング
-    public static void DoAutoCheckTiming()
+    private static void DoAutoCheckTiming()
     {
         while (true)
         {
@@ -204,7 +245,7 @@ public static class Game
     }
 
     //クラスチェンジボーナス処理
-    public static void DoCCBonusProcess()
+    private static void DoCCBonusProcess()
     {
         int playerCount = 0;
         int rivalCount = 0;
@@ -231,7 +272,7 @@ public static class Game
     }
 
     //ルール処理
-    public static bool DoRuleProcess()
+    private static bool DoRuleProcess()
     {
         if (DoSameNameProcess())
         {
@@ -254,7 +295,7 @@ public static class Game
     }
 
     //同名処理
-    public static bool DoSameNameProcess()
+    private static bool DoSameNameProcess()
     {
         List<string> nameChecked = new List<string>();
         List<Card> cardsToSendToRetreat = new List<Card>();
@@ -289,7 +330,7 @@ public static class Game
     }
 
     //撃破処理
-    public static bool DoDestructionProcess()
+    private static bool DoDestructionProcess()
     {
         bool processed = false;
         List<Card> cardsToSendToRetreat = new List<Card>();
@@ -359,7 +400,7 @@ public static class Game
     }
 
     //敗北処理
-    public static void DoLosingProcess()
+    private static void DoLosingProcess()
     {
         List<User> losingUsers = new List<User>();
         foreach (var user in AllUsers)
@@ -376,7 +417,7 @@ public static class Game
     }
 
     //配置処理
-    public static bool DoPositionProcess()
+    private static bool DoPositionProcess()
     {
         List<Card> cardsToSendToRetreat = new List<Card>();
         foreach (var card in AllCards)
@@ -413,7 +454,7 @@ public static class Game
     }
 
     //進軍処理
-    public static bool DoMarchingProcess()
+    private static bool DoMarchingProcess()
     {
         if (TurnPlayer.Opponent.FrontField.Count == 0 && TurnPlayer.Opponent.BackField.Count > 0)
         {
@@ -430,7 +471,7 @@ public static class Game
     }
 
     //自動型スキル誘発処理
-    public static bool DoInducedSkillProcess()
+    private static bool DoInducedSkillProcess()
     {
         if (InducedSkillSetList.Count == 0)
         {
@@ -498,7 +539,7 @@ public static class Game
         ///
     }
 
-    public static void Over(List<User> losingUsers)
+    private static void Over(List<User> losingUsers)
     {
         //TO DO: Game Over
     }

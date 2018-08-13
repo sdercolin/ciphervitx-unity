@@ -84,20 +84,6 @@ public abstract class SubSkill : Skill
                 return;
             }
         }
-
-        switch (LastingType)
-        {
-            case LastingTypeEnum.UntilBattleEnds:
-                break;
-            case LastingTypeEnum.UntilTurnEnds:
-                break;
-            case LastingTypeEnum.UntilNextOpponentTurnEnds:
-                break;
-            case LastingTypeEnum.Forever:
-                break;
-            default:
-                break;
-        }
     }
 }
 
