@@ -182,3 +182,35 @@ public class CanNotBeAvoided : SubSkill
         return true;
     }
 }
+
+/// <summary>
+/// 可以无视羁绊颜色出击
+/// </summary>
+public class CanDeployWithoutBond : SubSkill
+{
+    public CanDeployWithoutBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+}
+
+/// <summary>
+/// 可以复数出击/存在
+/// </summary>
+public class AllowSameNameDeployment : SubSkill
+{
+    public AllowSameNameDeployment(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        var readyForSameNameProcessPartialMessage = message as ReadyForSameNameProcessPartialMessage;
+        if (readyForSameNameProcessPartialMessage != null)
+        {
+            if (Owner.HasUnitNameOf(readyForSameNameProcessPartialMessage.Name) && readyForSameNameProcessPartialMessage.Targets.Contains(Owner))
+            {
+                substitute = readyForSameNameProcessPartialMessage.Clone();
+                ((ReadyForSameNameProcessPartialMessage)substitute).Targets.Remove(Owner);
+                return false;
+            }
+        }
+        return true;
+    }
+
+}

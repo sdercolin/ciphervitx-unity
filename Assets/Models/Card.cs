@@ -361,6 +361,17 @@ public abstract class Card
         });
         return hasNow;
     }
+
+    public bool HasSubSkill(Type type)
+    {
+        return SubSkillList.Find(item => item.GetType() == type) != null;
+    }
+
+    public List<SubSkill> FindAllSubSkills(Type type)
+    {
+        return SubSkillList.FindAll(item => item.GetType() == type);
+    }
+
     #endregion
 
     #region 卡片状态
@@ -640,6 +651,31 @@ public abstract class Card
         {
             return false;
         }
+
+        if (!HasSubSkill(typeof(AllowSameNameDeployment)))
+        {
+            if (Controller.Field.HasSameNameCardWith(this))
+            {
+                return false;
+            }
+        }
+
+        if (!HasSubSkill(typeof(CanDeployWithoutBond)))
+        {
+            foreach (var symbol in symbols)
+            {
+                if (!Controller.Bond.HasSymbolOf(symbol))
+                {
+                    return false;
+                }
+            }
+        }
+
+        if (DeployCost > Controller.Bond.Count - Controller.DeployAndCCCostCount)
+        {
+            return false;
+        }
+
         Message substitute = new EmptyMessage();
         return Game.BroadcastTry(new DeployMessage()
         {
