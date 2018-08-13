@@ -37,8 +37,8 @@ public class MessageTest
         DeployMessage message3 = new DeployMessage()
         {
             Targets = targets,
-            TargetsActioned = new List<bool>() { true },
-            TargetsToFrontField = new List<bool>() { false },
+            Actioned = new List<bool>() { true },
+            ToFrontField = new List<bool>() { false },
             Reason = null
         };
         DeployMessage clone3 = message3.Clone() as DeployMessage;
@@ -46,11 +46,11 @@ public class MessageTest
         Assert.IsTrue(clone3.Reason == null);
         Assert.IsFalse(clone3.Targets == targets);
         Assert.IsTrue(clone3.Targets.SequenceEqual(targets));
-        Assert.IsTrue(clone3.TargetsActioned[0]);
-        Assert.IsFalse(clone3.TargetsToFrontField[0]);
-        clone3.TargetsActioned[0] = false;
-        Assert.IsFalse(clone3.TargetsActioned[0]);
-        Assert.IsTrue(message3.TargetsActioned[0]);
+        Assert.IsTrue(clone3.Actioned[0]);
+        Assert.IsFalse(clone3.ToFrontField[0]);
+        clone3.Actioned[0] = false;
+        Assert.IsFalse(clone3.Actioned[0]);
+        Assert.IsTrue(message3.Actioned[0]);
         //string message3Json = message3.ToString();
         //Debug.Log(message2Json);
     }

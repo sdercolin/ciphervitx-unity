@@ -599,8 +599,8 @@ public abstract class Card
     }
     #endregion
 
-    public bool CheckSetToBond(Skill reason = null, bool frontShown = true)
-    {   
+    public bool CheckSetToBond(bool frontShown = true, Skill reason = null)
+    {
         Message substitute = new EmptyMessage();
         return Game.BroadcastTry(new ToBondMessage()
         {
@@ -611,7 +611,7 @@ public abstract class Card
     }
 
     public bool CheckUseBond(Skill reason = null)
-    {   
+    {
         Message substitute = new EmptyMessage();
         return Game.BroadcastTry(new UseBondMessage()
         {
@@ -619,6 +619,37 @@ public abstract class Card
             Reason = reason
         }, ref substitute);
     }
+
+    public bool CheckDeployment(bool actioned = false, Skill reason = null)
+    {
+        return CheckDeployment(Controller.FrontField, actioned, reason) && CheckDeployment(Controller.BackField, actioned, reason);
+    }
+
+    public bool CheckDeployment(Area area, bool actioned = false, Skill reason = null)
+    {
+        bool toFrontField;
+        if (area == Controller.FrontField)
+        {
+            toFrontField = true;
+        }
+        else if (area == Controller.BackField)
+        {
+            toFrontField = false;
+        }
+        else
+        {
+            return false;
+        }
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new DeployMessage()
+        {
+            Targets = new List<Card>() { this },
+            Actioned = new List<bool>() { actioned },
+            ToFrontField = new List<bool>() { toFrontField },
+            Reason = reason
+        }, ref substitute);
+    }
+
     /// <summary>
     /// 重置所有状态
     /// </summary>

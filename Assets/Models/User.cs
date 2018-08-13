@@ -203,16 +203,16 @@ public abstract class User
         }
     }
 
-    public List<Card> GetPossibleCardsToSetToBond(List<Card> targets, Skill reason = null, bool frontShown = true)
+    public List<Card> GetPossibleCardsToSetToBond(List<Card> targets, bool frontShown = true, Skill reason = null)
     {
-        return targets.FindAll(card => card.CheckSetToBond(reason, frontShown));
+        return targets.FindAll(card => card.CheckSetToBond(frontShown, reason));
     }
 
-    public void ChooseSetToBond(List<Card> targets, int min, int max, Skill reason = null, bool frontShown = true)
+    public void ChooseSetToBond(List<Card> targets, int min, int max, bool frontShown = true, Skill reason = null)
     {
         if (targets.Count > 0)
         {
-            SetToBond(Request.Choose(GetPossibleCardsToSetToBond(targets, reason, frontShown), min, max, this), frontShown, reason);
+            SetToBond(Request.Choose(GetPossibleCardsToSetToBond(targets, frontShown, reason), min, max, this), frontShown, reason);
         }
     }
 
@@ -242,6 +242,27 @@ public abstract class User
         {
             Player = this,
             Number = number,
+            Reason = reason
+        });
+    }
+
+    public List<Card> GetDeployableHands(bool actioned = false, Skill reason = null)
+    {
+        return Hand.Filter(card => card.CheckDeployment(actioned, reason));
+    }
+
+    public void Deploy(Card target, bool toFrontField, bool actioned = false, Skill reason = null)
+    {
+        Deploy(new List<Card>() { target }, new List<bool> { toFrontField }, new List<bool> { actioned }, reason);
+    }
+
+    public void Deploy(List<Card> targets, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
+    {
+        Game.TryDoMessage(new DeployMessage()
+        {
+            Targets = targets,
+            ToFrontField = toFrontField,
+            Actioned = actioned,
             Reason = reason
         });
     }
