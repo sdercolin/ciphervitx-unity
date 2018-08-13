@@ -178,7 +178,7 @@ public abstract class User
     {
         Game.TryDoMessage(new SwitchTurnMessage()
         {
-            NextTurnPlayer = Rival
+            NextTurnPlayer = Opponent
         });
     }
     public void SetToBond(Card target, bool frontShown, Skill reason = null)
