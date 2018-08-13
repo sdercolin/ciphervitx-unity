@@ -39,11 +39,6 @@ public static class ListUtils
         return "[" + json + "]";
     }
 
-    public static List<T> FromString<T>(string json)
-    {
-        throw new NotImplementedException();
-    }
-
     public static List<object> FromString(string json)
     {
         var result = new List<object>();
