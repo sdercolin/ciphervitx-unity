@@ -109,7 +109,7 @@ public static class Game
     /// 广播询问是否允许某操作
     /// </summary>
     /// <param name="message">表示该操作的消息</param>
-    /// <param name="substitute">拒绝该操作时表示作为代替的动作的的消息</param>
+    /// <param name="substitute">拒绝该操作时表示作为代替的动作的消息</param>
     /// <returns>如允许，则返回True</returns>
     public static bool BroadcastTry(Message message, ref Message substitute)
     {
@@ -126,7 +126,8 @@ public static class Game
     /// <summary>
     /// 尝试消息定义的操作
     /// </summary>
-    /// <param name="message"></param>
+    /// <param name="message">表示该操作的消息</param>
+    /// <returns>该操作被拒绝时，作为代替的动作的消息</returns>
     public static Message TryMessage(Message message)
     {
         Message substitute = new EmptyMessage();
@@ -140,7 +141,7 @@ public static class Game
     /// <summary>
     /// 实现消息定义的操作
     /// </summary>
-    /// <param name="message"></param>
+    /// <param name="message">表示该操作的消息</param>
     public static void DoMessage(Message message)
     {
         message.Do();
