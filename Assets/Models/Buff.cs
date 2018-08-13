@@ -131,12 +131,12 @@ public class UnitNameBuff : Buff
     /// <summary>
     /// 是否为添加该单位名
     /// </summary>
-    public bool IsAdding { get => (bool)isAdding; set => isAdding = value; }
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public string Value { get => value; set => base.value = value; }
+    public string Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -153,12 +153,12 @@ public class DeployCostBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get => value; set => base.value = value; }
+    public int Value { get { return value; } set { this.value = value; } }
 
     /// <summary>
     /// 是否为“变为”类型
     /// </summary>
-    public bool IsBecoming { get => (bool)isBecoming; set => isBecoming = value; }
+    public bool IsBecoming { get { return (bool)isBecoming; } set { isBecoming = value; } }
 }
 
 /// <summary>
@@ -175,12 +175,12 @@ public class ClassChangeCostBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get => value; set => base.value = value; }
+    public int Value { get { return value; } set { this.value = value; } }
 
     /// <summary>
     /// 是否为“变为”类型
     /// </summary>
-    public bool IsBecoming { get => (bool)isBecoming; set => isBecoming = value; }
+    public bool IsBecoming { get { return (bool)isBecoming; } set { isBecoming = value; } }
 }
 
 /// <summary>
@@ -196,7 +196,7 @@ public class PowerBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get => value; set => base.value = value; }
+    public int Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -212,7 +212,7 @@ public class SupportBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get => value; set => base.value = value; }
+    public int Value { get { return value; }set { this.value = value; } }
 }
 
 /// <summary>
@@ -229,12 +229,12 @@ public class SymbolBuff : Buff
     /// <summary>
     /// 是否为添加该势力
     /// </summary>
-    public bool IsAdding { get => (bool)isAdding; set => isAdding = value; }
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public SymbolEnum Value { get => value; set => base.value = value; }
+    public SymbolEnum Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -251,12 +251,12 @@ public class WeaponBuff : Buff
     /// <summary>
     /// 是否为添加该武器
     /// </summary>
-    public bool IsAdding { get => (bool)isAdding; set => isAdding = value; }
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public WeaponEnum Value { get => value; set => base.value = value; }
+    public WeaponEnum Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -273,12 +273,12 @@ public class GenderBuff : Buff
     /// <summary>
     /// 是否为添加该性别
     /// </summary>
-    public bool IsAdding { get => (bool)isAdding; set => isAdding = value; }
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public GenderEnum Value { get => value; set => base.value = value; }
+    public GenderEnum Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -295,12 +295,12 @@ public class TypeBuff : Buff
     /// <summary>
     /// 是否为添加该属性
     /// </summary>
-    public bool IsAdding { get => (bool)isAdding; set => isAdding = value; }
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public TypeEnum Value { get => value; set => base.value = value; }
+    public TypeEnum Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -317,10 +317,10 @@ public class RangeBuff : Buff
     /// <summary>
     /// 是否为添加该射程
     /// </summary>
-    public bool IsAdding { get => (bool)isAdding; set => isAdding = value; }
+    public bool IsAdding { get { return (bool)isAdding; } set { isAdding = value; } }
 
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public RangeEnum Value { get => value; set => base.value = value; }
+    public RangeEnum Value { get { return value; } set { this.value = value; } }
 }

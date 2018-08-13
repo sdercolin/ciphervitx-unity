@@ -393,12 +393,12 @@ public abstract class Card
     /// <summary>
     /// 等级
     /// </summary>
-    public int Level { get => stacks.Count + 1; }
+    public int Level => stacks.Count + 1;
 
     /// <summary>
     /// 是否已升级
     /// </summary>
-    public bool IsLevelUped { get => Level > 1; }
+    public bool IsLevelUped => Level > 1;
 
     /// <summary>
     /// 在本回合中是否已升级
@@ -408,7 +408,7 @@ public abstract class Card
     /// <summary>
     /// 是否已转职
     /// </summary>
-    public bool IsClassChanged { get => IsLevelUped && ClassChangeCost > 0; }
+    public bool IsClassChanged => IsLevelUped && ClassChangeCost > 0;
 
     /// <summary>
     /// 在本回合中是否已转职
@@ -449,13 +449,13 @@ public abstract class Card
     /// 卡是否在场
     /// </summary>
     /// <returns></returns>
-    public bool IsOnField { get => BelongedRegion is FrontField || BelongedRegion is BackField; }
+    public bool IsOnField => BelongedRegion is FrontField || BelongedRegion is BackField;
 
     /// <summary>
     /// 获取卡所在的区域
     /// </summary>
     /// <returns>卡所在的区域</returns>
-    public Area BelongedRegion { get => Controller.AllAreas.Find(area => area.Contains(this)); }
+    public Area BelongedRegion => Controller.AllAreas.Find(area => area.Contains(this));
 
     /// <summary>
     /// 附加列表
@@ -759,12 +759,12 @@ public abstract class Card
     /// <summary>
     /// 我方
     /// </summary>
-    public User Player { get => Controller; }
+    public User Player => Controller;
 
     /// <summary>
     /// 对手
     /// </summary>
-    public User Rival { get => Controller.Opponent; }
+    public User Rival => Controller.Opponent;
     #endregion
 
     /// <summary>

@@ -21,7 +21,7 @@ public static class Game
     //战斗用
     public static Card AttackingUnit = null; //攻击单位
     public static Card DefencingUnit = null; //防御单位
-    public static List<Card> BattlingUnits { get => new List<Card> { AttackingUnit, DefencingUnit }; } //战斗单位
+    public static List<Card> BattlingUnits => new List<Card> { AttackingUnit, DefencingUnit };  //战斗单位
     public static int PowerUpByCritical = 0; //必杀攻击增加的战斗力
     public static int PowerUpBySupport = 0; //支援增加的战斗力
 
@@ -29,11 +29,11 @@ public static class Game
     public static List<Card> CCBonusList = new List<Card>(); //存放触发了CC Bonus的卡
     public static List<List<AutoSkill>> InducedSkillSetList = new List<List<AutoSkill>>(); //存放处于诱发状态的能力组
 
-    public static List<Card> AllCards { get => ListUtils.Combine(Player.AllCards, Rival.AllCards); }
+    public static List<Card> AllCards => ListUtils.Combine(Player.AllCards, Rival.AllCards);
 
-    public static List<Area> AllAreas { get => ListUtils.Combine(Player.AllAreas, Rival.AllAreas); }
+    public static List<Area> AllAreas => ListUtils.Combine(Player.AllAreas, Rival.AllAreas);
 
-    public static List<User> AllUsers { get => new List<User>() { Player, Rival }; }
+    public static List<User> AllUsers => new List<User>() { Player, Rival };
 
     public static void ForEachCard(Action<Card> action)
     {

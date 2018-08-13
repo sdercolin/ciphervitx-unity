@@ -28,7 +28,7 @@ public abstract class User
         return "{\"guid\": \"" + Guid + "\" }";
     }
 
-    public List<Area> AllAreas { get => new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay }; }
+    public List<Area> AllAreas => new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
     public Deck Deck;
     public Hand Hand;
     public Retreat Retreat;
@@ -40,7 +40,7 @@ public abstract class User
     public BackField BackField;
     public Overlay Overlay;
     public abstract User Opponent { get; }
-    public Card Hero { get => AllCards.Find(card => card.IsHero); }
+    public Card Hero => AllCards.Find(card => card.IsHero);
 
     /// <summary>
     /// 待处理的转职奖励计数
@@ -305,7 +305,7 @@ public class Player : User
 {
     public Player() : base() { }
 
-    public override User Opponent { get => Game.Rival; }
+    public override User Opponent => Game.Rival;
 }
 
 /// <summary>
@@ -315,5 +315,5 @@ public class Rival : User
 {
     public Rival() : base() { }
 
-    public override User Opponent { get => Game.Player; }
+    public override User Opponent => Game.Player;
 }

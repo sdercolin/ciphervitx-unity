@@ -27,7 +27,7 @@ public abstract class Area
     /// <summary>
     /// 该区域的卡片列表的浅表拷贝
     /// </summary>
-    public virtual List<Card> Cards { get => ListUtils.Clone(list); }
+    public virtual List<Card> Cards => ListUtils.Clone(list);
 
     /// <summary>
     /// 是否包含某张卡
@@ -39,7 +39,7 @@ public abstract class Area
         return list.Contains(card);
     }
 
-    public int Count { get => list.Count; }
+    public int Count => list.Count;
 
     /// <summary>
     /// 控制者
@@ -262,12 +262,12 @@ public class Bond : Area
     /// <summary>
     /// 未翻面的羁绊卡数量
     /// </summary>
-    public int UnusedBondsCount { get => UnusedBonds.Count; }
+    public int UnusedBondsCount => UnusedBonds.Count;
 
     /// <summary>
     /// 未翻面的羁绊卡列表
     /// </summary>
-    public List<Card> UnusedBonds { get => list.FindAll(bond => bond.FrontShown); }
+    public List<Card> UnusedBonds => list.FindAll(bond => bond.FrontShown);
 
     /// <summary>
     /// 是否包含具备某势力的卡
@@ -318,7 +318,7 @@ public class Field : Area
         this.Controller = Controller;
     }
 
-    public override List<Card> Cards { get => ListUtils.Combine(Controller.BackField.Cards, Controller.FrontField.Cards); }
+    public override List<Card> Cards => ListUtils.Combine(Controller.BackField.Cards, Controller.FrontField.Cards);
 
     public bool HasSameNameCardWith(Card card)
     {
