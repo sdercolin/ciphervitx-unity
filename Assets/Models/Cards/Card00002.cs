@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 /// <summary>
 /// (S01) S01-002 戦場を翔ける王女 シーダ
 /// </summary>
@@ -63,10 +65,10 @@ public class Card00002 : Card
             return Cost.Null;
         }
 
-        public override void Do()
+        public override async Task Do()
         {
             var choices = Controller.Field.Cards;
-            var targets = Request.Choose(choices, Controller);
+            var targets = await Request.Choose(choices, Controller);
             Controller.Move(targets, this);
         }
     }
@@ -97,9 +99,10 @@ public class Card00002 : Card
             return Cost.UseBondCost(this, 1);
         }
 
-        public override void Do()
+        public override Task Do()
         {
             Owner.Attach(new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
+            return Task.CompletedTask;
         }
     }
 }

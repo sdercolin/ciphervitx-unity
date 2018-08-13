@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-public class Cost
+public abstract class Cost
 {
     public Skill Reason;
     public List<Card> Choices;
@@ -19,11 +20,11 @@ public class Cost
         return true;
     }
 
-    public virtual void Pay() { }
+    public abstract Task Pay();
 
 
     #region 工厂方法
-    public static Cost Null = new Cost(null);
+    public static Cost Null = new NullCost(null);
 
     public static Cost UseBondCost(Skill reason, int number, Predicate<Card> condition = null)
     {
@@ -32,7 +33,17 @@ public class Cost
     #endregion
 }
 
-class UseBondCost : Cost
+public class NullCost : Cost
+{
+    public NullCost(Skill reason) : base(reason) { }
+
+    public override Task Pay()
+    {
+        return Task.CompletedTask;
+    }
+}
+
+public class UseBondCost : Cost
 {
     public int Number;
     public Predicate<Card> Condition;
@@ -64,7 +75,7 @@ class UseBondCost : Cost
         }
     }
 
-    public async override void Pay()
+    public async override Task Pay()
     {
         var targets = await Request.Choose(Choices, Number, Reason.Controller);
         Reason.Controller.UseBond(targets, Reason);

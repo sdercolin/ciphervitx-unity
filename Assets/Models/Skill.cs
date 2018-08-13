@@ -134,11 +134,11 @@ public abstract class ActionSkill : Skill
     /// <summary>
     /// 解决能力
     /// </summary>
-    public void Solve()
+    public async Task Solve()
     {
         //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-        Cost.Pay();
-        Do();
+        await Cost.Pay();
+        await Do();
         if (OncePerTurn)
         {
             UsedInThisTurn = true;
@@ -170,7 +170,7 @@ public abstract class ActionSkill : Skill
     /// <summary>
     /// 实行能力
     /// </summary>
-    public abstract void Do();
+    public abstract Task Do();
 }
 
 /// <summary>
@@ -240,8 +240,8 @@ public abstract class AutoSkill : Skill
                 }
             }
             //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-            Cost.Pay();
-            Do();
+            await Cost.Pay();
+            await Do();
             if (OncePerTurn)
             {
                 UsedInThisTurn = true;
@@ -288,7 +288,7 @@ public abstract class AutoSkill : Skill
     /// <summary>
     /// 能力实行
     /// </summary>
-    public abstract void Do();
+    public abstract Task Do();
 }
 
 /// <summary>
@@ -416,8 +416,8 @@ public abstract class SupportSkill : Skill
                 }
             }
             //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-            Cost.Pay();
-            Do(AttackingUnit, AttackedUnit);
+            await Cost.Pay();
+            await Do(AttackingUnit, AttackedUnit);
         }
     }
 
@@ -434,7 +434,7 @@ public abstract class SupportSkill : Skill
     /// </summary>
     /// <param name="AttackingUnit">攻击单位</param>
     /// <param name="AttackedUnit">被攻击单位</param>
-    public abstract void Do(Card AttackingUnit, Card AttackedUnit);
+    public abstract Task Do(Card AttackingUnit, Card AttackedUnit);
 
     /// <summary>
     /// 定义费用

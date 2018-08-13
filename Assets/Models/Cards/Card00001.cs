@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using System.Threading.Tasks;
+
+/// <summary>
 /// (S01) S01-001 スターロード マルス
 /// </summary>
 public class Card00001 : Card
@@ -62,10 +64,10 @@ public class Card00001 : Card
             return Cost.Null;
         }
 
-        public override void Do()
+        public override async Task Do()
         {
             var choices = Opponent.BackField.Cards;
-            var target = Request.ChooseUpToOne(choices, Controller);
+            var target = await Request.ChooseUpToOne(choices, Controller);
             Controller.Move(target, this);
         }
     }

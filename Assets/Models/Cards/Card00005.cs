@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 /// <summary>
 /// (S01) S01-005 必殺剣の使い手 ナバール
 /// </summary>
@@ -50,9 +51,10 @@ public class Card00005 : Card
             return Cost.UseBondCost(this, 3);
         }
 
-        public override void Do()
+        public override Task Do()
         {
             Owner.Attach(new CanNotBeAvoided(this, LastingTypeEnum.UntilTurnEnds));
+            return Task.CompletedTask;
         }
     }
 

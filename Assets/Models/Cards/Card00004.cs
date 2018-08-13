@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 /// <summary>
 /// (S01) S01-004 剛剣の使い手 オグマ
 /// </summary>
@@ -60,13 +62,14 @@ public class Card00004 : Card
             return false;
         }
 
-        public override void Do()
+        public override Task Do()
         {
             Targets.ForEach(unit =>
             {
                 unit.Attach(new PowerBuff(Owner, this, 10, LastingTypeEnum.UntilTurnEnds));
                 Owner.Attach(new PowerBuff(Owner, this, 10, LastingTypeEnum.UntilTurnEnds));
             });
+            return Task.CompletedTask;
         }
 
         public override Cost DefineCost()
@@ -101,11 +104,12 @@ public class Card00004 : Card
             return Cost.UseBondCost(this, 1);
         }
 
-        public override void Do()
+        public override Task Do()
         {
             Owner.Attach(new PowerBuff(Owner, this, -10, LastingTypeEnum.UntilTurnEnds));
             Owner.Attach(new WeaponBuff(Owner, this, true, WeaponEnum.Magic, LastingTypeEnum.UntilTurnEnds));
             Owner.Attach(new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
+            return Task.CompletedTask;
         }
     }
 }
