@@ -64,9 +64,9 @@ class UseBondCost : Cost
         }
     }
 
-    public override void Pay()
+    public async override void Pay()
     {
-        var targets = Request.Choose(Choices, Number, Reason.Controller);
+        var targets = await Request.Choose(Choices, Number, Reason.Controller);
         Reason.Controller.UseBond(targets, Reason);
     }
 }

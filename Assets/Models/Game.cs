@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public static class Game
 {
@@ -186,74 +187,74 @@ public static class Game
         DoBeginningPhase();
     }
 
-    private static void DoBeginningPhase()
+    private async static void DoBeginningPhase()
     {
         Player.StartTurn();
-        DoAutoCheckTiming();
+        await DoAutoCheckTiming();
         Player.RefreshUnit(Player.Field.Filter(card => card.IsHorizontal), null);
-        DoAutoCheckTiming();
+        await DoAutoCheckTiming();
         if (TurnCount > 1)
         {
             Player.DrawCard(1);
-            DoAutoCheckTiming();
+            await DoAutoCheckTiming();
         }
         DoBondPhase();
     }
 
-    private static void DoBondPhase()
+    private async static void DoBondPhase()
     {
         Player.GoToBondPhase();
-        DoAutoCheckTiming();
-        Player.ChooseSetToBond(Player.Hand.Cards, 0, 1);
-        DoAutoCheckTiming();
+        await DoAutoCheckTiming();
+        await Player.ChooseSetToBond(Player.Hand.Cards, 0, 1);
+        await DoAutoCheckTiming();
         StartDeploymentPhase();
     }
 
-    private static void StartDeploymentPhase()
+    private async static void StartDeploymentPhase()
     {
         Player.GoToDeploymentPhase();
-        DoAutoCheckTiming();
+        await DoAutoCheckTiming();
         //Release
     }
 
-    public static void EndDeploymentPhase()
+    public async static void EndDeploymentPhase()
     {
         //Called by UI
-        DoAutoCheckTiming();
+        await DoAutoCheckTiming();
         StartActionPhase();
     }
 
-    private static void StartActionPhase()
+    private async static void StartActionPhase()
     {
         TurnPlayer.GoToActionPhase();
-        DoAutoCheckTiming();
+        await DoAutoCheckTiming();
         //Release
     }
 
-    public static void EndActionPhase()
+    public async static void EndActionPhase()
     {
         //Called by UI
-        DoAutoCheckTiming();
+        await DoAutoCheckTiming();
         DoEndPhase();
     }
 
-    private static void DoEndPhase()
+    private async static void DoEndPhase()
     {
         Player.EndTurn();
-        DoAutoCheckTiming();
+        await DoAutoCheckTiming();
         Player.ClearStatusEndingTurn();
         Player.SwitchTurn();
         //Release
     }
 
     //自動処理チェックタイミング
-    private static void DoAutoCheckTiming()
+    private async static Task DoAutoCheckTiming()
     {
         while (true)
         {
             DoCCBonusProcess();
-            while (DoRuleProcess()) { }
-            if (!DoInducedSkillProcess())
+            while (await DoRuleProcess()) { }
+            if (!await DoInducedSkillProcess())
             {
                 break;
             }
@@ -288,13 +289,13 @@ public static class Game
     }
 
     //ルール処理
-    private static bool DoRuleProcess()
+    private async static Task<bool> DoRuleProcess()
     {
-        if (DoSameNameProcess())
+        if (await DoSameNameProcess())
         {
             return true;
         }
-        if (DoDestructionProcess())
+        if (await DoDestructionProcess())
         {
             return true;
         }
@@ -311,7 +312,7 @@ public static class Game
     }
 
     //同名処理
-    private static bool DoSameNameProcess()
+    private async static Task<bool> DoSameNameProcess()
     {
         List<string> nameChecked = new List<string>();
         List<Card> cardsToSendToRetreat = new List<Card>();
@@ -328,7 +329,7 @@ public static class Game
                     nameChecked.Add(name);
                     if (user.Field.SearchCard(name).Count > 1)
                     {
-                        cardsToSendToRetreat.AddRange(user.ChooseDiscardedCardsSameNameProcess(user.Field.SearchCard(name), name));
+                        cardsToSendToRetreat.AddRange(await user.ChooseDiscardedCardsSameNameProcess(user.Field.SearchCard(name), name));
                     }
                 }
             }
@@ -346,7 +347,7 @@ public static class Game
     }
 
     //撃破処理
-    private static bool DoDestructionProcess()
+    private async static Task<bool> DoDestructionProcess()
     {
         bool processed = false;
         List<Card> cardsToSendToRetreat = new List<Card>();
@@ -397,7 +398,7 @@ public static class Game
                     {
                         TryDoMessage(new ObtainOrbDestructionProcessMessage()
                         {
-                            Target = Request.ChooseOne(user.Orb.Cards, user)
+                            Target = await Request.ChooseOne(user.Orb.Cards, user)
                         });
                         processed = true;
                     }
@@ -487,7 +488,7 @@ public static class Game
     }
 
     //自動型スキル誘発処理
-    private static bool DoInducedSkillProcess()
+    private async static Task<bool> DoInducedSkillProcess()
     {
         if (InducedSkillSetList.Count == 0)
         {
@@ -514,18 +515,18 @@ public static class Game
             AutoSkill skillSelected;
             if (myInducedSkillList.Count > 0)
             {
-                skillSelected = Request.ChooseOne(myInducedSkillList, Player);
+                skillSelected = await Request.ChooseOne(myInducedSkillList, Player);
             }
             else if (hisInducedSkillList.Count > 0)
             {
-                skillSelected = Request.ChooseOne(hisInducedSkillList, Rival);
+                skillSelected = await Request.ChooseOne(hisInducedSkillList, Rival);
             }
             else
             {
                 return false;
             }
             inducedSkillList.Remove(skillSelected);
-            bool solved = skillSelected.Solve();
+            bool solved = await skillSelected.Solve();
             if (inducedSkillList.Count > 0)
             {
                 InducedSkillSetList.Insert(index, inducedSkillList);

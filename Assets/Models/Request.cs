@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 public static class Request
 {
-    public static T ChooseUpToOne<T>(List<T> choices, User targetUser)
+    public async static Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser)
     {
-        List<T> results = Choose(choices, 0, 1, targetUser);
+        List<T> results = await Choose(choices, 0, 1, targetUser);
         if (results.Count == 0)
         {
             return default(T);
@@ -18,27 +19,27 @@ public static class Request
         }
     }
 
-    public static T ChooseOne<T>(List<T> choices, User targetUser)
+    public async static Task<T> ChooseOne<T>(List<T> choices, User targetUser)
     {
-        return Choose(choices, 1, 1, targetUser)[0];
+        return (await Choose(choices, 1, 1, targetUser))[0];
     }
 
-    public static List<T> ChooseUpTo<T>(List<T> choices, int max, User targetUser)
+    public async static Task<List<T>>  ChooseUpTo<T>(List<T> choices, int max, User targetUser)
     {
-        return Choose(choices, 0, max, targetUser);
+        return await Choose(choices, 0, max, targetUser);
     }
 
-    public static List<T> Choose<T>(List<T> choices, int number, User targetUser)
+    public async static Task<List<T>> Choose<T>(List<T> choices, int number, User targetUser)
     {
-        return Choose(choices, number, number, targetUser);
+        return await Choose(choices, number, number, targetUser);
     }
 
-    public static List<T> Choose<T>(List<T> choices, User targetUser)
+    public async static Task<List<T>> Choose<T>(List<T> choices, User targetUser)
     {
-        return Choose(choices, 0, choices.Count, targetUser);
+        return await Choose(choices, 0, choices.Count, targetUser);
     }
 
-    public static List<T> Choose<T>(List<T> choices, int min, int max, User targetUser)
+    public async static Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser)
     {
         // TO DO
         var results = new List<T>();
@@ -49,7 +50,7 @@ public static class Request
         return results;
     }
 
-    public static bool AskIfUse<T>(T target, User targetUser)
+    public async static Task<bool> AskIfUse<T>(T target, User targetUser)
     {
         // TO DO
         return true;

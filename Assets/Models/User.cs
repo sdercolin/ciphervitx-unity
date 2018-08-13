@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 /// <summary>
 /// 玩家类
@@ -208,11 +209,11 @@ public abstract class User
         return targets.FindAll(card => card.CheckSetToBond(frontShown, reason));
     }
 
-    public void ChooseSetToBond(List<Card> targets, int min, int max, bool frontShown = true, Skill reason = null)
+    public async Task ChooseSetToBond(List<Card> targets, int min, int max, bool frontShown = true, Skill reason = null)
     {
         if (targets.Count > 0)
         {
-            SetToBond(Request.Choose(GetPossibleCardsToSetToBond(targets, frontShown, reason), min, max, this), frontShown, reason);
+            SetToBond(await Request.Choose(GetPossibleCardsToSetToBond(targets, frontShown, reason), min, max, this), frontShown, reason);
         }
     }
 
@@ -267,7 +268,7 @@ public abstract class User
         });
     }
 
-    public List<Card> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
+    public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
         ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()
         {
@@ -283,7 +284,7 @@ public abstract class User
             }
             else
             {
-                savedUnit = Request.ChooseOne(readyForSameNameProcessMessage.Targets, this);
+                savedUnit = await Request.ChooseOne(readyForSameNameProcessMessage.Targets, this);
             }
             List<Card> confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
             confirmedTarget.Remove(savedUnit);

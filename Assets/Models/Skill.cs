@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 
 public abstract class Skill : IAttachable
 {
@@ -231,7 +232,7 @@ public abstract class AutoSkill : Skill
     /// <summary>
     /// 能力解决
     /// </summary>
-    public bool Solve()
+    public async Task<bool> Solve()
     {
         InducedCount--;
         Cost = DefineCost();
@@ -239,7 +240,7 @@ public abstract class AutoSkill : Skill
         {
             if (Optional)
             {
-                if (!Request.AskIfUse(this, Controller))
+                if (!await Request.AskIfUse(this, Controller))
                 {
                     return false;
                 }
@@ -408,14 +409,14 @@ public abstract class SupportSkill : Skill
     /// </summary>
     /// <param name="AttackingUnit">攻击单位</param>
     /// <param name="AttackedUnit">被攻击单位</param>
-    public void Solve(Card AttackingUnit, Card AttackedUnit)
+    public async void Solve(Card AttackingUnit, Card AttackedUnit)
     {
         Cost = DefineCost();
         if (CheckConditions(AttackingUnit, AttackedUnit) && Cost.Check())
         {
             if (Optional)
             {
-                if (!Request.AskIfUse(this, Controller))
+                if (!await Request.AskIfUse(this, Controller))
                 {
                     return;
                 }
