@@ -21,11 +21,28 @@ public static class DictionaryUtils
 
     public static string ToString<T1, T2>(Dictionary<T1, T2> dictionary)
     {
-        throw new NotImplementedException();
+        string json = String.Empty;
+        foreach (var pair in dictionary)
+        {
+            if (!String.IsNullOrEmpty(json))
+            {
+                json += ", ";
+            }
+            json += StringUtils.CreateFromAny(pair.Key) + ": " + StringUtils.CreateFromAny(pair.Value);
+        }
+        return "<" + json + ">";
     }
 
-    public static Dictionary<T1, T2> FromString<T1, T2>(string json)
+    public static Dictionary<object, object> FromString(string json)
     {
-        throw new NotImplementedException();
+        var result = new Dictionary<object, object>();
+        string[] splited = json.Trim(new char[] { '<', '>' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var item in splited)
+        {
+            var key = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
+            var value = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[1];
+            result.Add(StringUtils.ParseAny(key), StringUtils.ParseAny(value));
+        }
+        return result;
     }
 }
