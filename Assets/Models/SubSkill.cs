@@ -150,16 +150,6 @@ public class CanNotBePlacedInBond : SubSkill, IForbidPosition
                 return false;
             }
         }
-        if (message is ReadyToBondMessage)
-        {
-            var readyToBondMessage = message as ReadyToBondMessage;
-            if (readyToBondMessage.Targets.Contains(Owner))
-            {
-                substitute = readyToBondMessage.Clone();
-                ((ReadyToBondMessage)substitute).Targets.Remove(Owner);
-                return false;
-            }
-        }
         return true;
     }
 }

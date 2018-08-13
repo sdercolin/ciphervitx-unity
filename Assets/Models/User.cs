@@ -206,11 +206,11 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            ReadyToBondMessage readyToBondMessage = Game.TryDoMessage(new ReadyToBondMessage
+            ToBondMessage readyToBondMessage = Game.TryMessage(new ToBondMessage
             {
                 Targets = targets,
                 TargetFrontShown = frontShown
-            }) as ReadyToBondMessage;
+            }) as ToBondMessage;
             if (readyToBondMessage != null && readyToBondMessage.Targets.Count > 0)
             {
                 SetToBond(Request.Choose(readyToBondMessage.Targets, min, max, this), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
@@ -250,7 +250,7 @@ public abstract class User
 
     public List<Card> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
-        ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryDoMessage(new ReadyForSameNameProcessPartialMessage()
+        ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()
         {
             Targets = units,
             Name = name

@@ -196,12 +196,6 @@ public class UseBondMessage : Message
     }
 }
 
-public class ReadyToUseBondMessage : Message
-{
-    public List<Card> Targets { get => field1; set => field1 = value; }
-    public Skill Reason { get => field2; set => field2 = value; }
-}
-
 public class ToBondMessage : Message
 {
     public List<Card> Targets { get => field1; set => field1 = value; }
@@ -218,13 +212,6 @@ public class ToBondMessage : Message
             }
         }
     }
-}
-
-public class ReadyToBondMessage : Message
-{
-    public List<Card> Targets { get => field1; set => field1 = value; }
-    public bool TargetFrontShown { get => field2; set => field2 = value; }
-    public Skill Reason { get => field3; set => field3 = value; }
 }
 
 public class AvoidMessage : Message

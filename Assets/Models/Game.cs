@@ -106,32 +106,6 @@ public static class Game
     }
 
     /// <summary>
-    /// 尝试并实现消息定义的操作
-    /// </summary>
-    /// <param name="message"></param>
-    public static Message TryDoMessage(Message message)
-    {
-        Message substitute = new EmptyMessage();
-        while (!BroadcastTry(message, ref substitute))
-        {
-            message = substitute;
-        }
-        message.Do();
-        Broadcast(message);
-        return message;
-    }
-
-    /// <summary>
-    /// 实现消息定义的操作
-    /// </summary>
-    /// <param name="message"></param>
-    public static void DoMessage(Message message)
-    {
-        message.Do();
-        Broadcast(message);
-    }
-
-    /// <summary>
     /// 广播询问是否允许某操作
     /// </summary>
     /// <param name="message">表示该操作的消息</param>
@@ -147,6 +121,30 @@ public static class Game
             }
         }
         return true;
+    }
+
+    /// <summary>
+    /// 尝试消息定义的操作
+    /// </summary>
+    /// <param name="message"></param>
+    public static Message TryMessage(Message message)
+    {
+        Message substitute = new EmptyMessage();
+        while (!BroadcastTry(message, ref substitute))
+        {
+            message = substitute;
+        }
+        return message;
+    }
+
+    /// <summary>
+    /// 实现消息定义的操作
+    /// </summary>
+    /// <param name="message"></param>
+    public static void DoMessage(Message message)
+    {
+        message.Do();
+        Broadcast(message);
     }
 
     public static void Start(bool ifFirstPlay)
@@ -361,7 +359,7 @@ public static class Game
             CardsToSendToRetreat = cardsToSendToRetreat,
             OrbsDetructionCountDict = orbsDetructionCountDict
         };
-        readyForDestructionProcessMessage = TryDoMessage(readyForDestructionProcessMessage) as ReadyForDestructionProcessMessage;
+        readyForDestructionProcessMessage = TryMessage(readyForDestructionProcessMessage) as ReadyForDestructionProcessMessage;
         if (readyForDestructionProcessMessage != null)
         {
             cardsToSendToRetreat = readyForDestructionProcessMessage.CardsToSendToRetreat;

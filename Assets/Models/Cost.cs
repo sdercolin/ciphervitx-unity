@@ -60,18 +60,16 @@ class UseBondCost : Cost
                 choices.Add(card);
             }
         }
-        ReadyToUseBondMessage readyToUseBondMessage = new ReadyToUseBondMessage()
+        var readyToUseBondMessage = Game.TryMessage(new UseBondMessage()
         {
             Reason = Reason,
             Targets = choices,
-        };
-        Message substitute = readyToUseBondMessage.Clone();
-        Game.BroadcastTry(readyToUseBondMessage, ref substitute);
-        if (substitute is ReadyToUseBondMessage)
+        }) as UseBondMessage;
+        if (readyToUseBondMessage != null)
         {
-            if ((substitute as ReadyToUseBondMessage).Targets.Count >= Number)
+            if ((readyToUseBondMessage as UseBondMessage).Targets.Count >= Number)
             {
-                Choices = (substitute as ReadyToUseBondMessage).Targets;
+                Choices = (readyToUseBondMessage as UseBondMessage).Targets;
                 return true;
             }
         }
