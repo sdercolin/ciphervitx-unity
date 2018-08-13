@@ -24,7 +24,7 @@ public static class Request
         return (await Choose(choices, 1, 1, targetUser))[0];
     }
 
-    public async static Task<List<T>>  ChooseUpTo<T>(List<T> choices, int max, User targetUser)
+    public async static Task<List<T>> ChooseUpTo<T>(List<T> choices, int max, User targetUser)
     {
         return await Choose(choices, 0, max, targetUser);
     }

@@ -136,7 +136,7 @@ public class CanNotBePlacedInBond : SubSkill, IForbidPosition
 {
     public CanNotBePlacedInBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
-    public List<Type> ForbiddenAreaTypes { get => new List<Type>() { typeof(Bond) }; }
+    public List<Type> ForbiddenAreaTypes => new List<Type>() { typeof(Bond) };
 
     public override bool Try(Message message, ref Message substitute)
     {

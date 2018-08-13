@@ -212,7 +212,7 @@ public class SupportBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get { return value; }set { this.value = value; } }
+    public int Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
