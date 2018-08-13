@@ -124,6 +124,23 @@ public static class Game
     }
 
     /// <summary>
+    /// 尝试并实现消息定义的操作
+    /// </summary>
+    /// <param name="message">表示该操作的消息</param>
+    /// <returns>该操作被拒绝时，作为代替的动作的消息</returns>
+    public static Message TryDoMessage(Message message)
+    {
+        Message substitute = new EmptyMessage();
+        while (!BroadcastTry(message, ref substitute))
+        {
+            message = substitute;
+        }
+        message.Do();
+        Broadcast(message);
+        return message;
+    }
+
+    /// <summary>
     /// 尝试消息定义的操作
     /// </summary>
     /// <param name="message">表示该操作的消息</param>
@@ -322,7 +339,7 @@ public static class Game
             {
                 Targets = cardsToSendToRetreat
             };
-            DoMessage(sameNameProcessMessage);
+            TryDoMessage(sameNameProcessMessage);
             return true;
         }
         return false;
@@ -378,7 +395,7 @@ public static class Game
                     count = Math.Min(count, user.Orb.Count);
                     for (int i = 0; i < count; i++)
                     {
-                        DoMessage(new ObtainOrbDestructionProcessMessage()
+                        TryDoMessage(new ObtainOrbDestructionProcessMessage()
                         {
                             Target = Request.ChooseOne(user.Orb.Cards, user)
                         });
@@ -388,7 +405,7 @@ public static class Game
             }
             if (cardsToSendToRetreat.Count > 0)
             {
-                DoMessage(new SendToRetreatDestructionProcessMessage()
+                TryDoMessage(new SendToRetreatDestructionProcessMessage()
                 {
                     Targets = cardsToSendToRetreat
                 });
@@ -440,7 +457,7 @@ public static class Game
         }
         if (cardsToSendToRetreat.Count > 0)
         {
-            DoMessage(new SendToRetreatPositionProcessMessage()
+            TryDoMessage(new SendToRetreatPositionProcessMessage()
             {
                 Targets = cardsToSendToRetreat
             });
@@ -457,7 +474,7 @@ public static class Game
     {
         if (TurnPlayer.Opponent.FrontField.Count == 0 && TurnPlayer.Opponent.BackField.Count > 0)
         {
-            DoMessage(new MoveMarchingProcessMessage()
+            TryDoMessage(new MoveMarchingProcessMessage()
             {
                 Targets = TurnPlayer.Opponent.BackField.Cards
             });

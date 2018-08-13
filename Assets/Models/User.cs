@@ -98,7 +98,7 @@ public abstract class User
 
     public void Move(List<Card> targets, Skill reason)
     {
-        Game.DoMessage(new MoveMessage()
+        Game.TryDoMessage(new MoveMessage()
         {
             Targets = targets,
             Reason = reason
@@ -118,7 +118,7 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            Game.DoMessage(new UseBondMessage()
+            Game.TryDoMessage(new UseBondMessage()
             {
                 Targets = targets,
                 Reason = reason
@@ -128,7 +128,7 @@ public abstract class User
 
     public void StartTurn()
     {
-        Game.DoMessage(new StartTurnMessage()
+        Game.TryDoMessage(new StartTurnMessage()
         {
             TurnPlayer = this
         });
@@ -136,7 +136,7 @@ public abstract class User
 
     public void GoToBondPhase()
     {
-        Game.DoMessage(new GoToBondPhaseMessage()
+        Game.TryDoMessage(new GoToBondPhaseMessage()
         {
             TurnPlayer = this
         });
@@ -144,7 +144,7 @@ public abstract class User
 
     public void GoToDeploymentPhase()
     {
-        Game.DoMessage(new GoToDeploymentPhaseMessage()
+        Game.TryDoMessage(new GoToDeploymentPhaseMessage()
         {
             TurnPlayer = this
         });
@@ -152,7 +152,7 @@ public abstract class User
 
     public void GoToActionPhase()
     {
-        Game.DoMessage(new GoToActionPhaseMessage()
+        Game.TryDoMessage(new GoToActionPhaseMessage()
         {
             TurnPlayer = this
         });
@@ -160,7 +160,7 @@ public abstract class User
 
     public void EndTurn()
     {
-        Game.DoMessage(new EndTurnMessage()
+        Game.TryDoMessage(new EndTurnMessage()
         {
             TurnPlayer = this
         });
@@ -168,7 +168,7 @@ public abstract class User
 
     public void ClearStatusEndingTurn()
     {
-        Game.DoMessage(new ClearStatusEndingTurnMessage()
+        Game.TryDoMessage(new ClearStatusEndingTurnMessage()
         {
             TurnPlayer = this
         });
@@ -176,8 +176,9 @@ public abstract class User
 
     public void SwitchTurn()
     {
-        Game.DoMessage(new SwitchTurnMessage(){
-
+        Game.TryDoMessage(new SwitchTurnMessage()
+        {
+            NextTurnPlayer = Rival
         });
     }
     public void SetToBond(Card target, bool frontShown, Skill reason = null)
@@ -193,7 +194,7 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            Game.DoMessage(new ToBondMessage
+            Game.TryDoMessage(new ToBondMessage
             {
                 Targets = targets,
                 TargetFrontShown = frontShown,
@@ -230,7 +231,7 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            Game.DoMessage(new RefreshUnitMessage()
+            Game.TryDoMessage(new RefreshUnitMessage()
             {
                 Targets = targets,
                 Reason = reason
@@ -240,7 +241,7 @@ public abstract class User
 
     public void DrawCard(int number, Skill reason = null)
     {
-        Game.DoMessage(new DrawCardMessage()
+        Game.TryDoMessage(new DrawCardMessage()
         {
             Player = this,
             Number = number,
