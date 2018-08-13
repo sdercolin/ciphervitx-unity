@@ -52,28 +52,16 @@ class UseBondCost : Cost
 
     public override bool Check()
     {
-        List<Card> choices = new List<Card>();
-        foreach (var card in Reason.Controller.Bond.UnusedBonds)
+        Choices = Reason.Controller.Bond.UnusedBonds.FindAll(card => Condition(card) && card.CheckUseBond(Reason));
+        if (Choices.Count >= Number)
         {
-            if (Condition(card))
-            {
-                choices.Add(card);
-            }
+            return true;
         }
-        var readyToUseBondMessage = Game.TryMessage(new UseBondMessage()
+        else
         {
-            Reason = Reason,
-            Targets = choices,
-        }) as UseBondMessage;
-        if (readyToUseBondMessage != null)
-        {
-            if ((readyToUseBondMessage as UseBondMessage).Targets.Count >= Number)
-            {
-                Choices = (readyToUseBondMessage as UseBondMessage).Targets;
-                return true;
-            }
+            Choices.Clear();
+            return false;
         }
-        return false;
     }
 
     public override void Pay()

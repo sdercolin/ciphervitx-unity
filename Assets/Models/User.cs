@@ -203,19 +203,16 @@ public abstract class User
         }
     }
 
-    public void ChooseSetToBond(List<Card> targets, bool frontShown, int min, int max, Skill reason = null)
+    public List<Card> GetPossibleCardsToSetToBond(List<Card> targets, Skill reason = null, bool frontShown = true)
+    {
+        return targets.FindAll(card => card.CheckSetToBond(reason, frontShown));
+    }
+
+    public void ChooseSetToBond(List<Card> targets, int min, int max, Skill reason = null, bool frontShown = true)
     {
         if (targets.Count > 0)
         {
-            ToBondMessage readyToBondMessage = Game.TryMessage(new ToBondMessage
-            {
-                Targets = targets,
-                TargetFrontShown = frontShown
-            }) as ToBondMessage;
-            if (readyToBondMessage != null && readyToBondMessage.Targets.Count > 0)
-            {
-                SetToBond(Request.Choose(readyToBondMessage.Targets, min, max, this), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
-            }
+            SetToBond(Request.Choose(GetPossibleCardsToSetToBond(targets, reason, frontShown), min, max, this), frontShown, reason);
         }
     }
 

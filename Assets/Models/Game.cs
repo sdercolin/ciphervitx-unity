@@ -204,7 +204,7 @@ public static class Game
     {
         Player.GoToBondPhase();
         DoAutoCheckTiming();
-        Player.ChooseSetToBond(Player.Hand.Cards, true, 0, 1);
+        Player.ChooseSetToBond(Player.Hand.Cards, 0, 1);
         DoAutoCheckTiming();
         StartDeploymentPhase();
     }

@@ -597,7 +597,28 @@ public abstract class Card
         item.Owner = this;
         item.Attached();
     }
+    #endregion
 
+    public bool CheckSetToBond(Skill reason = null, bool frontShown = true)
+    {   
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new ToBondMessage()
+        {
+            Targets = new List<Card>() { this },
+            Reason = reason,
+            TargetFrontShown = frontShown
+        }, ref substitute);
+    }
+
+    public bool CheckUseBond(Skill reason = null)
+    {   
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new UseBondMessage()
+        {
+            Targets = new List<Card>() { this },
+            Reason = reason
+        }, ref substitute);
+    }
     /// <summary>
     /// 重置所有状态
     /// </summary>
@@ -666,7 +687,6 @@ public abstract class Card
             item.UsedInThisTurn = false;
         }
     }
-    #endregion
 
     #region 别名
     /// <summary>
