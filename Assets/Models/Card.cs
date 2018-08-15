@@ -720,6 +720,47 @@ public abstract class Card
         }, ref substitute);
     }
 
+    public bool CheckLevelUp(Skill reason = null)
+    {
+        return GetLevelUpableUnits(reason).Count > 0;
+    }
+
+    public List<Card> GetLevelUpableUnits(Skill reason = null)
+    {
+        var targets = Controller.Field.Filter(unit =>
+        {
+            if (unit.HasSameUnitNameWith(this))
+            {
+                return true;
+            }
+            if (unit.HasSubSkill(typeof(CanLevelUpToOthers)))
+            {
+                foreach (var item in unit.FindAllSubSkills(typeof(CanLevelUpToOthers)))
+                {
+                    if (HasUnitNameOf(((CanLevelUpToOthers)item).UnitName))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+        foreach (var unit in ListUtils.Clone(targets))
+        {
+            Message substitute = new EmptyMessage();
+            if (!Game.BroadcastTry(new LevelUpMessage()
+            {
+                Target = this,
+                BaseUnit = unit,
+                Reason = reason
+            }, ref substitute))
+            {
+                targets.Remove(unit);
+            }
+        }
+        return targets;
+    }
+
     /// <summary>
     /// 重置所有状态
     /// </summary>

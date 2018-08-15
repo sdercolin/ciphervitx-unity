@@ -163,6 +163,28 @@ public class DeployMessage : Message
     }
 }
 
+public class LevelUpMessage : Message
+{
+    public Card Target { get { return field1; } set { field1 = value; } }
+    public Card BaseUnit { get { return field2; } set { field2 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
+
+    public bool IsClassChange => Target.ClassChangeCost > 0;
+    
+    public override void Do()
+    {
+        if (Reason == null)
+        {
+            Target.Controller.DeployAndCCCostCount += IsClassChange ? Target.ClassChangeCost : Target.DeployCost;
+        }
+        Target.StackOver(BaseUnit);
+        if (IsClassChange)
+        {
+            Game.CCBonusList.Add(Target);
+        }
+    }
+}
+
 public class MoveMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }

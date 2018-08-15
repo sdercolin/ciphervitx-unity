@@ -215,9 +215,21 @@ public class AllowSameNameDeployment : SubSkill
 }
 
 /// <summary>
+/// 可以升级为其他单位名的卡
+/// </summary>
+public class CanLevelUpToOthers : SubSkill
+{
+    public CanLevelUpToOthers(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) {}
+
+    public string UnitName { get => field1; set => field1 = value; }
+}
+
+
+/// <summary>
 /// 不会被后卫区上的敌方单位攻击
 /// </summary>
 public class WillNotBeAttackedFromBackField : SubSkill
 {
     public WillNotBeAttackedFromBackField(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+    // TO DO
 }

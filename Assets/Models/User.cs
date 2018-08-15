@@ -268,6 +268,35 @@ public abstract class User
         });
     }
 
+    public List<Card> GetLevelUpableHands(Skill reason = null)
+    {
+        return Hand.Filter(card => card.CheckLevelUp(reason));
+    }
+
+    public async Task LevelUp(Card target, Skill reason = null)
+    {
+        List<Card> baseUnits = target.GetLevelUpableUnits(reason);
+        Card baseUnit;
+        if (baseUnits.Count < 1)
+        {
+            return;
+        }
+        else if (baseUnits.Count == 1)
+        {
+            baseUnit = baseUnits[0];
+        }
+        else
+        {
+            baseUnit = await Request.ChooseOne(baseUnits, this);
+        }
+        Game.TryDoMessage(new LevelUpMessage()
+        {
+            Target = target,
+            BaseUnit = baseUnit,
+            Reason = reason
+        });
+    }
+
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
         ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()
