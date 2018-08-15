@@ -155,3 +155,135 @@ public class DefenceEmblem : SupportSkill
         throw new NotImplementedException();
     }
 }
+
+/// <summary>
+/// 魔术之纹章
+/// </summary>
+public class MagicEmblem : SupportSkill
+{
+    public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Cost DefineCost()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// 龙人之纹章
+/// 需指定Symbol
+/// </summary>
+public class DragonEmblem : SupportSkill
+{
+    public SymbolEnum Symbol;
+
+    public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Cost DefineCost()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// 计略之纹章
+/// 需指定Symbol
+/// </summary>
+public class TacticalEmblem : SupportSkill
+{
+    public SymbolEnum Symbol;
+
+    public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Cost DefineCost()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// 祈祷之纹章
+/// </summary>
+public class MiracleEmblem : SupportSkill
+{
+    public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Cost DefineCost()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// 盗贼之纹章
+/// </summary>
+public class ThiefEmblem : SupportSkill
+{
+    public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Cost DefineCost()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// 黑暗之纹章
+/// </summary>
+public class DarkEmblem : SupportSkill
+{
+    public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Cost DefineCost()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    {
+        throw new NotImplementedException();
+    }
+}
