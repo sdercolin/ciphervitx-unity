@@ -170,7 +170,7 @@ public class LevelUpMessage : Message
     public Skill Reason { get { return field3; } set { field3 = value; } }
 
     public bool IsClassChange => Target.ClassChangeCost > 0;
-    
+
     public override void Do()
     {
         if (Reason == null)
@@ -200,6 +200,10 @@ public class MoveMessage : Message
             else if (card.BelongedRegion == card.Controller.FrontField)
             {
                 card.MoveTo(card.Controller.BackField);
+            }
+            if (Reason == null)
+            {
+                card.IsHorizontal = true;
             }
         }
     }
