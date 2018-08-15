@@ -362,11 +362,21 @@ public abstract class Card
         return hasNow;
     }
 
+    /// <summary>
+    /// 是否具备某个SubSkill
+    /// </summary>
+    /// <param name="type">SubSkill的类型</param>
+    /// <returns></returns>
     public bool HasSubSkill(Type type)
     {
         return SubSkillList.Find(item => item.GetType() == type) != null;
     }
 
+    /// <summary>
+    /// 查找所有特定类型的SubSkill
+    /// </summary>
+    /// <param name="type">SubSkill的类型</param>
+    /// <returns></returns>
     public List<SubSkill> FindAllSubSkills(Type type)
     {
         return SubSkillList.FindAll(item => item.GetType() == type);
@@ -610,6 +620,12 @@ public abstract class Card
     }
     #endregion
 
+    /// <summary>
+    /// 检查是否可以被放置到羁绊区
+    /// </summary>
+    /// <param name="frontShown">是否为正面表示</param>
+    /// <param name="reason">若由能力引发，该能力</param>
+    /// <returns></returns>
     public bool CheckSetToBond(bool frontShown = true, Skill reason = null)
     {
         Message substitute = new EmptyMessage();
@@ -621,6 +637,11 @@ public abstract class Card
         }, ref substitute);
     }
 
+    /// <summary>
+    /// 检查羁绊卡是否可以被翻面（从正面翻到背面）
+    /// </summary>
+    /// <param name="reason">若由能力引发，该能力</param>
+    /// <returns></returns>
     public bool CheckUseBond(Skill reason = null)
     {
         Message substitute = new EmptyMessage();
@@ -631,11 +652,24 @@ public abstract class Card
         }, ref substitute);
     }
 
+    /// <summary>
+    /// 检查是否可以出击
+    /// </summary>
+    /// <param name="actioned">是否以已行动状态出击</param>
+    /// <param name="reason">若由能力引发，该能力</param>
+    /// <returns></returns>
     public bool CheckDeployment(bool actioned = false, Skill reason = null)
     {
         return CheckDeployment(Controller.FrontField, actioned, reason) && CheckDeployment(Controller.BackField, actioned, reason);
     }
 
+    /// <summary>
+    /// 检查是否可以出击
+    /// </summary>
+    /// <param name="area">要出击到的区域</param>
+    /// <param name="actioned">是否以已行动状态出击</param>
+    /// <param name="reason">若由能力引发，该能力</param>
+    /// <returns></returns>
     public bool CheckDeployment(Area area, bool actioned = false, Skill reason = null)
     {
         bool toFrontField;
@@ -711,6 +745,9 @@ public abstract class Card
         }
     }
 
+    /// <summary>
+    /// 清除与该回合有关的状态
+    /// </summary>
     public void ClearStatusEndingTurn()
     {
         IsLevelUpedInThisTurn = false;
@@ -862,9 +899,12 @@ public enum RangeEnum
     OnetoThree //1-3
 }
 
+/// <summary>
+/// 被击破的原因
+/// </summary>
 public enum DestructionReasonTag
 {
-    Null,
-    ByBattle,
-    BySkill
+    Null, //无
+    ByBattle, //被战斗击破
+    BySkill //被能力击破
 }

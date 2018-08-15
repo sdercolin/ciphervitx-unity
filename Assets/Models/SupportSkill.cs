@@ -69,6 +69,10 @@ public enum SupportSkillType
     AttackingDefending //攻防型
 }
 
+/// <summary>
+/// 英雄之纹章
+/// 需指定Symbol
+/// </summary>
 public class HeroEmblem : SupportSkill
 {
     public SymbolEnum Symbol;
@@ -89,6 +93,9 @@ public class HeroEmblem : SupportSkill
     }
 }
 
+/// <summary>
+/// 天空之纹章
+/// </summary>
 public class FlyingEmblem : SupportSkill
 {
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
@@ -107,6 +114,9 @@ public class FlyingEmblem : SupportSkill
     }
 }
 
+/// <summary>
+/// 攻击之纹章
+/// </summary>
 public class AttackEmblem : SupportSkill
 {
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
@@ -125,6 +135,9 @@ public class AttackEmblem : SupportSkill
     }
 }
 
+/// <summary>
+/// 防御之纹章
+/// </summary>
 public class DefenceEmblem : SupportSkill
 {
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
