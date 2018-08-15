@@ -48,7 +48,7 @@ public class Card00005 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.UseBondCost(this, 3);
+            return Cost.UseBond(this, 3);
         }
 
         public override Task Do()
