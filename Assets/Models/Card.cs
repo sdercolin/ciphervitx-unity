@@ -761,6 +761,20 @@ public abstract class Card
         return targets;
     }
 
+    public bool CheckMoving(Skill reason = null)
+    {
+        if (reason == null && IsHorizontal)
+        {
+            return false;
+        }
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new MoveMessage()
+        {
+            Targets = new List<Card>() { this },
+            Reason = reason
+        }, ref substitute);
+    }
+
     /// <summary>
     /// 重置所有状态
     /// </summary>
