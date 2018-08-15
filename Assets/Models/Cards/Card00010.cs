@@ -91,7 +91,7 @@ public class Card00010 : Card
 
         public override Task Do()
         {
-            Owner.Attach(new PowerBuff(Owner, this, 40, LastingTypeEnum.UntilBattleEnds));
+            Owner.Attach(new PowerBuff(this, 40, LastingTypeEnum.UntilBattleEnds));
             return Task.CompletedTask;
         }
     }

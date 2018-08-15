@@ -66,8 +66,8 @@ public class Card00004 : Card
         {
             Targets.ForEach(unit =>
             {
-                unit.Attach(new PowerBuff(Owner, this, 10, LastingTypeEnum.UntilTurnEnds));
-                Owner.Attach(new PowerBuff(Owner, this, 10, LastingTypeEnum.UntilTurnEnds));
+                unit.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
+                Owner.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
             });
             return Task.CompletedTask;
         }
@@ -106,9 +106,9 @@ public class Card00004 : Card
 
         public override Task Do()
         {
-            Owner.Attach(new PowerBuff(Owner, this, -10, LastingTypeEnum.UntilTurnEnds));
-            Owner.Attach(new WeaponBuff(Owner, this, true, WeaponEnum.Magic, LastingTypeEnum.UntilTurnEnds));
-            Owner.Attach(new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
+            Owner.Attach(new PowerBuff(this, -10, LastingTypeEnum.UntilTurnEnds));
+            Owner.Attach(new WeaponBuff(this, true, WeaponEnum.Magic, LastingTypeEnum.UntilTurnEnds));
+            Owner.Attach(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
             return Task.CompletedTask;
         }
     }

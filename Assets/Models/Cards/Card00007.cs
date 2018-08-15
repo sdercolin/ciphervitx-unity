@@ -62,7 +62,7 @@ public class Card00007 : Card
             if(choices.Count>0)
             {
                 var target = await Request.ChooseOne(choices, Controller);
-                target.Attach(new PowerBuff(Owner, this, 10, LastingTypeEnum.UntilTurnEnds));
+                target.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
             }
         }
     }

@@ -9,12 +9,10 @@ public abstract class Buff : IAttachable
     /// <summary>
     /// 附加值的构造函数
     /// </summary>
-    /// <param name="giver">产生该附加值的卡</param>
     /// <param name="origin">产生该附加值的能力</param>
     /// <param name="lastingType">持续类型</param>
-    public Buff(Card giver, Skill origin, LastingTypeEnum lastingType)
+    public Buff(Skill origin, LastingTypeEnum lastingType)
     {
-        Giver = giver;
         Origin = origin;
         LastingType = lastingType;
         Guid = System.Guid.NewGuid().ToString();
@@ -28,10 +26,6 @@ public abstract class Buff : IAttachable
         toSerialize.Add("type", GetType().Name);
         toSerialize.Add("guid", Guid);
         toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));
-        if (Giver != null)
-        {
-            toSerialize.Add("giver", Giver);
-        }
         if (Owner != null)
         {
             toSerialize.Add("owner", Owner);
@@ -66,8 +60,6 @@ public abstract class Buff : IAttachable
     }
     public bool OnlyAvailableWhenFrontShown { get; set; } = true;
 
-    protected Card giver;
-    public Card Giver { get; set; }
     protected Card owner;
     public Card Owner { get; set; }
 
@@ -122,7 +114,7 @@ public enum LastingTypeEnum
 /// </summary>
 public class UnitNameBuff : Buff
 {
-    public UnitNameBuff(Card giver, Skill origin, bool isAdding, string value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public UnitNameBuff(Skill origin, bool isAdding, string value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -144,7 +136,7 @@ public class UnitNameBuff : Buff
 /// </summary>
 public class DeployCostBuff : Buff
 {
-    public DeployCostBuff(Card giver, Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public DeployCostBuff(Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Value = value;
         IsBecoming = isBecoming;
@@ -166,7 +158,7 @@ public class DeployCostBuff : Buff
 /// </summary>
 public class ClassChangeCostBuff : Buff
 {
-    public ClassChangeCostBuff(Card giver, Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public ClassChangeCostBuff(Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Value = value;
         IsBecoming = isBecoming;
@@ -188,7 +180,7 @@ public class ClassChangeCostBuff : Buff
 /// </summary>
 public class PowerBuff : Buff
 {
-    public PowerBuff(Card giver, Skill origin, int value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public PowerBuff(Skill origin, int value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Value = value;
     }
@@ -204,7 +196,7 @@ public class PowerBuff : Buff
 /// </summary>
 public class SupportBuff : Buff
 {
-    public SupportBuff(Card giver, Skill origin, int value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public SupportBuff(Skill origin, int value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Value = value;
     }
@@ -220,7 +212,7 @@ public class SupportBuff : Buff
 /// </summary>
 public class SymbolBuff : Buff
 {
-    public SymbolBuff(Card giver, Skill origin, bool isAdding, SymbolEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public SymbolBuff(Skill origin, bool isAdding, SymbolEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -242,7 +234,7 @@ public class SymbolBuff : Buff
 /// </summary>
 public class WeaponBuff : Buff
 {
-    public WeaponBuff(Card giver, Skill origin, bool isAdding, WeaponEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public WeaponBuff(Skill origin, bool isAdding, WeaponEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -264,7 +256,7 @@ public class WeaponBuff : Buff
 /// </summary>
 public class GenderBuff : Buff
 {
-    public GenderBuff(Card giver, Skill origin, bool isAdding, GenderEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public GenderBuff(Skill origin, bool isAdding, GenderEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -286,7 +278,7 @@ public class GenderBuff : Buff
 /// </summary>
 public class TypeBuff : Buff
 {
-    public TypeBuff(Card giver, Skill origin, bool isAdding, TypeEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public TypeBuff(Skill origin, bool isAdding, TypeEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -308,7 +300,7 @@ public class TypeBuff : Buff
 /// </summary>
 public class RangeBuff : Buff
 {
-    public RangeBuff(Card giver, Skill origin, bool isAdding, RangeEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public RangeBuff(Skill origin, bool isAdding, RangeEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;

@@ -53,7 +53,7 @@ public class Card00009 : Card
 
         public override void SetItemToApply()
         {
-            ItemsToApply.Add(new PowerBuff(Owner, this, 30));
+            ItemsToApply.Add(new PowerBuff(this, 30));
         }
     }
 
