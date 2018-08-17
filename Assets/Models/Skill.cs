@@ -116,19 +116,27 @@ public abstract class ActionSkill : Skill
         {
             return false;
         }
-        else if (UsedInThisTurn)
+        if (UsedInThisTurn)
         {
             return false;
         }
-        else if (!CheckConditions())
+        if (!Owner.IsOnField)
+        {
+            if (
+                !(Controller.Bond.Contains(Owner) && Owner.FrontShown && TypeSymbols.Contains(SkillTypeSymbol.Bond))
+                && !(TypeSymbols.Contains(SkillTypeSymbol.Special))
+            )
+            {
+                return false;
+            }
+        }
+        if (!CheckConditions())
         {
             return false;
         }
-        else
-        {
-            Cost = DefineCost();
-            return Cost.Check();
-        }
+        Cost = DefineCost();
+        return Cost.Check();
+
     }
 
     /// <summary>
