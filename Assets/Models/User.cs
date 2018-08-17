@@ -334,6 +334,21 @@ public abstract class User
         });
     }
 
+    public List<Card> GetPossibleCardsToUseActionSkill()
+    {
+        return AllCards.FindAll(card => card.CheckUsingActionSkill());
+    }
+
+    public List<ActionSkill> GetUsableActionSkills(Card card)
+    {
+        return card.GetUsableActionSkills();
+    }
+
+    public async Task UseActionSkill(ActionSkill skill)
+    {
+        await skill.Solve();
+    }
+
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
         ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()

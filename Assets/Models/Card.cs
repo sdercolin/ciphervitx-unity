@@ -775,6 +775,27 @@ public abstract class Card
         }, ref substitute);
     }
 
+    public bool CheckUsingActionSkill()
+    {
+        return GetUsableActionSkills().Count > 0;
+    }
+
+    public List<ActionSkill> GetUsableActionSkills()
+    {
+        var results = new List<ActionSkill>();
+        foreach (var skill in SkillList)
+        {
+            if (skill is ActionSkill)
+            {
+                if (((ActionSkill)skill).Check())
+                {
+                    results.Add((ActionSkill)skill);
+                }
+            }
+        }
+        return results;
+    }
+
     /// <summary>
     /// 重置所有状态
     /// </summary>
