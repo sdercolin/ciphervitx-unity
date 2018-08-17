@@ -252,6 +252,35 @@ public abstract class User
         return Hand.Filter(card => card.CheckDeployment(actioned, reason));
     }
 
+    public List<Card> GetDeployableCards(List<Card> targets, ref List<bool> toFrontField, ref List<bool> actioned, Skill reason = null)
+    {
+        List<Card> targets_new = new List<Card>();
+        List<bool> toFrontField_new = new List<bool>();
+        List<bool> actioned_new = new List<bool>();
+        foreach (var card in targets)
+        {
+            int index = targets.IndexOf(card);
+            Area area;
+            if (toFrontField[index])
+            {
+                area = card.Controller.FrontField;
+            }
+            else
+            {
+                area = card.Controller.BackField;
+            }
+            if (card.CheckDeployment(area, actioned[index], reason))
+            {
+                targets_new.Add(card);
+                toFrontField_new.Add(toFrontField[index]);
+                actioned_new.Add(actioned[index]);
+            }
+        }
+        toFrontField = toFrontField_new;
+        actioned = actioned_new;
+        return targets_new;
+    }
+
     public void Deploy(Card target, bool toFrontField, bool actioned = false, Skill reason = null)
     {
         Deploy(new List<Card>() { target }, new List<bool> { toFrontField }, new List<bool> { actioned }, reason);
@@ -266,6 +295,14 @@ public abstract class User
             Actioned = actioned,
             Reason = reason
         });
+    }
+    public async Task ChooseDeploy(List<Card> targets, int min, int max, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            var chosen = await Request.Choose(GetDeployableCards(targets, ref toFrontField, ref actioned, reason), min, max, this);
+            Deploy(chosen, ListUtils.UpdateParallel(chosen, targets, toFrontField), ListUtils.UpdateParallel(chosen, targets, actioned));
+        }
     }
 
     public List<Card> GetLevelUpableHands(Skill reason = null)
