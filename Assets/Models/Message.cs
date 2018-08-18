@@ -240,6 +240,51 @@ public class ToBondMessage : Message
     }
 }
 
+
+/// <summary>
+/// 发起攻击，对应“攻击时/被攻击时”
+/// </summary>
+public class AttackMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+    public override void Do()
+    {
+        AttackingUnit.IsHorizontal = true;
+        Game.AttackingUnit = AttackingUnit;
+        Game.DefendingUnit = DefendingUnit;
+    }
+}
+
+/// <summary>
+/// 配置支援卡，对应“被放置到支援区时”
+/// </summary>
+public class SetSupportMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        User.Deck.Top.MoveTo(User.Support);
+    }
+}
+
+/// <summary>
+/// 判断支援是否成功，对应“被XXX支援时”
+/// </summary>
+public class ConfirmSupportMessage : Message
+{
+    public Card Unit { get { return field1; } set { field1 = value; } }
+    public Card SupportCard { get { return field2; } set { field2 = value; } }
+    public bool IsSuccessful { get { return field3; } set { field3 = value; } }
+    public override void Do()
+    {
+        if (!IsSuccessful && SupportCard != null)
+        {
+            SupportCard.MoveTo(SupportCard.Controller.Retreat);
+        }
+    }
+}
+
 public class AvoidMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }

@@ -92,7 +92,7 @@ public class Card00001 : Card
         {
             return card == Owner
                 && Game.AttackingUnit == card
-                && Game.DefencingUnit.HasType(TypeEnum.Dragon);
+                && Game.DefendingUnit.HasType(TypeEnum.Dragon);
         }
 
         public override void SetItemToApply()

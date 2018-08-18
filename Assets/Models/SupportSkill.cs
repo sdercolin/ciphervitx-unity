@@ -12,29 +12,43 @@ public abstract class SupportSkill : Skill
     /// </summary>
     public SupportSkillType Type;
 
-    public bool Optional = false;
+    public abstract bool Optional { get; }
 
     /// <summary>
     /// 能力解决，在流程中被调用
     /// </summary>
     /// <param name="AttackingUnit">攻击单位</param>
     /// <param name="AttackedUnit">被攻击单位</param>
-    public async void Solve(Card AttackingUnit, Card AttackedUnit)
+    public async Task Solve(Card AttackingUnit, Card AttackedUnit)
     {
-        Cost = DefineCost();
-        if (CheckConditions(AttackingUnit, AttackedUnit) && Cost.Check())
+        if (Optional)
         {
-            if (Optional)
+            if (!await Request.AskIfUse(this, Controller))
             {
-                if (!await Request.AskIfUse(this, Controller))
-                {
-                    return;
-                }
+                return;
             }
-            //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-            await Cost.Pay();
-            await Do(AttackingUnit, AttackedUnit);
         }
+        //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
+        await Cost.Pay();
+        await Do(AttackingUnit, AttackedUnit);
+    }
+
+    public bool Check()
+    {
+        if (!Available)
+        {
+            return false;
+        }
+        if (Type == SupportSkillType.Attacking && (Game.TurnPlayer != Controller))
+        {
+            return false;
+        }
+        if (Type == SupportSkillType.Defending && (Game.TurnPlayer == Controller))
+        {
+            return false;
+        }
+        Cost = DefineCost();
+        return CheckConditions(Game.AttackingUnit, Game.DefendingUnit) && Cost.Check();
     }
 
     /// <summary>
@@ -77,6 +91,8 @@ public class HeroEmblem : SupportSkill
 {
     public SymbolEnum Symbol;
 
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();
@@ -98,6 +114,8 @@ public class HeroEmblem : SupportSkill
 /// </summary>
 public class FlyingEmblem : SupportSkill
 {
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();
@@ -119,6 +137,8 @@ public class FlyingEmblem : SupportSkill
 /// </summary>
 public class AttackEmblem : SupportSkill
 {
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();
@@ -140,6 +160,8 @@ public class AttackEmblem : SupportSkill
 /// </summary>
 public class DefenceEmblem : SupportSkill
 {
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();
@@ -161,6 +183,8 @@ public class DefenceEmblem : SupportSkill
 /// </summary>
 public class MagicEmblem : SupportSkill
 {
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();
@@ -185,6 +209,8 @@ public class DragonEmblem : SupportSkill
 {
     public SymbolEnum Symbol;
 
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();
@@ -207,6 +233,8 @@ public class DragonEmblem : SupportSkill
 /// </summary>
 public class TacticalEmblem : SupportSkill
 {
+    public override bool Optional => false;
+
     public SymbolEnum Symbol;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
@@ -230,6 +258,8 @@ public class TacticalEmblem : SupportSkill
 /// </summary>
 public class MiracleEmblem : SupportSkill
 {
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();
@@ -251,6 +281,8 @@ public class MiracleEmblem : SupportSkill
 /// </summary>
 public class ThiefEmblem : SupportSkill
 {
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();
@@ -272,6 +304,8 @@ public class ThiefEmblem : SupportSkill
 /// </summary>
 public class DarkEmblem : SupportSkill
 {
+    public override bool Optional => false;
+
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
         throw new NotImplementedException();

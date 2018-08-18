@@ -174,6 +174,13 @@ public class Deck : Area
         this.Controller = Controller;
     }
 
+    public Card Top => list[0];
+
+    public List<Card> GetTopCards(int number)
+    {
+        return list.GetRange(0, number);
+    }
+
     public void ImportCard(Card card)
     {
         list.Add(card);
@@ -236,6 +243,8 @@ public class Retreat : Area
 /// </summary>
 public class Support : Area
 {
+    public Card SupportCard => Count > 0 ? list[0] : null;
+
     public Support(User Controller) : base(Controller)
     {
         list = new List<Card>();

@@ -801,6 +801,101 @@ public abstract class Card
         return results;
     }
 
+    public bool CheckAttack()
+    {
+        return GetAttackableUnits().Count > 0;
+    }
+
+    public List<Card> GetAttackableUnits()
+    {
+        var targets = new List<Card>();
+        if (IsHorizontal)
+        {
+            return targets;
+        }
+        bool canAttackFront = false;
+        bool canAttackBack = false;
+        if (BelongedRegion is FrontField)
+        {
+            if (HasRange(RangeEnum.One))
+            {
+                canAttackFront = true;
+            }
+            if (HasRange(RangeEnum.Two))
+            {
+                canAttackBack = true;
+            }
+            if (HasRange(RangeEnum.OnetoTwo) || HasRange(RangeEnum.OnetoThree))
+            {
+                canAttackFront = true;
+                canAttackBack = true;
+            }
+        }
+        else if (BelongedRegion is BackField)
+        {
+            if (HasRange(RangeEnum.Two) || HasRange(RangeEnum.OnetoTwo))
+            {
+                canAttackFront = true;
+            }
+            if (HasRange(RangeEnum.Three))
+            {
+                canAttackBack = true;
+            }
+            if (HasRange(RangeEnum.OnetoThree))
+            {
+                canAttackFront = true;
+                canAttackBack = true;
+            }
+        }
+        //TO DO: 无视射程攻击
+        if (canAttackFront)
+        {
+            targets.AddRange(Opponent.FrontField.Cards);
+        }
+        if (canAttackBack)
+        {
+            targets.AddRange(Opponent.BackField.Cards);
+        }
+        foreach (var unit in ListUtils.Clone(targets))
+        {
+            Message substitute = new EmptyMessage();
+            if (!Game.BroadcastTry(new AttackMessage()
+            {
+                AttackingUnit = this,
+                DefendingUnit = unit
+            }, ref substitute))
+            {
+                targets.Remove(unit);
+            }
+        }
+        return targets;
+    }
+
+    public bool CheckUseSupportSkill()
+    {
+        return GetUsableSupportSkills().Count > 0;
+    }
+
+    public List<SupportSkill> GetUsableSupportSkills()
+    {
+        var targets = new List<SupportSkill>();
+        if (!(BelongedRegion is Support))
+        {
+            return targets;
+        }
+        foreach (var skill in SkillList)
+        {
+            if (skill is SupportSkill)
+            {
+                if (((SupportSkill)skill).Check())
+                {
+                    targets.Add((SupportSkill)skill);
+                }
+            }
+        });
+        return targets;
+    }
+
     /// <summary>
     /// 重置所有状态
     /// </summary>

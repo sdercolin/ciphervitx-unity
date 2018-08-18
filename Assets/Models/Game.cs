@@ -15,13 +15,14 @@ public static class Game
 
     //回合信息
     public static User TurnPlayer;
+    public static User NotTurnPlayer => TurnPlayer.Opponent;
     public static int TurnCount = 0;
     public static Phase CurrentPhase;
 
     //战斗用
     public static Card AttackingUnit = null; //攻击单位
-    public static Card DefencingUnit = null; //防御单位
-    public static List<Card> BattlingUnits => new List<Card> { AttackingUnit, DefencingUnit };  //战斗单位
+    public static Card DefendingUnit = null; //防御单位
+    public static List<Card> BattlingUnits => new List<Card> { AttackingUnit, DefendingUnit };  //战斗单位
     public static int PowerUpByCritical = 0; //必杀攻击增加的战斗力
     public static int PowerUpBySupport = 0; //支援增加的战斗力
 
@@ -245,6 +246,33 @@ public static class Game
         Player.ClearStatusEndingTurn();
         Player.SwitchTurn();
         //Release
+    }
+
+    public async static Task DoBattle(Card attackingUnit, Card target)
+    {
+        //攻撃指定ステップ
+        await DoAutoCheckTiming();
+        TurnPlayer.Attack(attackingUnit, target);
+        if (DefendingUnit == null)
+        {
+            return;
+        }
+        await DoAutoCheckTiming();
+        //支援ステップ
+        await DoAutoCheckTiming();
+        TurnPlayer.SetSupportCard();
+        NotTurnPlayer.SetSupportCard();
+        await DoAutoCheckTiming();
+        TurnPlayer.ConfirmSupportCard();
+        NotTurnPlayer.ConfirmSupportCard();
+        await DoAutoCheckTiming();
+        await TurnPlayer.SolveSupportSkills();
+        await NotTurnPlayer.SolveSupportSkills();
+        await DoAutoCheckTiming();
+        TurnPlayer.AddSupportToPower(AttackingUnit);
+        NotTurnPlayer.AddSupportToPower(DefendingUnit);
+        await DoAutoCheckTiming();
+        //必殺攻撃・神速回避ステップ
     }
 
     //自動処理チェックタイミング
@@ -473,11 +501,11 @@ public static class Game
     //進軍処理
     private static bool DoMarchingProcess()
     {
-        if (TurnPlayer.Opponent.FrontField.Count == 0 && TurnPlayer.Opponent.BackField.Count > 0)
+        if (NotTurnPlayer.FrontField.Count == 0 && NotTurnPlayer.BackField.Count > 0)
         {
             TryDoMessage(new MoveMarchingProcessMessage()
             {
-                Targets = TurnPlayer.Opponent.BackField.Cards
+                Targets = NotTurnPlayer.BackField.Cards
             });
             return true;
         }

@@ -127,6 +127,35 @@ public abstract class User
         }
     }
 
+    public void Attack(Card unit, Card target)
+    {
+        Game.TryDoMessage(new AttackMessage()
+        {
+            AttackingUnit = unit,
+            DefendingUnit = target
+        });
+    }
+
+    public void SetSupportCard()
+    {
+        Game.TryDoMessage(new SetSupportMessage()
+        {
+            User = this
+        });
+    }
+
+    public void ConfirmSupportCard()
+    {
+        Card battlingUnit = Game.BattlingUnits.Find(unit => unit.Controller == this);
+        bool isSuccessful = !(Support.SupportCard == null || battlingUnit.HasSameUnitNameWith(Support.SupportCard));
+        Game.TryDoMessage(new ConfirmSupportMessage()
+        {
+            Unit = battlingUnit,
+            SupportCard = Support.SupportCard,
+            IsSuccessful = isSuccessful
+        });
+    }
+
     public void StartTurn()
     {
         Game.TryDoMessage(new StartTurnMessage()
@@ -347,6 +376,30 @@ public abstract class User
     public async Task UseActionSkill(ActionSkill skill)
     {
         await skill.Solve();
+    }
+
+    public async Task SolveSupportSkills()
+    {
+        var supportCard = Support.SupportCard;
+        if (supportCard == null)
+        {
+            return;
+        }
+        if (!supportCard.CheckUseSupportSkill())
+        {
+            return;
+        }
+        //TO DO: 复数支援能力
+        await supportCard.GetUsableSupportSkills()[0].Solve(Game.AttackingUnit, Game.DefendingUnit);
+    }
+
+    public void AddSupportToPower(Card unit)
+    {
+        var supportCard = Support.SupportCard;
+        if(supportCard!=null)
+        {
+            unit.Attach(new PowerBuff(null, supportCard.Support, LastingTypeEnum.UntilBattleEnds));
+        }
     }
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
