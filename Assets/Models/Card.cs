@@ -391,6 +391,11 @@ public abstract class Card
     public User Controller { get; protected set; }
 
     /// <summary>
+    /// 对手
+    /// </summary>
+    public User Opponent => Controller.Opponent;
+
+    /// <summary>
     /// 卡下方所叠放的卡
     /// </summary>
     protected List<Card> stacks = new List<Card>();
@@ -867,18 +872,6 @@ public abstract class Card
             item.UsedInThisTurn = false;
         }
     }
-
-    #region 别名
-    /// <summary>
-    /// 我方
-    /// </summary>
-    public User Player => Controller;
-
-    /// <summary>
-    /// 对手
-    /// </summary>
-    public User Rival => Controller.Opponent;
-    #endregion
 
     /// <summary>
     /// 卡片接受消息
