@@ -396,9 +396,25 @@ public abstract class User
     public void AddSupportToPower(Card unit)
     {
         var supportCard = Support.SupportCard;
-        if(supportCard!=null)
+        if (supportCard != null)
         {
             unit.Attach(new PowerBuff(null, supportCard.Support, LastingTypeEnum.UntilBattleEnds));
+        }
+    }
+
+    public async Task<bool> CriticalAttack()
+    {
+        if (await Request.AskIfUse("CriticalAttack", this))
+        {
+            if(Hand.Count==0)
+            {
+                return false;
+            }
+            
+        }
+        else
+        {
+            return false;
         }
     }
 

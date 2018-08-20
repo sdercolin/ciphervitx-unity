@@ -892,7 +892,25 @@ public abstract class Card
                     targets.Add((SupportSkill)skill);
                 }
             }
+        };
+        return targets;
+    }
+
+    public List<Card> GetCostsForCriticalAttack(Skill reason = null)
+    {
+        var targets = Controller.Hand.Filter(card =>
+        {
+            if (card.HasSameUnitNameWith(this))
+            {
+                return true;
+            }
+            return false;
         });
+        foreach (var card in ListUtils.Clone(targets))
+        {
+            Message substitute = new EmptyMessage();
+            //TO DO
+        }
         return targets;
     }
 
