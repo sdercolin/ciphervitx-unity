@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 /// <summary>
 /// 支援型能力
@@ -223,17 +224,17 @@ public class DragonEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return AttackingUnit.HasSymbol(Symbol);
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
-    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    public override async Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        await AttackingUnit.Controller.ChooseSetToBond(AttackingUnit.Controller.Hand.Cards, 0, 1, true, this);
     }
 }
 
@@ -249,17 +250,19 @@ public class TacticalEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return AttackingUnit.HasSymbol(Symbol);
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
-    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    public override async Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        var targets = AttackedUnit.Controller.Field.Cards;
+        targets.Remove(AttackedUnit);
+        await AttackingUnit.Controller.ChooseMove(targets, 0, 1, this);
     }
 }
 
@@ -273,17 +276,18 @@ public class MiracleEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
     public override Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        AttackingUnit.Attach(new CanNotCriticalAttack(this, LastingTypeEnum.UntilBattleEnds));
+        return Task.CompletedTask;
     }
 }
 
@@ -297,17 +301,22 @@ public class ThiefEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
-    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    public override async Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        var targets = new List<Card>() { AttackedUnit.Controller.Deck.Top };
+        AttackingUnit.Controller.ShowCards(targets, this);
+        if(await Request.AskIfSendToRetreat(targets,AttackingUnit.Controller))
+        {
+            AttackingUnit.Controller.SendToRetreat(targets, this);
+        }
     }
 }
 
@@ -321,16 +330,16 @@ public class DarkEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return AttackedUnit.Controller.Hand.Count >= 5;
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
-    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    public override async Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        await AttackedUnit.Controller.ChooseDiscardHand(AttackedUnit.Controller.Hand.Cards, 1, 1, false, this);
     }
 }

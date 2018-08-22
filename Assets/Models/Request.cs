@@ -55,5 +55,11 @@ public static class Request
         // TO DO
         return true;
     }
+
+    public async static Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
+    {
+        // TO DO
+        return true;
+    }
 }
 

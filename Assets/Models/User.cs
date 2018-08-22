@@ -579,6 +579,26 @@ public abstract class User
             return new List<Card>();
         }
     }
+
+    public void ShowCards(List<Card> targets, Skill reason)
+    {
+        Game.TryDoMessage(new ShowCardsMessage()
+        {
+            Targets = targets,
+            Reason = reason
+        });
+    }
+
+    public void SendToRetreat(List<Card> targets, Skill reason = null, bool asCost = false)
+    {
+        Game.TryDoMessage(new SendToRetreatMessage()
+        {
+            Targets = targets,
+            Reason = reason,
+            AsCost = asCost
+        });
+    }
+
     #endregion
 }
 

@@ -155,6 +155,27 @@ public class CanNotBePlacedInBond : SubSkill, IForbidPosition
 }
 
 /// <summary>
+/// 不能必杀攻击
+/// </summary>
+public class CanNotCriticalAttack : SubSkill
+{
+    public CanNotCriticalAttack(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        if (message is CriticalAttackMessage)
+        {
+            if ((message as CriticalAttackMessage).AttackingUnit == Owner)
+            {
+                substitute = new EmptyMessage();
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/// <summary>
 /// 不能被神速回避
 /// </summary>
 public class CanNotBeAvoided : SubSkill
