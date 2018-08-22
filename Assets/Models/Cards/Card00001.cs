@@ -66,9 +66,7 @@ public class Card00001 : Card
 
         public override async Task Do()
         {
-            var choices = Opponent.BackField.Cards;
-            var target = await Request.ChooseUpToOne(choices, Controller);
-            Controller.Move(target, this);
+            await Controller.ChooseMove(Opponent.BackField.Cards, 0, 1, this);
         }
     }
 

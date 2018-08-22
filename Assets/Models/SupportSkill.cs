@@ -131,11 +131,7 @@ public class FlyingEmblem : SupportSkill
     {
         var targets = Controller.Field.Cards;
         targets.Remove(Game.AttackingUnit);
-        var target = await Request.ChooseUpToOne(targets, Controller);
-        if (target != null)
-        {
-            Controller.Move(target, this);
-        }
+        await Controller.ChooseMove(targets, 0, 1, this);
     }
 }
 

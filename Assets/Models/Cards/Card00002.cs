@@ -68,8 +68,7 @@ public class Card00002 : Card
         public override async Task Do()
         {
             var choices = Controller.Field.Cards;
-            var targets = await Request.Choose(choices, Controller);
-            Controller.Move(targets, this);
+            await Controller.ChooseMove(choices, 0, choices.Count);
         }
     }
 

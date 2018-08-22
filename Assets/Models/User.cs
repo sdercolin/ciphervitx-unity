@@ -106,6 +106,14 @@ public abstract class User
         });
     }
 
+    public async Task ChooseMove(List<Card> targets, int min, int max, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            Move(await Request.Choose(targets, min, max, this), reason);
+        }
+    }
+
     public void UseBond(Card target, Skill reason)
     {
         if (target != null)
