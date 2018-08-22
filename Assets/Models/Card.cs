@@ -896,6 +896,11 @@ public abstract class Card
         return targets;
     }
 
+    public bool CheckCriticalAttack()
+    {
+        return GetCostsForCriticalAttack().Count > 0;
+    }
+
     public List<Card> GetCostsForCriticalAttack(Skill reason = null)
     {
         var targets = Controller.Hand.Filter(card =>
@@ -909,7 +914,15 @@ public abstract class Card
         foreach (var card in ListUtils.Clone(targets))
         {
             Message substitute = new EmptyMessage();
-            //TO DO
+            if (!Game.BroadcastTry(new CriticalAttackMessage()
+            {
+                AttackingUnit = this,
+                DefendingUnit = Game.DefendingUnit,
+                Cost = card
+            }, ref substitute))
+            {
+                targets.Remove(card);
+            }
         }
         return targets;
     }

@@ -285,22 +285,29 @@ public class ConfirmSupportMessage : Message
     }
 }
 
+public class CriticalAttackMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+    public Card Cost { get { return field3; } set { field3 = value; } }
+    public override void Do()
+    {
+        Cost.MoveTo(Cost.Controller.Retreat);
+        AttackingUnit.Attach(new PowerBuff(null, AttackingUnit.Power, LastingTypeEnum.UntilBattleEnds));
+        Game.CriticalFlag = true;
+    }
+}
+
 public class AvoidMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
-    public Card CardForAvoiding { get { return field3; } set { field3 = value; } }
+    public Card Cost { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
-        CardForAvoiding.MoveTo(CardForAvoiding.Controller.Retreat);
+        Cost.MoveTo(Cost.Controller.Retreat);
+        Game.AvoidFlag = true;
     }
-}
-
-public class ReadyToAvoidMessage : Message
-{
-    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
-    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
-    public List<Card> CardsReadyForAvoiding { get { return field3; } set { field3 = value; } }
 }
 
 public class StartTurnMessage : Message

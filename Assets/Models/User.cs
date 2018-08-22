@@ -406,16 +406,28 @@ public abstract class User
     {
         if (await Request.AskIfUse("CriticalAttack", this))
         {
-            if(Hand.Count==0)
+            if (Game.AttackingUnit.CheckCriticalAttack())
             {
-                return false;
+                List<Card> costs = Game.AttackingUnit.GetCostsForCriticalAttack();
+                Card cost;
+                if (costs.Count > 1)
+                {
+                    cost = await Request.ChooseOne(costs, this);
+                }
+                else
+                {
+                    cost = costs[0];
+                }
+                Game.TryDoMessage(new CriticalAttackMessage()
+                {
+                    AttackingUnit = Game.AttackingUnit,
+                    DefendingUnit = Game.DefendingUnit,
+                    Cost = cost
+                });
+                return Game.CriticalFlag;
             }
-            
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)

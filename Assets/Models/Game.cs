@@ -23,8 +23,8 @@ public static class Game
     public static Card AttackingUnit = null; //攻击单位
     public static Card DefendingUnit = null; //防御单位
     public static List<Card> BattlingUnits => new List<Card> { AttackingUnit, DefendingUnit };  //战斗单位
-    public static int PowerUpByCritical = 0; //必杀攻击增加的战斗力
-    public static int PowerUpBySupport = 0; //支援增加的战斗力
+    public static bool CriticalFlag = false; //是否使用了必杀攻击
+    public static bool AvoidFlag = false; //是否使用了神速回避
 
     //自动处理检查时点相关
     public static List<Card> CCBonusList = new List<Card>(); //存放触发了CC Bonus的卡
@@ -273,6 +273,7 @@ public static class Game
         NotTurnPlayer.AddSupportToPower(DefendingUnit);
         await DoAutoCheckTiming();
         //必殺攻撃・神速回避ステップ
+        await TurnPlayer.CriticalAttack();
     }
 
     //自動処理チェックタイミング
