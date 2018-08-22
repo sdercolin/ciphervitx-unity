@@ -354,7 +354,7 @@ public class AvoidMessage : Message
     }
 }
 
-public class DestoryMessage : Message
+public class DestroyMessage : Message
 {
     public Card DestroyedUnit { get { return field1; } set { field1 = value; } }
     public DestructionReasonTag Reason { get { return field2; } set { field2 = value; } }

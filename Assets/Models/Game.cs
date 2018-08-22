@@ -284,7 +284,7 @@ public static class Game
         await DoAutoCheckTiming();
         if (!AvoidFlag && AttackingUnit.Power >= DefendingUnit.Power)
         {
-            TryDoMessage(new DestoryMessage()
+            TryDoMessage(new DestroyMessage()
             {
                 DestroyedUnit = DefendingUnit,
                 Reason = DestructionReasonTag.ByBattle,
