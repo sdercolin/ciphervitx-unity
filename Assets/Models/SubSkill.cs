@@ -171,14 +171,6 @@ public class CanNotBeAvoided : SubSkill
                 return false;
             }
         }
-        else if (message is ReadyToAvoidMessage)
-        {
-            if ((message as ReadyToAvoidMessage).AttackingUnit == Owner)
-            {
-                substitute = new EmptyMessage();
-                return false;
-            }
-        }
         return true;
     }
 }
