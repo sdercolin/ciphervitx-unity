@@ -257,6 +257,36 @@ public abstract class User
         }
     }
 
+    public void DiscardHand(Card target, bool asCost, Skill reason = null)
+    {
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            DiscardHand(targets, asCost, reason);
+        }
+    }
+
+    public void DiscardHand(List<Card> targets, bool asCost, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            Game.TryDoMessage(new DiscardHandMessage
+            {
+                Targets = targets,
+                AsCost = asCost,
+                Reason = reason
+            });
+        }
+    }
+
+    public async Task ChooseDiscardHand(List<Card> targets, int min, int max, bool asCost, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            DiscardHand(await Request.Choose(targets, min, max, this), asCost, reason);
+        }
+    }
+
     public void RefreshUnit(Card target, Skill reason)
     {
         if (target != null)

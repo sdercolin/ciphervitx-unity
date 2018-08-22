@@ -95,17 +95,18 @@ public class HeroEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return AttackingUnit.HasSymbol(Symbol);
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
     public override Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        AttackingUnit.Attach(new DestroyTwoOrbs(this, LastingTypeEnum.UntilBattleEnds));
+        return Task.CompletedTask;
     }
 }
 
@@ -118,17 +119,23 @@ public class FlyingEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
-    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    public override async Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        var targets = Controller.Field.Cards;
+        targets.Remove(Game.AttackingUnit);
+        var target = await Request.ChooseUpToOne(targets, Controller);
+        if (target != null)
+        {
+            Controller.Move(target, this);
+        }
     }
 }
 
@@ -141,17 +148,18 @@ public class AttackEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
     public override Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        AttackingUnit.Attach(new PowerBuff(this, 20, LastingTypeEnum.UntilBattleEnds));
+        return Task.CompletedTask;
     }
 }
 
@@ -164,17 +172,18 @@ public class DefenceEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
     public override Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        AttackedUnit.Attach(new PowerBuff(this, 20, LastingTypeEnum.UntilBattleEnds));
+        return Task.CompletedTask;
     }
 }
 
@@ -187,17 +196,18 @@ public class MagicEmblem : SupportSkill
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     public override Cost DefineCost()
     {
-        throw new NotImplementedException();
+        return Cost.Null;
     }
 
-    public override Task Do(Card AttackingUnit, Card AttackedUnit)
+    public override async Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        throw new NotImplementedException();
+        AttackingUnit.Controller.DrawCard(1, this);
+        await Controller.ChooseDiscardHand(Controller.Hand.Cards, 1, 1, false, this);
     }
 }
 

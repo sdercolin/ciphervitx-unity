@@ -237,3 +237,22 @@ public class WillNotBeAttackedFromBackField : SubSkill
         return true;
     }
 }
+
+/// <summary>
+/// 击破宝玉数变为2
+/// </summary>
+public class DestroyTwoOrbs : SubSkill
+{
+    public DestroyTwoOrbs(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+    public override void Read(Message message)
+    {
+        var destroyMessage = message as DestroyMessage;
+        if (destroyMessage != null)
+        {
+            if (destroyMessage.AttackingUnit == Owner)
+            {
+                destroyMessage.Count = 2;
+            }
+        }
+    }
+}
