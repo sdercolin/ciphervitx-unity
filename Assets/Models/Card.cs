@@ -647,10 +647,10 @@ public abstract class Card
     /// </summary>
     /// <param name="reason">若由能力引发，该能力</param>
     /// <returns></returns>
-    public bool CheckUseBond(Skill reason = null)
+    public bool CheckReverseBond(Skill reason = null)
     {
         Message substitute = new EmptyMessage();
-        return Game.BroadcastTry(new UseBondMessage()
+        return Game.BroadcastTry(new ReverseBondMessage()
         {
             Targets = new List<Card>() { this },
             Reason = reason

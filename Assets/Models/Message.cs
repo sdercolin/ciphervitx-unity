@@ -209,10 +209,11 @@ public class MoveMessage : Message
     }
 }
 
-public class UseBondMessage : Message
+public class ReverseBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
+    public bool AsCost { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
         foreach (Card card in Targets)

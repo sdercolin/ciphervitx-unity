@@ -81,9 +81,9 @@ public abstract class Cost
     /// <param name="number">要求翻面的数量</param>
     /// <param name="condition">对翻面的卡的要求，如果没有要求可以省略</param>
     /// <returns></returns>
-    public static Cost UseBond(Skill reason, int number, Predicate<Card> condition = null)
+    public static Cost ReverseBond(Skill reason, int number, Predicate<Card> condition = null)
     {
-        return new UseBondCost(reason, number, condition);
+        return new ReverseBondCost(reason, number, condition);
     }
 
     /// <summary>
@@ -148,12 +148,12 @@ public class MultipleCost : Cost
     }
 }
 
-public class UseBondCost : Cost
+public class ReverseBondCost : Cost
 {
     public int Number;
     public Predicate<Card> Condition;
 
-    public UseBondCost(Skill reason, int number, Predicate<Card> condition = null) : base(reason)
+    public ReverseBondCost(Skill reason, int number, Predicate<Card> condition = null) : base(reason)
     {
         Number = number;
         if (condition == null)
@@ -168,7 +168,7 @@ public class UseBondCost : Cost
 
     public override bool Check()
     {
-        Choices = Reason.Controller.Bond.UnusedBonds.FindAll(card => Condition(card) && card.CheckUseBond(Reason));
+        Choices = Reason.Controller.Bond.UnusedBonds.FindAll(card => Condition(card) && card.CheckReverseBond(Reason));
         if (Choices.Count >= Number)
         {
             return true;
@@ -182,8 +182,7 @@ public class UseBondCost : Cost
 
     public async override Task Pay()
     {
-        var targets = await Request.Choose(Choices, Number, Reason.Controller);
-        Reason.Controller.UseBond(targets, Reason);
+        await Reason.Controller.ChooseReverseBond(Choices, Number, Number, Reason);
     }
 }
 

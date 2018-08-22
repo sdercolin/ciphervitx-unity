@@ -114,24 +114,33 @@ public abstract class User
         }
     }
 
-    public void UseBond(Card target, Skill reason)
+    public void ReverseBond(Card target, Skill reason, bool asCost = true)
     {
         if (target != null)
         {
             List<Card> targets = new List<Card> { target };
-            UseBond(targets, reason);
+            ReverseBond(targets, reason, asCost);
         }
     }
 
-    public void UseBond(List<Card> targets, Skill reason)
+    public void ReverseBond(List<Card> targets, Skill reason, bool asCost = true)
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new UseBondMessage()
+            Game.TryDoMessage(new ReverseBondMessage()
             {
                 Targets = targets,
-                Reason = reason
+                Reason = reason,
+                AsCost = asCost
             });
+        }
+    }
+
+    public async Task ChooseReverseBond(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
+    {
+        if (targets.Count > 0)
+        {
+            ReverseBond(await Request.Choose(targets, min, max, this), reason, asCost);
         }
     }
 
