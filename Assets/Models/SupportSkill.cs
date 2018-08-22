@@ -10,7 +10,7 @@ public abstract class SupportSkill : Skill
     /// <summary>
     /// 支援能力种类
     /// </summary>
-    public SupportSkillType Type;
+    public abstract SupportSkillType Type { get; }
 
     public abstract bool Optional { get; }
 
@@ -90,8 +90,8 @@ public enum SupportSkillType
 public class HeroEmblem : SupportSkill
 {
     public SymbolEnum Symbol;
-
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Attacking;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -116,6 +116,7 @@ public class HeroEmblem : SupportSkill
 public class FlyingEmblem : SupportSkill
 {
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Attacking;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -141,6 +142,7 @@ public class FlyingEmblem : SupportSkill
 public class AttackEmblem : SupportSkill
 {
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Attacking;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -165,6 +167,7 @@ public class AttackEmblem : SupportSkill
 public class DefenceEmblem : SupportSkill
 {
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Defending;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -189,6 +192,7 @@ public class DefenceEmblem : SupportSkill
 public class MagicEmblem : SupportSkill
 {
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Attacking;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -214,8 +218,8 @@ public class MagicEmblem : SupportSkill
 public class DragonEmblem : SupportSkill
 {
     public SymbolEnum Symbol;
-
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Attacking;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -239,9 +243,9 @@ public class DragonEmblem : SupportSkill
 /// </summary>
 public class TacticalEmblem : SupportSkill
 {
-    public override bool Optional => false;
-
     public SymbolEnum Symbol;
+    public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Attacking;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -265,6 +269,7 @@ public class TacticalEmblem : SupportSkill
 public class MiracleEmblem : SupportSkill
 {
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Defending;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -288,6 +293,7 @@ public class MiracleEmblem : SupportSkill
 public class ThiefEmblem : SupportSkill
 {
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Attacking;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
@@ -311,6 +317,7 @@ public class ThiefEmblem : SupportSkill
 public class DarkEmblem : SupportSkill
 {
     public override bool Optional => false;
+    public override SupportSkillType Type => SupportSkillType.Attacking;
 
     public override bool CheckConditions(Card AttackingUnit, Card AttackedUnit)
     {
