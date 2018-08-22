@@ -22,13 +22,13 @@ public static class ListUtils
         return combined;
     }
 
-    public static List<T2> UpdateParallel<T1,T2>(List<T1> newKey, List<T1> oldKey, List<T2> oldValue)
+    public static List<T2> UpdateParallel<T1, T2>(List<T1> newKey, List<T1> oldKey, List<T2> oldValue)
     {
         List<T2> newValue = new List<T2>();
         foreach (var item in newKey)
         {
             int index = oldKey.IndexOf(item);
-            if(index>0)
+            if (index > 0)
             {
                 newValue.Add(oldValue[index]);
             }
@@ -38,7 +38,7 @@ public static class ListUtils
             }
         }
         return newValue;
-    } 
+    }
 
     public static string ToString<T>(List<T> list)
     {

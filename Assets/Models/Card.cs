@@ -1020,7 +1020,7 @@ public abstract class Card
     /// 战斗结束时清除有关状态
     /// </summary>
     public void ClearStatusEndingBattle()
-    {        
+    {
         foreach (var item in BuffList)
         {
             switch (item.LastingType)

@@ -310,7 +310,6 @@ public static class Game
         //TO DO: 一张支援卡有复数个对应“战斗结束时”的能力时自选顺序
         await DoAutoCheckTiming();
         TurnPlayer.ClearStatusEndingBattle();
-        
     }
 
     //自動処理チェックタイミング
