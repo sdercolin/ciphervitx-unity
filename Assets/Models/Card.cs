@@ -898,7 +898,7 @@ public abstract class Card
 
     public bool CheckCriticalAttack()
     {
-        return GetCostsForCriticalAttack().Count > 0;
+        return Power > 0 && GetCostsForCriticalAttack().Count > 0;
     }
 
     public List<Card> GetCostsForCriticalAttack(Skill reason = null)
@@ -922,7 +922,7 @@ public abstract class Card
 
     public bool CheckAvoid()
     {
-        return GetCostsForCriticalAttack().Count > 0;
+        return GetCostsForAvoid().Count > 0;
     }
 
     public List<Card> GetCostsForAvoid(Skill reason = null)
