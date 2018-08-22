@@ -487,6 +487,15 @@ public abstract class User
         });
     }
 
+    public void SetActioned(List<Card> targets, Skill reason)
+    {
+        Game.TryDoMessage(new SetActionedMessage()
+        {
+            Targets = targets,
+            Reason = reason
+        });
+    }
+
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
         ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()

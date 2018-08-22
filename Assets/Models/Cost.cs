@@ -197,7 +197,8 @@ public class ActionCost : Cost
     }
     public override Task Pay()
     {
-        throw new NotImplementedException();
+        Reason.Controller.SetActioned(new List<Card>{Reason.Owner},Reason);
+        return Task.CompletedTask;
     }
 }
 
@@ -221,11 +222,21 @@ public class ActionOthersCost : Cost
 
     public override bool Check()
     {
-        return Reason.Controller.Field.Filter(card => !card.IsHorizontal && Condition(card)).Count >= Number;
+        Choices = Reason.Controller.Field.Filter(card => !card.IsHorizontal && Condition(card));
+        if (Choices.Count >= Number)
+        {
+            return true;
+        }
+        else
+        {
+            Choices.Clear();
+            return false;
+        }
     }
 
-    public override Task Pay()
+    public async override Task Pay()
     {
-        throw new NotImplementedException();
+        var targets = await Request.Choose(Choices, Number, Reason.Controller);
+        Reason.Controller.SetActioned(targets, Reason);
     }
 }
