@@ -539,7 +539,8 @@ public abstract class User
         Game.TryDoMessage(new SetActionedMessage()
         {
             Targets = targets,
-            Reason = reason
+            Reason = reason,
+            AsCost = asCost
         });
     }
 
@@ -547,7 +548,7 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            SetActioned(await Request.Choose(targets, min, max, this), reason ,asCost);
+            SetActioned(await Request.Choose(targets, min, max, this), reason, asCost);
         }
     }
 
