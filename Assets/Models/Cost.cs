@@ -196,7 +196,7 @@ public class ActionCost : Cost
     }
     public override Task Pay()
     {
-        Reason.Controller.SetActioned(new List<Card>{Reason.Owner},Reason);
+        Reason.Controller.SetActioned(new List<Card> { Reason.Owner }, Reason);
         return Task.CompletedTask;
     }
 }
@@ -235,7 +235,6 @@ public class ActionOthersCost : Cost
 
     public async override Task Pay()
     {
-        var targets = await Request.Choose(Choices, Number, Reason.Controller);
-        Reason.Controller.SetActioned(targets, Reason);
+        await Reason.Controller.ChooseSetActioned(Choices, Number, Number, Reason);
     }
 }

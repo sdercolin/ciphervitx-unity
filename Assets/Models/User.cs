@@ -534,13 +534,21 @@ public abstract class User
         });
     }
 
-    public void SetActioned(List<Card> targets, Skill reason)
+    public void SetActioned(List<Card> targets, Skill reason, bool asCost = true)
     {
         Game.TryDoMessage(new SetActionedMessage()
         {
             Targets = targets,
             Reason = reason
         });
+    }
+
+    public async Task ChooseSetActioned(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
+    {
+        if (targets.Count > 0)
+        {
+            SetActioned(await Request.Choose(targets, min, max, this), reason ,asCost);
+        }
     }
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
