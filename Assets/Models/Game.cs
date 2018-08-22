@@ -274,6 +274,7 @@ public static class Game
         await DoAutoCheckTiming();
         //必殺攻撃・神速回避ステップ
         await TurnPlayer.CriticalAttack();
+        await NotTurnPlayer.Avoid();
     }
 
     //自動処理チェックタイミング

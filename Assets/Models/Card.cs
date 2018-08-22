@@ -903,14 +903,7 @@ public abstract class Card
 
     public List<Card> GetCostsForCriticalAttack(Skill reason = null)
     {
-        var targets = Controller.Hand.Filter(card =>
-        {
-            if (card.HasSameUnitNameWith(this))
-            {
-                return true;
-            }
-            return false;
-        });
+        var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
         foreach (var card in ListUtils.Clone(targets))
         {
             Message substitute = new EmptyMessage();
@@ -918,6 +911,30 @@ public abstract class Card
             {
                 AttackingUnit = this,
                 DefendingUnit = Game.DefendingUnit,
+                Cost = card
+            }, ref substitute))
+            {
+                targets.Remove(card);
+            }
+        }
+        return targets;
+    }
+
+    public bool CheckAvoid()
+    {
+        return GetCostsForCriticalAttack().Count > 0;
+    }
+
+    public List<Card> GetCostsForAvoid(Skill reason = null)
+    {
+        var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
+        foreach (var card in ListUtils.Clone(targets))
+        {
+            Message substitute = new EmptyMessage();
+            if (!Game.BroadcastTry(new AvoidMessage()
+            {
+                AttackingUnit = Game.AttackingUnit,
+                DefendingUnit = this,
                 Cost = card
             }, ref substitute))
             {

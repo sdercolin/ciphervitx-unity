@@ -429,6 +429,34 @@ public abstract class User
         }
         return false;
     }
+    
+    public async Task<bool> Avoid()
+    {
+        if (await Request.AskIfUse("Avoid", this))
+        {
+            if (Game.DefendingUnit.CheckAvoid())
+            {
+                List<Card> costs = Game.DefendingUnit.GetCostsForAvoid();
+                Card cost;
+                if (costs.Count > 1)
+                {
+                    cost = await Request.ChooseOne(costs, this);
+                }
+                else
+                {
+                    cost = costs[0];
+                }
+                Game.TryDoMessage(new AvoidMessage()
+                {
+                    AttackingUnit = Game.AttackingUnit,
+                    DefendingUnit = Game.DefendingUnit,
+                    Cost = cost
+                });
+                return Game.AvoidFlag;
+            }
+        }
+        return false;
+    }
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
