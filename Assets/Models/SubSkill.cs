@@ -223,5 +223,17 @@ public class CanLevelUpToOthers : SubSkill
 public class WillNotBeAttackedFromBackField : SubSkill
 {
     public WillNotBeAttackedFromBackField(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-    // TO DO
+    public override bool Try(Message message, ref Message substitute)
+    {
+        var attackMessage = message as AttackMessage;
+        if (attackMessage != null)
+        {
+            if (attackMessage.DefendingUnit == Owner && attackMessage.AttackingUnit.BelongedRegion is BackField)
+            {
+                substitute = new EmptyMessage();
+                return false;
+            }
+        }
+        return true;
+    }
 }
