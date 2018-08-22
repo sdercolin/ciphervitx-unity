@@ -80,8 +80,12 @@ public class Card00010 : Card
 
         public override bool CheckInduceConditions(Message message)
         {
-            // TO DO: 战斗流程还没写
-            throw new System.NotImplementedException();
+            var attackMessage = message as AttackMessage;
+            if (attackMessage != null)
+            {
+                return attackMessage.AttackingUnit == Owner;
+            }
+            return false;
         }
 
         public override Cost DefineCost()

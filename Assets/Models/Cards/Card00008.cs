@@ -46,7 +46,7 @@ public class Card00008 : Card
 
         public override bool CanTarget(Card card)
         {
-            return card == Owner 
+            return card == Owner
                 || (card.Controller == Controller && card.IsOnField && card.DeployCost <= 2);
         }
 
@@ -80,8 +80,12 @@ public class Card00008 : Card
 
         public override bool CheckInduceConditions(Message message)
         {
-            // TO DO: 战斗流程还没写
-            throw new System.NotImplementedException();
+            var attackMessage = message as AttackMessage;
+            if (attackMessage != null)
+            {
+                return attackMessage.AttackingUnit == Owner;
+            }
+            return false;
         }
 
         public override Cost DefineCost()
