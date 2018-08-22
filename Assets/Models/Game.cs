@@ -273,8 +273,44 @@ public static class Game
         NotTurnPlayer.AddSupportToPower(DefendingUnit);
         await DoAutoCheckTiming();
         //必殺攻撃・神速回避ステップ
-        await TurnPlayer.CriticalAttack();
+        if (await TurnPlayer.CriticalAttack())
+        {
+            AttackingUnit.Attach(new PowerBuff(null, AttackingUnit.Power, LastingTypeEnum.UntilBattleEnds));
+        }
+        await DoAutoCheckTiming();
         await NotTurnPlayer.Avoid();
+        await DoAutoCheckTiming();
+        //判定ステップ
+        await DoAutoCheckTiming();
+        if (!AvoidFlag && AttackingUnit.Power >= DefendingUnit.Power)
+        {
+            TryDoMessage(new DestoryMessage()
+            {
+                DestroyedUnit = DefendingUnit,
+                Reason = DestructionReasonTag.ByBattle,
+                AttackingUnit = AttackingUnit,
+                Count = 1
+            });
+        }
+        else
+        {
+            DoMessage(new AttackFailureMessage()
+            {
+                AttackingUnit = AttackingUnit,
+                DefendingUnit = DefendingUnit
+            });
+        }
+        await DoAutoCheckTiming();
+        TurnPlayer.RemoveSupportCard();
+        NotTurnPlayer.RemoveSupportCard();
+        await DoAutoCheckTiming();
+        //終了ステップ
+        await DoAutoCheckTiming();
+        TurnPlayer.EndBattle();
+        //TO DO: 一张支援卡有复数个对应“战斗结束时”的能力时自选顺序
+        await DoAutoCheckTiming();
+        TurnPlayer.ClearStatusEndingBattle();
+        
     }
 
     //自動処理チェックタイミング

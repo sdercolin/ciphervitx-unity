@@ -285,6 +285,44 @@ public class ConfirmSupportMessage : Message
     }
 }
 
+/// <summary>
+/// 将支援卡放置到退避区
+/// </summary>
+public class RemoveSupportMessage : Message
+{
+    public Card Card { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        Card.MoveTo(Card.Controller.Retreat);
+    }
+}
+
+/// <summary>
+/// 战斗结束
+/// </summary>
+public class EndBattleMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+}
+
+public class ClearStatusEndingBattleMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+    public override void Do()
+    {
+        Game.ForEachCard(card =>
+        {
+            card.ClearStatusEndingBattle();
+        });
+        Game.CriticalFlag = false;
+        Game.AvoidFlag = false;
+        Game.AttackingUnit = null;
+        Game.DefendingUnit = null;
+    }
+}
+
 public class CriticalAttackMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }
@@ -293,7 +331,6 @@ public class CriticalAttackMessage : Message
     public override void Do()
     {
         Cost.MoveTo(Cost.Controller.Retreat);
-        AttackingUnit.Attach(new PowerBuff(null, AttackingUnit.Power, LastingTypeEnum.UntilBattleEnds));
         Game.CriticalFlag = true;
     }
 }
@@ -308,6 +345,25 @@ public class AvoidMessage : Message
         Cost.MoveTo(Cost.Controller.Retreat);
         Game.AvoidFlag = true;
     }
+}
+
+public class DestoryMessage : Message
+{
+    public Card DestroyedUnit { get { return field1; } set { field1 = value; } }
+    public DestructionReasonTag Reason { get { return field2; } set { field2 = value; } }
+    public Card AttackingUnit { get { return field3; } set { field3 = value; } }
+    public int Count { get { return field4; } set { field4 = value; } }
+    public override void Do()
+    {
+        DestroyedUnit.DestructionReasonTag = Reason;
+        DestroyedUnit.DestroyedCount = Count;
+    }
+}
+
+public class AttackFailureMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
 }
 
 public class StartTurnMessage : Message

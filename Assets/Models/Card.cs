@@ -1017,6 +1017,35 @@ public abstract class Card
     }
 
     /// <summary>
+    /// 战斗结束时清除有关状态
+    /// </summary>
+    public void ClearStatusEndingBattle()
+    {        
+        foreach (var item in BuffList)
+        {
+            switch (item.LastingType)
+            {
+                case LastingTypeEnum.UntilBattleEnds:
+                    item.Detach();
+                    break;
+                default:
+                    break;
+            }
+        }
+        foreach (var item in SubSkillList)
+        {
+            switch (item.LastingType)
+            {
+                case LastingTypeEnum.UntilBattleEnds:
+                    item.Detach();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
     /// 卡片接受消息
     /// </summary>
     /// <param name="message">接受到的消息</param>

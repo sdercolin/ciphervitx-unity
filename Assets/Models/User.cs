@@ -156,6 +156,17 @@ public abstract class User
         });
     }
 
+    public void RemoveSupportCard()
+    {
+        if (Support.SupportCard != null)
+        {
+            Game.TryDoMessage(new RemoveSupportMessage()
+            {
+                Card = Support.SupportCard
+            });
+        }
+    }
+
     public void StartTurn()
     {
         Game.TryDoMessage(new StartTurnMessage()
@@ -429,7 +440,7 @@ public abstract class User
         }
         return false;
     }
-    
+
     public async Task<bool> Avoid()
     {
         if (await Request.AskIfUse("Avoid", this))
@@ -456,6 +467,24 @@ public abstract class User
             }
         }
         return false;
+    }
+
+    public void EndBattle()
+    {
+        Game.TryDoMessage(new EndBattleMessage()
+        {
+            AttackingUnit = Game.AttackingUnit,
+            DefendingUnit = Game.DefendingUnit
+        });
+    }
+
+    public void ClearStatusEndingBattle()
+    {
+        Game.TryDoMessage(new ClearStatusEndingBattleMessage()
+        {
+            AttackingUnit = Game.AttackingUnit,
+            DefendingUnit = Game.DefendingUnit
+        });
     }
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
