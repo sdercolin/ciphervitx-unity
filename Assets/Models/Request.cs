@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public static class Request
 {
-    public async static Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser)
+    public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser)
     {
         List<T> results = await Choose(choices, 0, 1, targetUser);
         if (results.Count == 0)
@@ -19,27 +19,27 @@ public static class Request
         }
     }
 
-    public async static Task<T> ChooseOne<T>(List<T> choices, User targetUser)
+    public static async Task<T> ChooseOne<T>(List<T> choices, User targetUser)
     {
         return (await Choose(choices, 1, 1, targetUser))[0];
     }
 
-    public async static Task<List<T>> ChooseUpTo<T>(List<T> choices, int max, User targetUser)
+    public static async Task<List<T>> ChooseUpTo<T>(List<T> choices, int max, User targetUser)
     {
         return await Choose(choices, 0, max, targetUser);
     }
 
-    public async static Task<List<T>> Choose<T>(List<T> choices, int number, User targetUser)
+    public static async Task<List<T>> Choose<T>(List<T> choices, int number, User targetUser)
     {
         return await Choose(choices, number, number, targetUser);
     }
 
-    public async static Task<List<T>> Choose<T>(List<T> choices, User targetUser)
+    public static async Task<List<T>> Choose<T>(List<T> choices, User targetUser)
     {
         return await Choose(choices, 0, choices.Count, targetUser);
     }
 
-    public async static Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser)
+    public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser)
     {
         // TO DO
         var results = new List<T>();
@@ -50,13 +50,13 @@ public static class Request
         return results;
     }
 
-    public async static Task<bool> AskIfUse<T>(T target, User targetUser)
+    public static async Task<bool> AskIfUse<T>(T target, User targetUser)
     {
         // TO DO
         return true;
     }
 
-    public async static Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
+    public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
     {
         // TO DO
         return true;

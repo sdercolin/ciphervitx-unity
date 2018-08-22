@@ -188,7 +188,7 @@ public static class Game
         DoBeginningPhase();
     }
 
-    private async static void DoBeginningPhase()
+    private static async void DoBeginningPhase()
     {
         Player.StartTurn();
         await DoAutoCheckTiming();
@@ -202,7 +202,7 @@ public static class Game
         DoBondPhase();
     }
 
-    private async static void DoBondPhase()
+    private static async void DoBondPhase()
     {
         Player.GoToBondPhase();
         await DoAutoCheckTiming();
@@ -211,35 +211,35 @@ public static class Game
         StartDeploymentPhase();
     }
 
-    private async static void StartDeploymentPhase()
+    private static async void StartDeploymentPhase()
     {
         Player.GoToDeploymentPhase();
         await DoAutoCheckTiming();
         //Release
     }
 
-    public async static void EndDeploymentPhase()
+    public static async void EndDeploymentPhase()
     {
         //Called by UI
         await DoAutoCheckTiming();
         StartActionPhase();
     }
 
-    private async static void StartActionPhase()
+    private static async void StartActionPhase()
     {
         TurnPlayer.GoToActionPhase();
         await DoAutoCheckTiming();
         //Release
     }
 
-    public async static void EndActionPhase()
+    public static async void EndActionPhase()
     {
         //Called by UI
         await DoAutoCheckTiming();
         DoEndPhase();
     }
 
-    private async static void DoEndPhase()
+    private static async void DoEndPhase()
     {
         Player.EndTurn();
         await DoAutoCheckTiming();
@@ -248,7 +248,7 @@ public static class Game
         //Release
     }
 
-    public async static Task DoBattle(Card attackingUnit, Card target)
+    public static async Task DoBattle(Card attackingUnit, Card target)
     {
         //攻撃指定ステップ
         await DoAutoCheckTiming();
@@ -313,7 +313,7 @@ public static class Game
     }
 
     //自動処理チェックタイミング
-    private async static Task DoAutoCheckTiming()
+    private static async Task DoAutoCheckTiming()
     {
         while (true)
         {
@@ -354,7 +354,7 @@ public static class Game
     }
 
     //ルール処理
-    private async static Task<bool> DoRuleProcess()
+    private static async Task<bool> DoRuleProcess()
     {
         if (await DoSameNameProcess())
         {
@@ -377,7 +377,7 @@ public static class Game
     }
 
     //同名処理
-    private async static Task<bool> DoSameNameProcess()
+    private static async Task<bool> DoSameNameProcess()
     {
         List<string> nameChecked = new List<string>();
         List<Card> cardsToSendToRetreat = new List<Card>();
@@ -412,7 +412,7 @@ public static class Game
     }
 
     //撃破処理
-    private async static Task<bool> DoDestructionProcess()
+    private static async Task<bool> DoDestructionProcess()
     {
         bool processed = false;
         List<Card> cardsToSendToRetreat = new List<Card>();
@@ -553,7 +553,7 @@ public static class Game
     }
 
     //自動型スキル誘発処理
-    private async static Task<bool> DoInducedSkillProcess()
+    private static async Task<bool> DoInducedSkillProcess()
     {
         if (InducedSkillSetList.Count == 0)
         {
