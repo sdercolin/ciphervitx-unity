@@ -312,10 +312,7 @@ public class ClearStatusEndingBattleMessage : Message
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
     public override void Do()
     {
-        Game.ForEachCard(card =>
-        {
-            card.ClearStatusEndingBattle();
-        });
+        Game.ForEachCard(card => card.ClearStatusEndingBattle());
         Game.CriticalFlag = false;
         Game.AvoidFlag = false;
         Game.AttackingUnit = null;
@@ -419,10 +416,7 @@ public class ClearStatusEndingTurnMessage : Message
     public User TurnPlayer { get { return field1; } set { field1 = value; } }
     public override void Do()
     {
-        Game.ForEachCard(card =>
-        {
-            card.ClearStatusEndingTurn();
-        });
+        Game.ForEachCard(card => card.ClearStatusEndingTurn());
     }
 }
 public class SwitchTurnMessage : Message
