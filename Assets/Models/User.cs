@@ -57,6 +57,11 @@ public abstract class User
     /// </summary>
     public int DeployAndCCCostCount = 0;
 
+    internal Task ChooseAddToHand(List<Card> list, int v1, int v2, Card00020.Sk1 sk1)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// 行动阶段结束标志
     /// </summary>
