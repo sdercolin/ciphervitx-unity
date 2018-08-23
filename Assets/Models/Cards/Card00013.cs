@@ -66,7 +66,7 @@ public class Card00013 : Card
 
         public override async Task Do()
         {
-            await Controller.ChooseMove(Opponent.Field.Cards.FindAll(item => item.HasType(TypeEnum.Flight)), 0, 1, this);
+            await Controller.ChooseMove(Opponent.Field.Filter(unit => unit.HasType(TypeEnum.Flight)), 0, 1, this);
         }
     }
 
