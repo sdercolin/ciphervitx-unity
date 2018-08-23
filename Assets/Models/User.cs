@@ -57,11 +57,6 @@ public abstract class User
     /// </summary>
     public int DeployAndCCCostCount = 0;
 
-    internal Task ChooseAddToHand(List<Card> list, int v1, int v2, Card00020.Sk1 sk1)
-    {
-        throw new NotImplementedException();
-    }
-
     /// <summary>
     /// 行动阶段结束标志
     /// </summary>
@@ -554,6 +549,23 @@ public abstract class User
         if (targets.Count > 0)
         {
             SetActioned(await Request.Choose(targets, min, max, this), reason, asCost);
+        }
+    }
+
+    public void AddToHand(List<Card> targets, Skill reason)
+    {
+        Game.TryDoMessage(new AddToHandMessage()
+        {
+            Targets = targets,
+            Reason = reason
+        });
+    }
+
+    public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason)
+    {
+        if (targets.Count > 0)
+        {
+            AddToHand(await Request.Choose(targets, min, max, this), reason);
         }
     }
 
