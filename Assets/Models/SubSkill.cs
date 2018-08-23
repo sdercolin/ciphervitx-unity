@@ -88,6 +88,28 @@ public abstract class SubSkill : Skill
 }
 
 /// <summary>
+/// 使能力有效
+/// </summary>
+public class EnableSkill : SubSkill
+{
+    public EnableSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    Skill Target { get { return field1; } set { field1 = value; } }
+
+    public override void Attached()
+    {
+        base.Attached();
+        Target.Available = true;
+    }
+
+    protected override void Detaching()
+    {
+        base.Detaching();
+        Target.Available = false;
+    }
+}
+
+/// <summary>
 /// 无效能力
 /// </summary>
 public class DisableSkill : SubSkill
