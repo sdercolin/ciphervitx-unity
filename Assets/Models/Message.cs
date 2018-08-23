@@ -307,6 +307,17 @@ public class EndBattleMessage : Message
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
 }
 
+public class SendToRetreatMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public bool AsCost { get { return field3; } set { field3 = value; } }
+    public override void Do()
+    {
+        Targets.ForEach(card => card.MoveTo(card.Controller.Retreat));
+    }
+}
+
 public class SetActionedMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
@@ -318,16 +329,8 @@ public class SetActionedMessage : Message
     }
 }
 
-public class DiscardHandMessage : Message
+public class DiscardHandMessage : SendToRetreatMessage
 {
-
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public bool AsCost { get { return field2; } set { field2 = value; } }
-    public Skill Reason { get { return field3; } set { field3 = value; } }
-    public override void Do()
-    {
-        Targets.ForEach(card => card.MoveTo(card.Controller.Retreat));
-    }
 }
 
 public class ClearStatusEndingBattleMessage : Message
@@ -488,17 +491,8 @@ public class ReadyForSameNameProcessPartialMessage : Message
     public string Name { get { return field2; } set { field2 = value; } }
 }
 
-public class SendToRetreatSameNameProcessMessage : Message
+public class SendToRetreatSameNameProcessMessage : SendToRetreatMessage
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-
-    public override void Do()
-    {
-        Targets.ForEach(card =>
-        {
-            card.MoveTo(card.Controller.Retreat);
-        });
-    }
 }
 
 public class ReadyForDestructionProcessMessage : Message
@@ -523,10 +517,8 @@ public class ObtainOrbDestructionProcessMessage : Message
     }
 }
 
-public class SendToRetreatDestructionProcessMessage : Message
+public class SendToRetreatDestructionProcessMessage : SendToRetreatMessage
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-
     public override void Do()
     {
         Targets.ForEach(target =>
@@ -537,17 +529,8 @@ public class SendToRetreatDestructionProcessMessage : Message
     }
 }
 
-public class SendToRetreatPositionProcessMessage : Message
+public class SendToRetreatPositionProcessMessage : SendToRetreatMessage
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-
-    public override void Do()
-    {
-        Targets.ForEach(target =>
-        {
-            target.MoveTo(target.Controller.Retreat);
-        });
-    }
 }
 
 public class MoveMarchingProcessMessage : Message
@@ -561,6 +544,12 @@ public class MoveMarchingProcessMessage : Message
             target.MoveTo(target.Controller.FrontField);
         });
     }
+}
+
+public class ShowCardsMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
 }
 
 ///// 消息种类
