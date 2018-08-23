@@ -55,7 +55,7 @@ public class Card00020 : Card
             return Cost.Action(this) + Cost.ReverseBond(this, 2);
         }
 
-        public override Task Do()
+        public override async Task Do()
         {
             await Controller.ChooseAddToHand(Controller.Retreat.Filter(unit => !unit.HasUnitNameOf("蕾娜")), 1, 1, this);
         }
