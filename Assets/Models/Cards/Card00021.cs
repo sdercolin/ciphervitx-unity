@@ -25,6 +25,8 @@ public class Card00021 : Card
         Attach(sk1);
         sk2 = new Sk2();
         Attach(sk2);
+        sk3 = new Sk3();
+        Attach(sk3);
     }
 
     /// <summary>
@@ -83,11 +85,7 @@ public class Card00021 : Card
 
         public override bool CheckConditions()
         {
-            if(Owner.SkillList.Find(item => item.Name == "圣风刃").UsedInThisTurn)
-            {
-                return true;
-            }
-            return false;
+            return ((Card00021)Owner).sk1.UsedInThisTurn;
         }
 
         public override bool CheckInduceConditions(Message message)
@@ -120,7 +118,7 @@ public class Card00021 : Card
             Number = 3;
             Name = "飞行特效";
             Description = "『飞行特效』【常】这名单位攻击<飞行>属性单位的期间，这名单位的战斗力+30。";
-            TypeSymbols.Add(SkillTypeSymbol.Action);
+            TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
             Available = false;
         }
