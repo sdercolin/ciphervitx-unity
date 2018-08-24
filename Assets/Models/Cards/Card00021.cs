@@ -60,7 +60,7 @@ public class Card00021 : Card
         {
             Owner.Attach(new EnableSkill(this, LastingTypeEnum.UntilTurnEnds)
             {
-                Target = Owner.SkillList.Find(item => item.Name == "飞行特效")
+                Target = ((Card00021)Owner).sk3
             });
             return Task.CompletedTask;
         }
