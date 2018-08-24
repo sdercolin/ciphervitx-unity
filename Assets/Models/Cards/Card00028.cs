@@ -25,6 +25,8 @@ public class Card00028 : Card
         Attach(sk1);
         sk2 = new Sk2();
         Attach(sk2);
+        sk3 = new Sk3();
+        Attach(sk3);
     }
 
     /// <summary>
@@ -59,7 +61,7 @@ public class Card00028 : Card
         {
             Owner.Attach(new EnableSkill(this, LastingTypeEnum.UntilTurnEnds)
             {
-                Target = Owner.SkillList.Find(item => item.Name == "飞行特效")
+                Target = ((Card00028)Owner).sk3
             });
             return Task.CompletedTask;
         }
@@ -90,7 +92,7 @@ public class Card00028 : Card
             Number = 3;
             Name = "飞行特效";
             Description = "『飞行特效』【常】这名单位攻击<飞行>属性单位的期间，这名单位的战斗力+30。";
-            TypeSymbols.Add(SkillTypeSymbol.Action);
+            TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
             Available = false;
         }
