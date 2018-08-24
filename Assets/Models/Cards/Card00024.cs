@@ -53,7 +53,7 @@ public class Card00024 : Card
         public override Induction CheckInduceConditions(Message message)
         {
             var levelupMessage = message as LevelUpMessage;
-            if (levelupMessage != null)
+            if (levelupMessage != null && levelupMessage.IsClassChange)
             {
                 var target = levelupMessage.Target;
                 if(target.Controller == Controller && target != Owner)
