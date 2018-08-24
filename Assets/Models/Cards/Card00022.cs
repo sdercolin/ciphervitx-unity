@@ -60,7 +60,7 @@ public class Card00022 : Card
         {
             Owner.Attach(new EnableSkill(this, LastingTypeEnum.UntilTurnEnds)
             {
-                Target = ((Card00021)Owner).sk3
+                Target = ((Card00022)Owner).sk3
             });
             return Task.CompletedTask;
         }
