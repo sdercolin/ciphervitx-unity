@@ -8,6 +8,11 @@ public static class Game
     {
         Player = new Player();
         Rival = new Rival();
+        TurnCount = 0;
+        AttackingUnit = null;
+        DefendingUnit = null;
+        CriticalFlag = false;
+        AvoidFlag = false;
     }
 
     public static Player Player;
@@ -16,15 +21,15 @@ public static class Game
     //回合信息
     public static User TurnPlayer;
     public static User NotTurnPlayer => TurnPlayer.Opponent;
-    public static int TurnCount = 0;
+    public static int TurnCount;
     public static Phase CurrentPhase;
 
     //战斗用
-    public static Card AttackingUnit = null; //攻击单位
-    public static Card DefendingUnit = null; //防御单位
+    public static Card AttackingUnit; //攻击单位
+    public static Card DefendingUnit; //防御单位
     public static List<Card> BattlingUnits => new List<Card> { AttackingUnit, DefendingUnit };  //战斗单位
-    public static bool CriticalFlag = false; //是否使用了必杀攻击
-    public static bool AvoidFlag = false; //是否使用了神速回避
+    public static bool CriticalFlag; //是否使用了必杀攻击
+    public static bool AvoidFlag; //是否使用了神速回避
 
     //自动处理检查时点相关
     public static List<Card> CCBonusList = new List<Card>(); //存放触发了CC Bonus的卡
