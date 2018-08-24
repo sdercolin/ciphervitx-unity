@@ -193,52 +193,48 @@ public abstract class AutoSkill : Skill
 {
     public AutoSkill() : base() { }
 
-    /// <summary>
-    /// 诱发计数
-    /// </summary>
-    private int InducedCount = 0;
-
     public bool Optional = false;
 
     /// <summary>
     /// 诱发
     /// </summary>
-    public void Induce()
+    public void Induce(Induction induction)
     {
-        if (Available && (!UsedInThisTurn))
+        if (Game.InductionSetList.Count == 0)
         {
-            InducedCount++;
-            if (Game.InducedSkillSetList.Count == 0)
-            {
-                Game.InducedSkillSetList.Add(new List<AutoSkill>());
-            }
-            List<AutoSkill> skillSet = Game.InducedSkillSetList[Game.InducedSkillSetList.Count - 1];
-            skillSet.Add(this);
+            Game.InductionSetList.Add(new List<Induction>());
         }
+        List<Induction> inductionSet = Game.InductionSetList[Game.InductionSetList.Count - 1];
+        inductionSet.Add(induction);
     }
 
     private void UnInduceAll()
     {
-        foreach (var skillSet in Game.InducedSkillSetList)
+        foreach (var inductionSet in Game.InductionSetList)
         {
-            skillSet.RemoveAll(skill => skill == this);
+            inductionSet.RemoveAll(induction => induction.Skill == this);
         }
-        Game.InducedSkillSetList.RemoveAll(set => set.Count == 0);
+        Game.InductionSetList.RemoveAll(set => set.Count == 0);
     }
 
     /// <summary>
     /// 诱发状态
     /// </summary>
-    public bool IsInduced => InducedCount > 0;
+    public bool IsInduced => Inductions.Count > 0;
+
+    /// <summary>
+    /// 诱发列表
+    /// </summary>
+    public List<Induction> Inductions = new List<Induction>();
 
     /// <summary>
     /// 能力解决
     /// </summary>
-    public async Task<bool> Solve()
+    public async Task<bool> Solve(Induction induction)
     {
-        InducedCount--;
+        Inductions.Remove(induction);
         Cost = DefineCost();
-        if (CheckConditions() && Cost.Check())
+        if (CheckConditions(induction) && Cost.Check())
         {
             if (Optional)
             {
@@ -249,11 +245,11 @@ public abstract class AutoSkill : Skill
             }
             //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
             await Cost.Pay();
-            await Do();
+            await Do(induction);
             if (OncePerTurn)
             {
                 UsedInThisTurn = true;
-                InducedCount = 0;
+                Inductions.Clear();
                 UnInduceAll();
             }
             return true;
@@ -263,10 +259,21 @@ public abstract class AutoSkill : Skill
 
     public override void Read(Message message)
     {
-        base.Read(message);
-        if (CheckInduceConditions(message))
+        if (!Available || UsedInThisTurn)
         {
-            Induce();
+            return;
+        }
+        if (!TypeSymbols.Contains(SkillTypeSymbol.Special) && !Owner.IsOnField)
+        {
+            return;
+        }
+        base.Read(message);
+        var induction = CheckInduceConditions(message);
+        if (induction != null)
+        {
+            induction.Message = message;
+            induction.Skill = this;
+            Induce(induction);
         }
     }
 
@@ -279,13 +286,13 @@ public abstract class AutoSkill : Skill
     /// 判断诱发条件
     /// </summary>
     /// <returns>若满足诱发条件，则返回true</returns>
-    public abstract bool CheckInduceConditions(Message message);
+    public abstract Induction CheckInduceConditions(Message message);
 
     /// <summary>
     /// 判断实行条件
     /// </summary>
     /// <returns>若满足实行条件，则返回true</returns>
-    public abstract bool CheckConditions();
+    public abstract bool CheckConditions(Induction induction);
 
     /// <summary>
     /// 定义费用
@@ -296,7 +303,15 @@ public abstract class AutoSkill : Skill
     /// <summary>
     /// 能力实行
     /// </summary>
-    public abstract Task Do();
+    public abstract Task Do(Induction induction);
+
+
+}
+
+public class Induction
+{
+    public AutoSkill Skill;
+    public Message Message;
 }
 
 /// <summary>

@@ -44,19 +44,22 @@ public class Card00001 : Card
             Keyword = SkillKeyword.Null;
         }
 
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return true;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                return deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
+                if(deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2))
+                {
+                    return new Induction();
+                }
             }
-            return false;
+            return null;
         }
 
         public override Cost DefineCost()
@@ -64,7 +67,7 @@ public class Card00001 : Card
             return Cost.Null;
         }
 
-        public override async Task Do()
+        public override async Task Do(Induction induction)
         {
             await Controller.ChooseMove(Opponent.BackField.Cards, 0, 1, this);
         }

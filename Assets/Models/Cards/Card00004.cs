@@ -44,27 +44,32 @@ public class Card00004 : Card
             Keyword = SkillKeyword.Null;
         }
 
-        List<Card> Targets;
-
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return true;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                Targets = deployMessage.Filter(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
-                return Targets.Count > 0;
+                var targets = deployMessage.Filter(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
+                if(targets.Count > 0)
+                {
+                    return new MyInduction()
+                    {
+                        Targets = targets
+                    };
+                }
             }
-            return false;
+            return null;
         }
 
-        public override Task Do()
+        public override Task Do(Induction induction)
         {
-            Targets.ForEach(unit =>
+            var targets = ((MyInduction)induction).Targets;
+            targets.ForEach(unit =>
             {
                 unit.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
                 Owner.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
@@ -75,6 +80,11 @@ public class Card00004 : Card
         public override Cost DefineCost()
         {
             return Cost.Null;
+        }
+
+        public class MyInduction : Induction
+        {
+            public List<Card> Targets;
         }
     }
 

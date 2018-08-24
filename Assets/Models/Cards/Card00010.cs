@@ -73,19 +73,22 @@ public class Card00010 : Card
             Keyword = SkillKeyword.Null;
         }
 
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return true;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var attackMessage = message as AttackMessage;
             if (attackMessage != null)
             {
-                return attackMessage.AttackingUnit == Owner;
+                if( attackMessage.AttackingUnit == Owner)
+                {
+                    return new Induction();
+                }
             }
-            return false;
+            return null;
         }
 
         public override Cost DefineCost()
@@ -93,7 +96,7 @@ public class Card00010 : Card
             return Cost.ActionOthers(this, 1, card => card.HasUnitNameOf("卡因"));
         }
 
-        public override Task Do()
+        public override Task Do(Induction induction)
         {
             Owner.Attach(new PowerBuff(this, 40, LastingTypeEnum.UntilBattleEnds));
             return Task.CompletedTask;

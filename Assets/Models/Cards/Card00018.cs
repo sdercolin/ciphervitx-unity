@@ -44,19 +44,22 @@ public class Card00018 : Card
             Keyword = SkillKeyword.FS;
         }
 
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return true;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var attackMessage = message as AttackMessage;
             if (attackMessage != null)
             {
-                return attackMessage.AttackingUnit == Owner;
+                if( attackMessage.AttackingUnit == Owner)
+                {
+                    return new Induction();
+                }
             }
-            return false;
+            return null;
         }
 
         public override Cost DefineCost()
@@ -64,7 +67,7 @@ public class Card00018 : Card
             return Cost.ActionOthers(this, 1, card => card.HasUnitNameOf("萨基")) + Cost.ActionOthers(this, 1, card => card.HasUnitNameOf("玛基"));
         }
 
-        public override Task Do()
+        public override Task Do(Induction induction)
         {
             Owner.Attach(new PowerBuff(this, 50, LastingTypeEnum.UntilBattleEnds));
             Owner.Attach(new DestroyTwoOrbs(this, LastingTypeEnum.UntilBattleEnds));

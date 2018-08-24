@@ -590,48 +590,48 @@ public static class Game
     //自動型スキル誘発処理
     private static async Task<bool> DoInducedSkillProcess()
     {
-        if (InducedSkillSetList.Count == 0)
+        if (InductionSetList.Count == 0)
         {
             return false;
         }
-        int index = InducedSkillSetList.Count - 1;
-        var inducedSkillList = InducedSkillSetList[index];
-        InducedSkillSetList[index] = new List<AutoSkill>();
-        if (inducedSkillList.Count > 0)
+        int index = InductionSetList.Count - 1;
+        var inductionSet = InductionSetList[index];
+        InductionSetList[index] = new List<Induction>();
+        if (inductionSet.Count > 0)
         {
-            var myInducedSkillList = new List<AutoSkill>();
-            var hisInducedSkillList = new List<AutoSkill>();
-            foreach (var skill in inducedSkillList)
+            var myInductionList = new List<Induction>();
+            var hisInductionList = new List<Induction>();
+            foreach (var induction in inductionSet)
             {
-                if (skill.Controller == Player)
+                if (induction.Skill.Controller == Player)
                 {
-                    myInducedSkillList.Add(skill);
+                    myInductionList.Add(induction);
                 }
                 else
                 {
-                    hisInducedSkillList.Add(skill);
+                    hisInductionList.Add(induction);
                 }
             }
-            AutoSkill skillSelected;
-            if (myInducedSkillList.Count > 0)
+            Induction inductionSelected;
+            if (myInductionList.Count > 0)
             {
-                skillSelected = await Request.ChooseOne(myInducedSkillList, Player);
+                inductionSelected = await Request.ChooseOne(myInductionList, Player);
             }
-            else if (hisInducedSkillList.Count > 0)
+            else if (hisInductionList.Count > 0)
             {
-                skillSelected = await Request.ChooseOne(hisInducedSkillList, Rival);
+                inductionSelected = await Request.ChooseOne(hisInductionList, Rival);
             }
             else
             {
                 return false;
             }
-            inducedSkillList.Remove(skillSelected);
-            bool solved = await skillSelected.Solve();
-            if (inducedSkillList.Count > 0)
+            inductionSet.Remove(inductionSelected);
+            bool solved = await inductionSelected.Skill.Solve(inductionSelected);
+            if (inductionSet.Count > 0)
             {
-                InducedSkillSetList.Insert(index, inducedSkillList);
+                InductionSetList.Insert(index, inductionSet);
             }
-            InducedSkillSetList.RemoveAll(set => set.Count == 0);
+            InductionSetList.RemoveAll(set => set.Count == 0);
             return solved;
         }
         else

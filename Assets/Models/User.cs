@@ -383,6 +383,7 @@ public abstract class User
             Reason = reason
         });
     }
+
     public async Task ChooseDeploy(List<Card> targets, int min, int max, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
     {
         if (targets.Count > 0)

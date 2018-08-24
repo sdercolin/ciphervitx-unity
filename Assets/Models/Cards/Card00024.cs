@@ -45,22 +45,26 @@ public class Card00024 : Card
             Keyword = SkillKeyword.Null;
         }
 
-        Card target;
-
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return true;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var levelupMessage = message as LevelUpMessage;
             if (levelupMessage != null)
             {
-                target = levelupMessage.Target;
-                return target.Controller == Controller && target != Owner;
+                var target = levelupMessage.Target;
+                if(target.Controller == Controller && target != Owner)
+                {
+                    return new MyInduction()
+                    {
+                        Target = target
+                    };
+                }
             }
-            return false;
+            return null;
         }
 
         public override Cost DefineCost()
@@ -68,11 +72,17 @@ public class Card00024 : Card
             return Cost.Null;
         }
 
-        public override Task Do()
+        public override Task Do(Induction induction)
         {
+            var target = ((MyInduction)induction).Target;
             target.Attach(new PowerBuff(this, 20, LastingTypeEnum.UntilTurnEnds));
             target.Attach(new DestroyTwoOrbs(this, LastingTypeEnum.UntilTurnEnds));
             return Task.CompletedTask;
+        }
+
+        public class MyInduction:Induction
+        {
+            public Card Target;
         }
     }
 

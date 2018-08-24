@@ -83,19 +83,22 @@ public class Card00021 : Card
             Keyword = SkillKeyword.Null;
         }
 
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return ((Card00021)Owner).sk1.UsedInThisTurn;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var destroyMessage = message as DestroyMessage;
             if (destroyMessage != null)
             {
-                return destroyMessage.AttackingUnit == Owner;
+                if( destroyMessage.AttackingUnit == Owner)
+                {
+                    return new Induction();
+                }
             }
-            return false;
+            return null;
         }
 
         public override Cost DefineCost()
@@ -103,7 +106,7 @@ public class Card00021 : Card
             return Cost.Null;
         }
 
-        public override Task Do()
+        public override Task Do(Induction induction)
         {
             Owner.Controller.DrawCard(1, this);
             return Task.CompletedTask;
