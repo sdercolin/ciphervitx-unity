@@ -69,6 +69,11 @@ public abstract class Cost
         return new MultipleCost(a.Reason, newElements.ToArray());
     }
 
+    internal Cost DiscardHand(Card00027.Sk1 sk1, int v)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// 无费用
     /// </summary>
