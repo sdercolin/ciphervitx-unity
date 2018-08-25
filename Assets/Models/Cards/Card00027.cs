@@ -50,6 +50,7 @@ public class Card00027 : Card
 
         public override Cost DefineCost()
         {
+            //TODO
             return Cost.Action(this) + Cost.DiscardHand(this, 1);
         }
 

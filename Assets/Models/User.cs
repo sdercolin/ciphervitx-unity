@@ -136,6 +136,11 @@ public abstract class User
         }
     }
 
+    internal void AddToOrb(Card top, Card00031.Sk2 sk2)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task ChooseReverseBond(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
     {
         if (targets.Count > 0)
