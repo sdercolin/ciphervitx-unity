@@ -136,11 +136,6 @@ public abstract class User
         }
     }
 
-    internal void AddToOrb(Card top, Card00031.Sk2 sk2)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task ChooseReverseBond(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
     {
         if (targets.Count > 0)
@@ -306,6 +301,37 @@ public abstract class User
         if (targets.Count > 0)
         {
             DiscardHand(await Request.Choose(targets, min, max, this), asCost, reason);
+        }
+    }
+
+    public void AddToOrb(Card target, Skill reason = null)
+    {
+        if (target != null)
+        {
+            Game.TryDoMessage(new AddToOrbMessage
+            {
+                Target = target,
+                Reason = reason
+            });
+        }
+    }
+
+    public async Task ChooseAddToOrb(List<Card> targets, bool optional, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            if (optional)
+            {
+                var result = await Request.ChooseUpTo(targets, 1, this);
+                if (result.Count > 0)
+                {
+                    AddToOrb(result[0], reason);
+                }
+            }
+            else
+            {
+                AddToOrb(await Request.ChooseOne(targets, this), reason);
+            }
         }
     }
 

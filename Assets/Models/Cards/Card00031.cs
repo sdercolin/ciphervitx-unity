@@ -104,7 +104,6 @@ public class Card00031 : Card
         {
             if (Controller.Orb.Cards.Count < Opponent.Orb.Cards.Count)
             {
-                //TODO
                 Controller.AddToOrb(Controller.Deck.Top, this);
             }
             return Task.CompletedTask;
