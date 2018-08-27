@@ -92,7 +92,7 @@ public class Card00031 : Card
 
         public override bool CheckConditions()
         {
-            return Owner.IsClassChanged;
+            return true;
         }
 
         public override Cost DefineCost()

@@ -47,8 +47,7 @@ public class Card00040 : Card
         public override bool CanTarget(Card card)
         {
             return card.BelongedRegion == Opponent.BackField
-                && (card.HasWeapon(WeaponEnum.Bow) || card.HasWeapon(WeaponEnum.Magic) || card.HasWeapon(WeaponEnum.DragonStone))
-                && Owner.IsClassChanged;
+                && (card.HasWeapon(WeaponEnum.Bow) || card.HasWeapon(WeaponEnum.Magic) || card.HasWeapon(WeaponEnum.DragonStone));
         }
 
         public override void SetItemToApply()

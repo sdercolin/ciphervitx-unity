@@ -45,7 +45,7 @@ public class Card00036 : Card
 
         public override bool CanTarget(Card card)
         {
-            return card == Owner && card.IsClassChanged;
+            return card == Owner && Controller.Field.Filter(unit => unit.HasWeapon(WeaponEnum.Bow) && unit != Owner).Count > 0;
         }
 
         public override void SetItemToApply()
