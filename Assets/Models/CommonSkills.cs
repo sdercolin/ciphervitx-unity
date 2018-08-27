@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using System.Threading.Tasks;
+
+/// <summary>
 /// 『飛行特効』【常】このユニットが<飛行>を攻撃している場合、このユニットの戦闘力は＋３０される。
 /// </summary>
 public class Wingslayer : PermanentSkill
@@ -31,5 +33,31 @@ public class Dragonslayer : PermanentSkill
     public override void SetItemToApply()
     {
         ItemsToApply.Add(new PowerBuff(this, 20));
+    }
+}
+
+/// <summary>
+/// 『天空の運び手』【起】[横置]他の味方を１体選び、移動させる。
+/// </summary>
+public class Wingeddeliverer : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.Action(this);
+    }
+
+    public override async Task Do()
+    {
+        var choices = Controller.Field.Cards;
+        choices.Remove(Owner);
+        if (choices.Count > 0)
+        {
+            await Controller.ChooseMove(choices, 1, 1, this);
+        }
     }
 }
