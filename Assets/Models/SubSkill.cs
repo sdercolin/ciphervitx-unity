@@ -177,6 +177,27 @@ public class CanNotBePlacedInBond : SubSkill, IForbidPosition
 }
 
 /// <summary>
+/// 不能攻击
+/// </summary>
+public class CanNotAttack : SubSkill
+{
+    public CanNotAttack(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        if (message is AttackMessage)
+        {
+            if ((message as AttackMessage).AttackingUnit == Owner)
+            {
+                substitute = new EmptyMessage();
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/// <summary>
 /// 不能必杀攻击
 /// </summary>
 public class CanNotCriticalAttack : SubSkill

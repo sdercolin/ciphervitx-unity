@@ -53,8 +53,7 @@ public class Card00038 : Card
 
         public override void SetItemToApply()
         {
-            //TODO
-            ItemsToApply.Add(new canNotAttack(this));
+            ItemsToApply.Add(new CanNotAttack(this));
         }
     }
 
