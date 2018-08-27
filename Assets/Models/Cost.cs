@@ -69,10 +69,7 @@ public abstract class Cost
         return new MultipleCost(a.Reason, newElements.ToArray());
     }
 
-    internal Cost DiscardHand(Card00027.Sk1 sk1, int v)
-    {
-        throw new NotImplementedException();
-    }
+
 
     /// <summary>
     /// 无费用
@@ -111,6 +108,11 @@ public abstract class Cost
     public static Cost ActionOthers(Skill reason, int number, Predicate<Card> condition = null)
     {
         return new ActionOthersCost(reason, number, condition);
+    }
+
+    public static Cost DiscardHand(Skill reason, int number, Predicate<Card> condition = null)
+    {
+        return new DiscardHandCost(reason, number, condition);
     }
     #endregion
 }
@@ -241,5 +243,43 @@ public class ActionOthersCost : Cost
     public async override Task Pay()
     {
         await Reason.Controller.ChooseSetActioned(Choices, Number, Number, Reason);
+    }
+}
+
+public class DiscardHandCost : Cost
+{
+    public int Number;
+    public Predicate<Card> Condition;
+
+    public DiscardHandCost(Skill reason, int number, Predicate<Card> condition = null) : base(reason)
+    {
+        Number = number;
+        if (condition == null)
+        {
+            Condition = card => true;
+        }
+        else
+        {
+            Condition = condition;
+        }
+    }
+
+    public override bool Check()
+    {
+        Choices = Reason.Controller.Hand.Filter(card => Condition(card));
+        if (Choices.Count >= Number)
+        {
+            return true;
+        }
+        else
+        {
+            Choices.Clear();
+            return false;
+        }
+    }
+
+    public async override Task Pay()
+    {
+        await Reason.Controller.ChooseDiscardHand(Choices, Number, Number, true, Reason);
     }
 }
