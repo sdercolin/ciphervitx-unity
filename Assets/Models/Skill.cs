@@ -130,6 +130,10 @@ public abstract class ActionSkill : Skill
                 return false;
             }
         }
+        if(Keyword==SkillKeyword.CCS && (!Owner.IsClassChanged))
+        {
+            return false;
+        }
         if (!CheckConditions())
         {
             return false;
