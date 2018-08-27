@@ -71,7 +71,7 @@ public class Card00057 : Card
         public override Task Do(Induction induction)
         {
             //TODO
-            Owner.Attach(new ReplaceAsDeffender(this));
+            Controller.ChangeDeffendingUnit(Owner,this);
             return Task.CompletedTask;
         }
     }
