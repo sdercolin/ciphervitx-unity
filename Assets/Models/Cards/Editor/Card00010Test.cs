@@ -23,7 +23,7 @@ public class Card00010Test
 		card2.MoveTo(player1.FrontField);
 		var card3 = new Card00006(player1);
         player1.Deck.ImportCard(card3);
-		card2.MoveTo(player1.FrontField);
+		card3.MoveTo(player1.FrontField);
 		var card4 = new Card00013(player2);
         player2.Deck.ImportCard(card4);
 		card4.MoveTo(player2.BackField);
