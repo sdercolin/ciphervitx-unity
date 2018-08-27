@@ -46,7 +46,7 @@ public class Card00032 : Card
         public override bool CanTarget(Card card)
         {
             return card == Owner
-                && Controller.Orb.Cards.Count < Opponent.Orb.Cards.Count;
+                && Controller.Orb.Count < Opponent.Orb.Count;
         }
 
         public override void SetItemToApply()
