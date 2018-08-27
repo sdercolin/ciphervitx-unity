@@ -584,20 +584,21 @@ public abstract class User
         }
     }
 
-    public void AddToHand(List<Card> targets, Skill reason)
+    public void AddToHand(List<Card> targets, Skill reason, bool show = true)
     {
         Game.TryDoMessage(new AddToHandMessage()
         {
             Targets = targets,
-            Reason = reason
+            Reason = reason,
+            Show = show
         });
     }
 
-    public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason)
+    public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason, bool show = true)
     {
         if (targets.Count > 0)
         {
-            AddToHand(await Request.Choose(targets, min, max, this), reason);
+            AddToHand(await Request.Choose(targets, min, max, this), reason, show);
         }
     }
 
