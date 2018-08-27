@@ -97,12 +97,12 @@ public class Card00031 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.ReverseBond(this,3);
+            return Cost.ReverseBond(this, 3);
         }
 
         public override Task Do()
         {
-            if(Controller.Orb.Cards.Count < Opponent.Orb.Cards.Count)
+            if (Controller.Orb.Cards.Count < Opponent.Orb.Cards.Count)
             {
                 //TODO
                 Controller.AddToOrb(Controller.Deck.Top, this);

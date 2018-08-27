@@ -79,8 +79,8 @@ public class Card00020 : Card
 
         public override bool CanTarget(Card card)
         {
-            return card.Controller == Controller 
-                && card.IsOnField 
+            return card.Controller == Controller
+                && card.IsOnField
                 && card.HasUnitNameOf("朱利安");
         }
 

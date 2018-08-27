@@ -55,7 +55,7 @@ public class Card00004 : Card
             if (deployMessage != null)
             {
                 var targets = deployMessage.Filter(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
-                if(targets.Count > 0)
+                if (targets.Count > 0)
                 {
                     return new MyInduction()
                     {

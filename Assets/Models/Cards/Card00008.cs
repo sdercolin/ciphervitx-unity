@@ -83,7 +83,7 @@ public class Card00008 : Card
             var attackMessage = message as AttackMessage;
             if (attackMessage != null)
             {
-                if(attackMessage.AttackingUnit == Owner)
+                if (attackMessage.AttackingUnit == Owner)
                 {
                     return new Induction();
                 }

@@ -59,7 +59,7 @@ public class Card00007 : Card
         {
             var choices = Controller.Field.Cards;
             choices.Remove(Owner);
-            if(choices.Count>0)
+            if (choices.Count > 0)
             {
                 var target = await Request.ChooseOne(choices, Controller);
                 target.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));

@@ -333,7 +333,7 @@ public class DiscardHandMessage : SendToRetreatMessage
 {
 }
 
-public class AddToHandMessage: Message
+public class AddToHandMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }

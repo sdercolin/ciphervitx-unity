@@ -56,7 +56,7 @@ public class Card00024 : Card
             if (levelupMessage != null && levelupMessage.IsClassChange)
             {
                 var target = levelupMessage.Target;
-                if(target.Controller == Controller && target != Owner)
+                if (target.Controller == Controller && target != Owner)
                 {
                     return new MyInduction()
                     {
@@ -80,7 +80,7 @@ public class Card00024 : Card
             return Task.CompletedTask;
         }
 
-        public class MyInduction:Induction
+        public class MyInduction : Induction
         {
             public Card Target;
         }

@@ -54,7 +54,7 @@ public class Card00018 : Card
             var attackMessage = message as AttackMessage;
             if (attackMessage != null)
             {
-                if( attackMessage.AttackingUnit == Owner)
+                if (attackMessage.AttackingUnit == Owner)
                 {
                     return new Induction();
                 }

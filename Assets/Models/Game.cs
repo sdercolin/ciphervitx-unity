@@ -255,7 +255,7 @@ public static class Game
         //Release
     }
 
-    public static async Task DoDeployment(Card target,  bool toFrontField)
+    public static async Task DoDeployment(Card target, bool toFrontField)
     {
         await DoAutoCheckTiming();
         Player.Deploy(target, toFrontField);

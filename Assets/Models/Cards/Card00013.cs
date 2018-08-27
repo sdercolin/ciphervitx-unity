@@ -54,7 +54,7 @@ public class Card00013 : Card
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                if( deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2))
+                if (deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2))
                 {
                     return new Induction();
                 }

@@ -59,7 +59,7 @@ public class Card00030 : Card
             targets.ForEach(unit =>
             {
                 unit.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
-            });              
+            });
             return Task.CompletedTask;
         }
     }

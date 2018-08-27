@@ -249,7 +249,7 @@ public class FailToSupport : SubSkill
     public override bool Try(Message message, ref Message substitute)
     {
         var confirmSupportMessage = message as ConfirmSupportMessage;
-        if (confirmSupportMessage !=null)
+        if (confirmSupportMessage != null)
         {
             if (confirmSupportMessage.SupportCard == Owner && confirmSupportMessage.IsSuccessful)
             {

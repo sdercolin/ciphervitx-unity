@@ -313,7 +313,7 @@ public class ThiefEmblem : SupportSkill
     {
         var targets = new List<Card>() { AttackedUnit.Controller.Deck.Top };
         AttackingUnit.Controller.ShowCards(targets, this);
-        if(await Request.AskIfSendToRetreat(targets,AttackingUnit.Controller))
+        if (await Request.AskIfSendToRetreat(targets, AttackingUnit.Controller))
         {
             AttackingUnit.Controller.SendToRetreat(targets, this);
         }
