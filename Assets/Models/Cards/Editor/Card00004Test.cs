@@ -12,7 +12,7 @@ public class Card00004Test
     public void SkillTest()
     {
         Game.Initialize();
-        var player = Game.Player as Player;
+        var player = Game.Player;
         var card = new Card00004(player);
         var card1 = new Card00006(player);
         var card2 = new Card00007(player);

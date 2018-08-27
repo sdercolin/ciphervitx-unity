@@ -12,7 +12,7 @@ public class Card00003Test
     public void SkillTest()
     {
         Game.Initialize();
-        var player = Game.Player as Player;
+        var player = Game.Player;
         var card = new Card00003(player);
         player.Deck.ImportCard(card);
         card.Read(new EmptyMessage());
