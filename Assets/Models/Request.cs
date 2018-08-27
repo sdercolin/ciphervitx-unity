@@ -56,6 +56,18 @@ public static class Request
         return true;
     }
 
+    public static async Task<bool> AskIfCriticalAttack(User targetUser)
+    {
+        // TO DO
+        return true;
+    }
+
+    public static async Task<bool> AskIfAvoid(User targetUser)
+    {
+        // TO DO
+        return true;
+    }
+
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
     {
         // TO DO

@@ -494,7 +494,7 @@ public abstract class User
 
     public async Task<bool> CriticalAttack()
     {
-        if (await Request.AskIfUse("CriticalAttack", this))
+        if (await Request.AskIfCriticalAttack(this))
         {
             if (Game.AttackingUnit.CheckCriticalAttack())
             {
@@ -522,7 +522,7 @@ public abstract class User
 
     public async Task<bool> Avoid()
     {
-        if (await Request.AskIfUse("Avoid", this))
+        if (await Request.AskIfAvoid(this))
         {
             if (Game.DefendingUnit.CheckAvoid())
             {
