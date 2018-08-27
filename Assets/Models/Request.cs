@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 public static class Request
 {
+    public static dynamic NextResult = null; // Only for test
+
     public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser)
     {
         List<T> results = await Choose(choices, 0, 1, targetUser);
@@ -41,37 +43,77 @@ public static class Request
 
     public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser)
     {
-        // TO DO
-        var results = new List<T>();
-        for (int i = 0; i < min; i++)
+        var defaultResult = NextResult;
+        if (defaultResult != null)
         {
-            results.Add(choices[i]);
+            NextResult = null;
+            return defaultResult;
         }
-        return results;
+        else
+        {
+            // TO DO
+            throw new NotImplementedException();
+        }
     }
 
     public static async Task<bool> AskIfUse<T>(T target, User targetUser)
     {
-        // TO DO
-        return true;
+        var defaultResult = NextResult;
+        if (defaultResult != null)
+        {
+            NextResult = null;
+            return defaultResult;
+        }
+        else
+        {
+            // TO DO
+            throw new NotImplementedException();
+        }
     }
 
     public static async Task<bool> AskIfCriticalAttack(User targetUser)
     {
-        // TO DO
-        return true;
+        var defaultResult = NextResult;
+        if (defaultResult != null)
+        {
+            NextResult = null;
+            return defaultResult;
+        }
+        else
+        {
+            // TO DO
+            throw new NotImplementedException();
+        }
     }
 
     public static async Task<bool> AskIfAvoid(User targetUser)
     {
-        // TO DO
-        return true;
+        var defaultResult = NextResult;
+        if (defaultResult != null)
+        {
+            NextResult = null;
+            return defaultResult;
+        }
+        else
+        {
+            // TO DO
+            throw new NotImplementedException();
+        }
     }
 
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
     {
-        // TO DO
-        return true;
+        var defaultResult = NextResult;
+        if (defaultResult != null)
+        {
+            NextResult = null;
+            return defaultResult;
+        }
+        else
+        {
+            // TO DO
+            throw new NotImplementedException();
+        }
     }
 }
 
