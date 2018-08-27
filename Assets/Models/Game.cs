@@ -15,6 +15,7 @@ public static class Game
         AvoidFlag = false;
         CCBonusList = new List<Card>();
         InductionSetList = new List<List<Induction>>();
+        Request.ClearNextResults(); // for testing
     }
 
     public static Player Player;
@@ -348,7 +349,7 @@ public static class Game
     }
 
     //自動処理チェックタイミング
-    private static async Task DoAutoCheckTiming()
+    public static async Task DoAutoCheckTiming()
     {
         while (true)
         {

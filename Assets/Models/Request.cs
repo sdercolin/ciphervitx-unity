@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 public static class Request
 {
-    public static dynamic NextResult = null; // Only for test
+    #region Testing
+    private static Queue<dynamic> NextResults = new Queue<dynamic>(); 
+    public static void SetNextResult(dynamic result)
+    {
+        NextResults.Enqueue(result);
+    }
+    public static void ClearNextResults()
+    {
+        NextResults.Clear();
+    }
+    #endregion
 
     public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser)
     {
@@ -43,76 +53,66 @@ public static class Request
 
     public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser)
     {
-        var defaultResult = NextResult;
-        if (defaultResult != null)
+        if (NextResults.Count>0)
         {
-            NextResult = null;
-            return defaultResult;
+            return NextResults.Dequeue();
         }
         else
         {
             // TO DO
-            throw new NotImplementedException();
+            return null;
         }
     }
 
     public static async Task<bool> AskIfUse<T>(T target, User targetUser)
     {
-        var defaultResult = NextResult;
-        if (defaultResult != null)
+        if (NextResults.Count > 0)
         {
-            NextResult = null;
-            return defaultResult;
+            return NextResults.Dequeue();
         }
         else
         {
             // TO DO
-            throw new NotImplementedException();
+            return false;
         }
     }
 
     public static async Task<bool> AskIfCriticalAttack(User targetUser)
     {
-        var defaultResult = NextResult;
-        if (defaultResult != null)
+        if (NextResults.Count > 0)
         {
-            NextResult = null;
-            return defaultResult;
+            return NextResults.Dequeue();
         }
         else
         {
             // TO DO
-            throw new NotImplementedException();
+            return false;
         }
     }
 
     public static async Task<bool> AskIfAvoid(User targetUser)
     {
-        var defaultResult = NextResult;
-        if (defaultResult != null)
+        if (NextResults.Count > 0)
         {
-            NextResult = null;
-            return defaultResult;
+            return NextResults.Dequeue();
         }
         else
         {
             // TO DO
-            throw new NotImplementedException();
+            return false;
         }
     }
 
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
     {
-        var defaultResult = NextResult;
-        if (defaultResult != null)
+        if (NextResults.Count > 0)
         {
-            NextResult = null;
-            return defaultResult;
+            return NextResults.Dequeue();
         }
         else
         {
             // TO DO
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

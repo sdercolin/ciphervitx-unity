@@ -2,6 +2,7 @@
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameTest
 {
@@ -23,6 +24,7 @@ public class GameTest
         Assert.IsTrue(!card2.IsHorizontal);
         Assert.IsTrue(Game.Player.Hand.Count == 0);
 
+        Request.SetNextResult(new List<Card>() { });
         Game.StartTurn();
 
         Assert.IsTrue(!card1.IsHorizontal);

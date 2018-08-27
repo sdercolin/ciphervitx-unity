@@ -27,14 +27,20 @@ public class Card00004Test
         card3.MoveTo(player.Hand);
 
         Assert.IsTrue(card.Power == 60);
-        Game.DoDeployment(card1, true);
+
+        player.Deploy(card1, true);
+        Request.SetNextResult(new List<Induction>() { Game.InductionSetList[0][0] });
+        Game.DoAutoCheckTiming();
         Assert.IsTrue(card1.Power == 50);
         Assert.IsTrue(card.Power == 70);
-        Game.DoDeployment(card2, true);
+
+        player.Deploy(card2, true);
+        Request.SetNextResult(new List<Induction>() { Game.InductionSetList[0][0] });
+        Game.DoAutoCheckTiming();
         Assert.IsTrue(card2.Power == 40);
         Assert.IsTrue(card.Power == 80);
-        Game.DoDeployment(card3, true);
-        Assert.IsTrue(card3.Power == 70);
-        Assert.IsTrue(card.Power == 80);
+
+        player.Deploy(card3, true);
+        Assert.IsTrue(Game.InductionSetList.Count == 0);
     }
 }
