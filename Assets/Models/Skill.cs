@@ -271,6 +271,10 @@ public abstract class AutoSkill : Skill
         {
             return;
         }
+        if (Keyword == SkillKeyword.CCS && (!Owner.IsClassChanged))
+        {
+            return;
+        }
         base.Read(message);
         var induction = CheckInduceConditions(message);
         if (induction != null)
@@ -376,6 +380,10 @@ public abstract class PermanentSkill : Skill
         if (!TypeSymbols.Contains(SkillTypeSymbol.Special) && !Owner.IsOnField)
         {
             DetachAll();
+            return;
+        }
+        if (Keyword == SkillKeyword.CCS && (!Owner.IsClassChanged))
+        {
             return;
         }
         foreach (Card card in Game.AllCards)
