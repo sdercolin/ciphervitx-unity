@@ -288,11 +288,11 @@ public static class Game
         //攻撃指定ステップ
         await DoAutoCheckTiming();
         TurnPlayer.Attack(attackingUnit, target);
+        await DoAutoCheckTiming();
         if (DefendingUnit == null)
         {
             return;
         }
-        await DoAutoCheckTiming();
         //支援ステップ
         await DoAutoCheckTiming();
         TurnPlayer.SetSupportCard();
