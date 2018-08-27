@@ -15,3 +15,21 @@ public class Wingslayer : PermanentSkill
         ItemsToApply.Add(new PowerBuff(this, 30));
     }
 }
+
+/// <summary>
+/// 【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
+/// </summary>
+public class Dragonslayer : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return card == Owner
+            && Game.AttackingUnit == card
+            && Game.DefendingUnit.HasType(TypeEnum.Dragon);
+    }
+
+    public override void SetItemToApply()
+    {
+        ItemsToApply.Add(new PowerBuff(this, 20));
+    }
+}

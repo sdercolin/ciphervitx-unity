@@ -78,7 +78,7 @@ public class Card00001 : Card
     /// 『ファルシオン』【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
     /// </summary>
     public Sk2 sk2;
-    public class Sk2 : PermanentSkill
+    public class Sk2 : Dragonslayer
     {
         public Sk2() : base()
         {
@@ -87,18 +87,6 @@ public class Card00001 : Card
             Description = "『法尔西昂』【常】这名单位攻击<龙>属性单位的期间，这名单位的战斗力+20。";
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CanTarget(Card card)
-        {
-            return card == Owner
-                && Game.AttackingUnit == card
-                && Game.DefendingUnit.HasType(TypeEnum.Dragon);
-        }
-
-        public override void SetItemToApply()
-        {
-            ItemsToApply.Add(new PowerBuff(this, 20));
         }
     }
 }
