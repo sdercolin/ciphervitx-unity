@@ -33,7 +33,7 @@ public class Card00012 : Card
     /// 『重装の心得』【常】このユニットが<魔法>以外に攻撃されている場合、このユニットの戦闘力は＋２０される。
     /// </summary>
     public Sk1 sk1;
-    public class Sk1 : PermanentSkill
+    public class Sk1 : ArmorExpertise
     {
         public Sk1() : base()
         {
@@ -42,18 +42,6 @@ public class Card00012 : Card
             Description = "『重装的心得』【常】这名单位被<魔法>以外的武器攻击的期间，这名单位的战斗力+20。";
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CanTarget(Card card)
-        {
-            return card == Owner
-                && Game.DefendingUnit == card
-                && !Game.AttackingUnit.HasWeapon(WeaponEnum.Magic);
-        }
-
-        public override void SetItemToApply()
-        {
-            ItemsToApply.Add(new PowerBuff(this, 20));
         }
     }
 
