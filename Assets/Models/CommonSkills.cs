@@ -39,7 +39,7 @@ public class Dragonslayer : PermanentSkill
 /// <summary>
 /// 『天空の運び手』【起】[横置]他の味方を１体選び、移動させる。
 /// </summary>
-public class Wingeddeliverer : ActionSkill
+public class WingedDeliverer : ActionSkill
 {
     public override bool CheckConditions()
     {
@@ -59,5 +59,23 @@ public class Wingeddeliverer : ActionSkill
         {
             await Controller.ChooseMove(choices, 1, 1, this);
         }
+    }
+}
+
+/// <summary>
+/// 『重装の心得』【常】このユニットが<魔法>以外に攻撃されている場合、このユニットの戦闘力は＋２０される。
+/// </summary>
+public class ArmorExpertise : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return card == Owner
+            && Game.DefendingUnit == card
+            && !Game.AttackingUnit.HasWeapon(WeaponEnum.Magic);
+    }
+
+    public override void SetItemToApply()
+    {
+        ItemsToApply.Add(new PowerBuff(this, 20));
     }
 }
