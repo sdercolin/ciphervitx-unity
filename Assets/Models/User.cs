@@ -97,6 +97,11 @@ public abstract class User
         }
     }
 
+    internal void ShuffleDeck(Card00050.Sk1 sk1)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Move(List<Card> targets, Skill reason)
     {
         Game.TryDoMessage(new MoveMessage()
