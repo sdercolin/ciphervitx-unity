@@ -53,7 +53,7 @@ public class Card00044 : Card
         public override void SetItemToApply()
         {
             //TODO
-            ItemsToApply.Add(new SupportFailed(this));
+            ItemsToApply.Add(new FailToSupport(this));
         }
     }
 

@@ -240,6 +240,29 @@ public class CanNotBeAvoided : SubSkill
 }
 
 /// <summary>
+/// 进行支援时，将会失败
+/// </summary>
+public class FailToSupport : SubSkill
+{
+    public FailToSupport(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        var confirmSupportMessage = message as ConfirmSupportMessage;
+        if (confirmSupportMessage !=null)
+        {
+            if (confirmSupportMessage.SupportCard == Owner && confirmSupportMessage.IsSuccessful)
+            {
+                substitute = confirmSupportMessage.Clone();
+                ((ConfirmSupportMessage)substitute).IsSuccessful = false;
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/// <summary>
 /// 可以无视羁绊颜色出击
 /// </summary>
 public class CanDeployWithoutBond : SubSkill
