@@ -16,12 +16,12 @@ public class Card00002Test
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;
-        var thisCard = new Card00002(player);
-        var bondCard = new Card00001(player);
+        var thisCard = CardFactory.CreateCard(2, player);
+        var bondCard = CardFactory.CreateCard(1, player);
         player.FrontField.AddCard(thisCard);
-        player.Bond.AddCard(thisCard);
-        var hisUnit1 = new Card00006(rival);
-        var hisUnit2 = new Card00007(rival);
+        player.Bond.AddCard(bondCard);
+        var hisUnit1 = CardFactory.CreateCard(6, rival);
+        var hisUnit2 = CardFactory.CreateCard(7, rival);
         rival.FrontField.AddCard(hisUnit1);
         rival.BackField.AddCard(hisUnit2);
 

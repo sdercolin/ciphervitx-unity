@@ -13,10 +13,10 @@ public class Card00004Test
     {
         Game.Initialize();
         var player = Game.Player;
-        var card = new Card00004(player);
-        var card1 = new Card00006(player);
-        var card2 = new Card00007(player);
-        var card3 = new Card00001(player);
+        var card = CardFactory.CreateCard(4, player);
+        var card1 = CardFactory.CreateCard(6, player);
+        var card2 = CardFactory.CreateCard(7, player);
+        var card3 = CardFactory.CreateCard(1, player);
         player.FrontField.AddCard(card);
         player.Hand.AddCard(card1);
         player.Hand.AddCard(card2);
