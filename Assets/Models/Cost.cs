@@ -88,6 +88,12 @@ public abstract class Cost
         return new ReverseBondCost(reason, number, condition);
     }
 
+    //TODO
+    internal Cost Destroy(Card owner, Card00061.Sk1 sk1)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// 横置
     /// </summary>
