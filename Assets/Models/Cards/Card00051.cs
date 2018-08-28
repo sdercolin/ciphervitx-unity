@@ -63,7 +63,7 @@ public class Card00051 : Card
     /// 『天空の運び手』【起】[横置]他の味方を１体選び、移動させる。
     /// </summary>
     public Sk2 sk2;
-    public class Sk2 : Wingeddeliverer
+    public class Sk2 : WingedDeliverer
     {
         public Sk2() : base()
         {
