@@ -17,7 +17,7 @@ public class Card00010Test
         var player2 = Game.Rival;
         var card1 = new Card00010(player1);
         player1.FrontField.AddCard(card1);
-		var card2 = new Card00001(player1);
+        var card2 = new Card00001(player1);
         player1.FrontField.AddCard(card2);
         var card3 = new Card00006(player1);
         player1.FrontField.AddCard(card3);
@@ -26,9 +26,9 @@ public class Card00010Test
 
 
         card1.Read(new EmptyMessage());
-		
+
         Assert.IsFalse(card4.GetAttackableUnits().Contains(card1));
-		Assert.IsFalse(card4.GetAttackableUnits().Contains(card3));
-		Assert.IsTrue(card4.GetAttackableUnits().Contains (card2));
+        Assert.IsFalse(card4.GetAttackableUnits().Contains(card3));
+        Assert.IsTrue(card4.GetAttackableUnits().Contains(card2));
     }
 }
