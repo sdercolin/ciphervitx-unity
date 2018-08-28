@@ -124,6 +124,12 @@ public abstract class User
         }
     }
 
+    //TODO
+    internal Task ChooseDestroy(List<Card> choices, int v1, int v2, Card00068.Sk2 sk2)
+    {
+        throw new NotImplementedException();
+    }
+
     public void ReverseBond(Card target, Skill reason, bool asCost = true)
     {
         if (target != null)
