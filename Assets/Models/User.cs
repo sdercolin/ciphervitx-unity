@@ -646,13 +646,25 @@ public abstract class User
         }
     }
 
-    public void ShowCards(List<Card> targets, Skill reason)
+    public void ShowCard(Card target, Skill reason)
     {
-        Game.TryDoMessage(new ShowCardsMessage()
+        if (target != null)
         {
-            Targets = targets,
-            Reason = reason
-        });
+            List<Card> targets = new List<Card> { target };
+            ShowCard(targets, reason);
+        }
+    }
+
+    public void ShowCard(List<Card> targets, Skill reason)
+    {
+        if (targets.Count > 0)
+        {
+            Game.TryDoMessage(new ShowCardsMessage()
+            {
+                Targets = targets,
+                Reason = reason
+            });
+        }
     }
 
     public void SendToRetreat(List<Card> targets, Skill reason = null, bool asCost = false)
