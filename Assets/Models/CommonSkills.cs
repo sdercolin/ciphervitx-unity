@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 /// <summary>
 /// 『飛行特効』【常】このユニットが<飛行>を攻撃している場合、このユニットの戦闘力は＋３０される。
@@ -77,5 +78,32 @@ public class ArmorExpertise : PermanentSkill
     public override void SetItemToApply()
     {
         ItemsToApply.Add(new PowerBuff(this, 20));
+    }
+}
+
+/// <summary>
+/// 『鍵開け』【起】[横置]相手のデッキの１番上のカードを公開させる。そのカードの出撃コストが３以上の場合、あなたは翻面1してもよい。そうしたなら、カードを１枚引く。
+/// </summary>
+public class Unlock : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.Action(this);
+    }
+
+    public override Task Do()
+    {
+        var target = Opponent.Deck.Top;
+        Opponent.ShowCard(target, this);
+        if(target.DeployCost>=3)
+        {
+
+        }
+        return Task.CompletedTask;
     }
 }
