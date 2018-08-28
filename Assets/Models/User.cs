@@ -77,6 +77,12 @@ public abstract class User
         }
     }
 
+    //TODO
+    internal void MoveToRetreat(Card top, Card00073.Sk2 sk2)
+    {
+        throw new NotImplementedException();
+    }
+
     public void ForEachCard(Action<Card> action)
     {
         AllAreas.ForEach(area => area.ForEachCard(action));
