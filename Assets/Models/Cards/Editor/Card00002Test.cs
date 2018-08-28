@@ -18,16 +18,12 @@ public class Card00002Test
         Game.TurnPlayer = player;
         var thisCard = new Card00002(player);
         var bondCard = new Card00001(player);
-        player.Deck.ImportCard(thisCard);
-        player.Deck.ImportCard(bondCard);
-        thisCard.MoveTo(player.FrontField);
-        bondCard.MoveTo(player.Bond);
+        player.FrontField.AddCard(thisCard);
+        player.Bond.AddCard(thisCard);
         var hisUnit1 = new Card00006(rival);
         var hisUnit2 = new Card00007(rival);
-        rival.Deck.ImportCard(hisUnit1);
-        rival.Deck.ImportCard(hisUnit2);
-        hisUnit1.MoveTo(rival.FrontField);
-        hisUnit2.MoveTo(rival.BackField);
+        rival.FrontField.AddCard(hisUnit1);
+        rival.BackField.AddCard(hisUnit2);
 
         Assert.IsTrue(thisCard.GetAttackableUnits().SequenceEqual(new List<Card>() { hisUnit1 }));
 
