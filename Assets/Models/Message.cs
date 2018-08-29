@@ -577,6 +577,17 @@ public class ShowCardsMessage : Message
     public Skill Reason { get { return field2; } set { field2 = value; } }
 }
 
+public class AttachItemMessage : Message
+{
+    public IAttachable Item { get { return field1; } set { field1 = value; } }
+    public Card Target { get { return field2; } set { field2 = value; } }
+
+    public override void Do()
+    {
+        Target.Attach(Item);
+    }
+}
+
 ///// 消息种类
 ///// </summary>
 //public enum MessageType

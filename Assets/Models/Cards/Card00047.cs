@@ -57,7 +57,7 @@ public class Card00047 : Card
         {
             Controller.Field.ForEachCard(unit =>
                 {
-                    unit.Attach(new PowerBuff(this, 30, LastingTypeEnum.UntilNextOpponentTurnEnds));
+                    Controller.AttachItem(new PowerBuff(this, 30, LastingTypeEnum.UntilNextOpponentTurnEnds), unit);
                 });
             return Task.CompletedTask;
         }

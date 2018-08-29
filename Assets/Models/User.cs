@@ -386,6 +386,15 @@ public abstract class User
         });
     }
 
+    public void AttachItem(IAttachable item, Card target)
+    {
+        Game.TryDoMessage(new AttachItemMessage()
+        {
+            Item = item,
+            Target = target
+        });
+    }
+
     public List<Card> GetDeployableHands(bool actioned = false, Skill reason = null)
     {
         return Hand.Filter(card => card.CheckDeployment(actioned, reason));
@@ -509,7 +518,7 @@ public abstract class User
         var supportCard = Support.SupportCard;
         if (supportCard != null)
         {
-            unit.Attach(new PowerBuff(null, supportCard.Support, LastingTypeEnum.UntilBattleEnds));
+            AttachItem(new PowerBuff(null, supportCard.Support, LastingTypeEnum.UntilBattleEnds), unit);
         }
     }
 

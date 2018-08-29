@@ -130,7 +130,7 @@ public abstract class ActionSkill : Skill
                 return false;
             }
         }
-        if(Keyword==SkillKeyword.CCS && (!Owner.IsClassChanged))
+        if (Keyword == SkillKeyword.CCS && (!Owner.IsClassChanged))
         {
             return false;
         }
@@ -349,7 +349,7 @@ public abstract class PermanentSkill : Skill
     {
         foreach (var item in items)
         {
-            target.Attach(item);
+            target.Controller.AttachItem(item, target);
         }
         Targets.Add(target);
         ItemsApplied.Add(target, items.ToArray());

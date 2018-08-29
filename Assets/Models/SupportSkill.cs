@@ -106,7 +106,7 @@ public class HeroEmblem : SupportSkill
 
     public override Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        AttackingUnit.Attach(new DestroyTwoOrbs(this, LastingTypeEnum.UntilBattleEnds));
+        Controller.AttachItem(new DestroyTwoOrbs(this, LastingTypeEnum.UntilBattleEnds), AttackingUnit);
         return Task.CompletedTask;
     }
 }
@@ -157,7 +157,7 @@ public class AttackEmblem : SupportSkill
 
     public override Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        AttackingUnit.Attach(new PowerBuff(this, 20, LastingTypeEnum.UntilBattleEnds));
+        Controller.AttachItem(new PowerBuff(this, 20, LastingTypeEnum.UntilBattleEnds), AttackingUnit);
         return Task.CompletedTask;
     }
 }
@@ -182,7 +182,7 @@ public class DefenceEmblem : SupportSkill
 
     public override Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        AttackedUnit.Attach(new PowerBuff(this, 20, LastingTypeEnum.UntilBattleEnds));
+        Controller.AttachItem(new PowerBuff(this, 20, LastingTypeEnum.UntilBattleEnds), AttackedUnit);
         return Task.CompletedTask;
     }
 }
@@ -286,7 +286,7 @@ public class MiracleEmblem : SupportSkill
 
     public override Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        AttackingUnit.Attach(new CanNotCriticalAttack(this, LastingTypeEnum.UntilBattleEnds));
+        Controller.AttachItem(new CanNotCriticalAttack(this, LastingTypeEnum.UntilBattleEnds), AttackingUnit);
         return Task.CompletedTask;
     }
 }

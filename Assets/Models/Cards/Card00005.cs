@@ -53,7 +53,7 @@ public class Card00005 : Card
 
         public override Task Do()
         {
-            Owner.Attach(new CanNotBeAvoided(this, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new CanNotBeAvoided(this, LastingTypeEnum.UntilTurnEnds), Owner);
             return Task.CompletedTask;
         }
     }
