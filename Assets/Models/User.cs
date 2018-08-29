@@ -93,11 +93,6 @@ public abstract class User
         return AllAreas.TrueForAll(area => area.TrueForAllCard(predicate));
     }
 
-    internal void ChangeDeffendingUnit(Card owner, Card00057.Sk1 sk1)
-    {
-        throw new NotImplementedException();
-    }
-
     #region 动作
     public void Move(Card target, Skill reason)
     {
@@ -728,6 +723,15 @@ public abstract class User
         });
     }
 
+    public void ChangeDefendingUnit(Card toUnit, Skill reason)
+    {
+        Game.TryDoMessage(new ChangeDefendingUnitMessage()
+        {
+            FromUnit = Game.DefendingUnit,
+            ToUnit = toUnit,
+            Reason = reason
+        });
+    }
     #endregion
 }
 
