@@ -115,19 +115,27 @@ public class EnableSkill : SubSkill
 public class DisableSkill : SubSkill
 {
     public DisableSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-    //TODO
-    public String Name { get { return field1; } set { field1 = value; } }
+
+    public string TargetName { get { return field1; } set { field1 = value; } }
+    private List<Skill> targets = new List<Skill>();
 
     public override void Attached()
     {
         base.Attached();
-        Target.Available = false;
+        Owner.SkillList.FindAll(skill => skill.Name == TargetName).ForEach( skill =>
+        {
+            skill.Available = false;
+            targets.Add(skill);
+        });
     }
 
     protected override void Detaching()
     {
         base.Detaching();
-        Target.Available = true;
+        foreach (var skill in targets)
+        {
+            skill.Available = true;
+        }
     }
 }
 

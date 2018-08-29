@@ -81,7 +81,7 @@ public class Card00076 : Card
         {
             ItemsToApply.Add(new DisableSkill(this)
             {
-                Name = "飞行特效"
+                TargetName = "飞行特效"
             });
             //TODO
             ItemsToApply.Add(new CanNotGetSkill(this)
