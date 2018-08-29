@@ -87,9 +87,12 @@ public class Card00068 : Card
             var destroyMessage = message as DestroyMessage;
             if (destroyMessage != null)
             {
-                if (destroyMessage.AttackingUnit == Owner && destroyMessage.DestroyedUnit.Controller == Opponent)
+                foreach (var unit in destroyMessage.DestroyedUnits)
                 {
-                    return new Induction();
+                    if (destroyMessage.AttackingUnit == Owner && unit.Controller == Opponent)
+                    {
+                        return new Induction();
+                    }
                 }
             }
             return null;
@@ -102,11 +105,7 @@ public class Card00068 : Card
 
         public override async Task Do(Induction induction)
         {
-            var choices = Opponent.Field.Filter(unit => unit.DeployCost <= 2);
-            if (Opponent.Hero.DeployCost <= 2)
-            {
-                choices.Remove(Opponent.Hero);
-            }
+            var choices = Opponent.Field.Filter(unit => unit.DeployCost <= 2 && !unit.IsHero);
             await Controller.ChooseDestroy(choices, 0, 1, this, false);
         }
     }
