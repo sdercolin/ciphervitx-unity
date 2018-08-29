@@ -516,9 +516,7 @@ public class ReadyForSameNameProcessPartialMessage : Message
     public string Name { get { return field2; } set { field2 = value; } }
 }
 
-public class SendToRetreatSameNameProcessMessage : SendToRetreatMessage
-{
-}
+public class SendToRetreatSameNameProcessMessage : SendToRetreatMessage { }
 
 public class ReadyForDestructionProcessMessage : Message
 {
@@ -587,6 +585,8 @@ public class AttachItemMessage : Message
         Target.Attach(Item);
     }
 }
+
+public class GrantSkillMessage : AttachItemMessage { }
 
 ///// 消息种类
 ///// </summary>

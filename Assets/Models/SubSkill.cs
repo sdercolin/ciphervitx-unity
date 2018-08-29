@@ -88,24 +88,26 @@ public abstract class SubSkill : Skill
 }
 
 /// <summary>
-/// 使能力有效
+/// 获得能力
 /// </summary>
-public class EnableSkill : SubSkill
+public class ObtainSkill : SubSkill
 {
-    public EnableSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+    public ObtainSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
-    public Skill Target { get { return field1; } set { field1 = value; } }
+    public Skill TargetPrototype { get { return field1; } set { field1 = value; } }
+    private Skill target;
 
     public override void Attached()
     {
         base.Attached();
-        Target.Available = true;
+        target = Activator.CreateInstance(TargetPrototype.GetType()) as Skill;
+        Owner.Attach(target);
     }
 
     protected override void Detaching()
     {
         base.Detaching();
-        Target.Available = false;
+        target.Detach();
     }
 }
 

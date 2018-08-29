@@ -25,8 +25,7 @@ public class Card00028 : Card
         Attach(sk1);
         sk2 = new Sk2();
         Attach(sk2);
-        sk3 = new Sk3();
-        Attach(sk3);
+        skillPrototype1 = new SkillPrototype1();
     }
 
     /// <summary>
@@ -59,9 +58,9 @@ public class Card00028 : Card
 
         public override Task Do()
         {
-            Controller.AttachItem(new EnableSkill(this, LastingTypeEnum.UntilTurnEnds)
+            Controller.GrantSkill(new ObtainSkill(this, LastingTypeEnum.UntilTurnEnds)
             {
-                Target = ((Card00028)Owner).sk3
+                TargetPrototype = ((Card00028)Owner).skillPrototype1
             }, Owner);
             return Task.CompletedTask;
         }
@@ -84,17 +83,16 @@ public class Card00028 : Card
         }
     }
 
-    public Sk3 sk3;
-    public class Sk3 : Wingslayer
+    public SkillPrototype1 skillPrototype1;
+    public class SkillPrototype1 : Wingslayer
     {
-        public Sk3() : base()
+        public SkillPrototype1() : base()
         {
-            Number = 3;
+            Number = 0;
             Name = "飞行特效";
             Description = "『飞行特效』【常】这名单位攻击<飞行>属性单位的期间，这名单位的战斗力+30。";
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
-            Available = false;
         }
     }
 }
