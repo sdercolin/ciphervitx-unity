@@ -354,7 +354,7 @@ public abstract class PermanentSkill : Skill
     {
         foreach (var item in items)
         {
-            target.Controller.AttachItem(item, target);
+            target.Attach(item);
         }
         Targets.Add(target);
         ItemsApplied.Add(target, items.ToArray());
