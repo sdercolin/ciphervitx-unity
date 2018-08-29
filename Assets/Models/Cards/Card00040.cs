@@ -52,7 +52,6 @@ public class Card00040 : Card
 
         public override void SetItemToApply()
         {
-            //TODO
             ItemsToApply.Add(new CanNotAttack(this));
         }
     }
