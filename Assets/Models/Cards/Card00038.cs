@@ -76,7 +76,7 @@ public class Card00038 : Card
         {
             return card == Owner
                 && Game.BattlingUnits.Contains(card)
-                && card.Controller.Support.SupportCard.HasUnitNameOf("索尔");
+                && card.Controller.Support.SupportedBy("索尔");
         }
 
         public override void SetItemToApply()

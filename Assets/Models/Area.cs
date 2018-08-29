@@ -256,6 +256,18 @@ public class Support : Area
         this.Controller = Controller;
     }
 
+    public bool SupportedBy(string unitName)
+    {
+        if (SupportCard == null)
+        {
+            return false;
+        }
+        else
+        {
+            return SupportCard.HasUnitNameOf(unitName);
+        }
+    }
+
     public override void ProcessCardIn(Card card, Area fromArea)
     {
         card.Reset();
