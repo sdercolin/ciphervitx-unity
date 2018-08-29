@@ -23,7 +23,7 @@ public abstract class SubSkill : Skill
     /// </summary>
     public LastingTypeEnum LastingType;
 
-    private static int fieldNumber = 10;
+    private static int fieldNumber = 5;
     protected dynamic field1 = null;
     protected dynamic field2 = null;
     protected dynamic field3 = null;
@@ -84,6 +84,29 @@ public abstract class SubSkill : Skill
                 return;
             }
         }
+    }
+
+    public override bool Equals(IAttachable item)
+    {
+        var subSkillItem = item as SubSkill;
+        if (subSkillItem == null)
+        {
+            return false;
+        }
+        if (subSkillItem.GetType() != GetType())
+        {
+            return false;
+        }
+        for (int i = 0; i < fieldNumber; i++)
+        {
+            dynamic fieldThis = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+            dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(subSkillItem);
+            if(fieldThis!=field)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

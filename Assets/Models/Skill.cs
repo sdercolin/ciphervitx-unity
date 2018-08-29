@@ -93,6 +93,11 @@ public abstract class Skill : IAttachable
     {
         return true;
     }
+
+    public virtual bool Equals(IAttachable item)
+    {
+        return item == this;
+    }
 }
 
 /// <summary>
@@ -398,7 +403,33 @@ public abstract class PermanentSkill : Skill
             {
                 Detach(card);
             }
+            else if (CanTarget(card) && Targets.Contains(card))
+            {
+                ItemsToApply.Clear();
+                SetItemToApply();
+                if (CheckItemUpdated(card))
+                {
+                    Detach(card);
+                    Attach(card, ItemsToApply);
+                }
+            }
         }
+    }
+
+    private bool CheckItemUpdated(Card card)
+    {
+        if (ItemsApplied[card].Length != ItemsToApply.Count)
+        {
+            return true;
+        }
+        for (int i = 0; i < ItemsToApply.Count; i++)
+        {
+            if (!ItemsToApply[i].Equals(ItemsApplied[card][i]))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public override bool Try(Message message, ref Message substitute)

@@ -11,6 +11,7 @@ public interface IAttachable
 
     void Attached();
     void Detach();
+    bool Equals(IAttachable item);
     void Read(Message message);
     bool Try(Message message, ref Message substitute);
 }

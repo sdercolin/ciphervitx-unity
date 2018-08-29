@@ -68,9 +68,9 @@ public abstract class Buff : IAttachable
     protected LastingTypeEnum lastingType;
     public LastingTypeEnum LastingType { get; set; }
 
-    protected bool? isAdding;
-    protected bool? isBecoming;
-    protected dynamic value;
+    protected bool? isAdding = null;
+    protected bool? isBecoming = null;
+    protected dynamic value = null;
 
     public virtual void Attached() { }
 
@@ -95,6 +95,23 @@ public abstract class Buff : IAttachable
     public bool Try(Message message, ref Message substitute)
     {
         return true;
+    }
+
+    public bool Equals(IAttachable item)
+    {
+        var buffItem = item as Buff;
+        if (buffItem == null)
+        {
+            return false;
+        }
+        if (buffItem.GetType() != GetType())
+        {
+            return false;
+        }
+        return LastingType == buffItem.LastingType
+            && isAdding == buffItem.isAdding
+            && isBecoming == buffItem.isBecoming
+            && value == buffItem.value;
     }
 }
 
