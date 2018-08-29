@@ -77,12 +77,6 @@ public abstract class User
         }
     }
 
-    //TODO
-    internal void MoveToRetreat(Card top, Card00073.Sk2 sk2)
-    {
-        throw new NotImplementedException();
-    }
-
     public void ForEachCard(Action<Card> action)
     {
         AllAreas.ForEach(area => area.ForEachCard(action));
@@ -713,7 +707,15 @@ public abstract class User
         }
     }
 
-    public void SendToRetreat(List<Card> targets, Skill reason = null, bool asCost = false)
+    public void SendToRetreat(Card target, Skill reason, bool asCost = false)
+    {
+        if(target!=null)
+        {
+            SendToRetreat(new List<Card>() { target }, reason, asCost);
+        }
+    }
+
+    public void SendToRetreat(List<Card> targets, Skill reason, bool asCost = false)
     {
         Game.TryDoMessage(new SendToRetreatMessage()
         {

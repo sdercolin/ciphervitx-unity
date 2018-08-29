@@ -72,7 +72,7 @@ public class Card00073 : Card
 
         public override Task Do()
         {
-            Controller.MoveToRetreat(Opponent.Deck.Top, this);
+            Controller.SendToRetreat(Opponent.Deck.Top, this);
             return Task.CompletedTask;
         }
     }

@@ -116,6 +116,11 @@ public static class Request
         }
     }
 
+    public static async Task<bool> AskIfSendToRetreat(Card target, User targetUser)
+    {
+        return await AskIfSendToRetreat(new List<Card>() { target }, targetUser);
+    }
+
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
     {
         if (NextResults.Count > 0)

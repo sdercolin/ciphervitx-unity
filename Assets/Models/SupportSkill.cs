@@ -311,11 +311,11 @@ public class ThiefEmblem : SupportSkill
 
     public override async Task Do(Card AttackingUnit, Card AttackedUnit)
     {
-        var targets = new List<Card>() { AttackedUnit.Controller.Deck.Top };
-        AttackingUnit.Controller.ShowCard(targets, this);
-        if (await Request.AskIfSendToRetreat(targets, AttackingUnit.Controller))
+        var target = AttackedUnit.Controller.Deck.Top;
+        AttackingUnit.Controller.ShowCard(target, this);
+        if (await Request.AskIfSendToRetreat(target, AttackingUnit.Controller))
         {
-            AttackingUnit.Controller.SendToRetreat(targets, this);
+            AttackingUnit.Controller.SendToRetreat(target, this);
         }
     }
 }
