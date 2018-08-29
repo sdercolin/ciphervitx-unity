@@ -49,7 +49,7 @@ public class Card00051 : Card
         {
             return card == Owner
                 && Game.AttackingUnit == card
-                && (Game.DefendingUnit.HasType(TypeEnum.Beast)|| Game.DefendingUnit.HasType(TypeEnum.Armor));
+                && (Game.DefendingUnit.HasType(TypeEnum.Beast) || Game.DefendingUnit.HasType(TypeEnum.Armor));
         }
 
         public override void SetItemToApply()
