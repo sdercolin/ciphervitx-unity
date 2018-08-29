@@ -55,7 +55,7 @@ public class Card00062 : Card
 
         public override Task Do()
         {
-            Owner.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem((new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds)), Owner);
             return Task.CompletedTask;
         }
     }
@@ -102,7 +102,7 @@ public class Card00062 : Card
 
         public override Task Do(Induction induction)
         {
-            Owner.Attach(new DestroyTwoOrbs(this, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new DestroyTwoOrbs(this, LastingTypeEnum.UntilTurnEnds), Owner);
             return Task.CompletedTask;
         }
     }

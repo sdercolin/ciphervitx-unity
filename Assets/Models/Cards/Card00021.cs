@@ -58,10 +58,10 @@ public class Card00021 : Card
 
         public override Task Do()
         {
-            Owner.Attach(new EnableSkill(this, LastingTypeEnum.UntilTurnEnds)
+            Controller.AttachItem(new EnableSkill(this, LastingTypeEnum.UntilTurnEnds)
             {
                 Target = ((Card00021)Owner).sk3
-            });
+            }, Owner);
             return Task.CompletedTask;
         }
     }

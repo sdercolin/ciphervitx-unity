@@ -71,8 +71,8 @@ public class Card00004 : Card
             var targets = ((MyInduction)induction).Targets;
             targets.ForEach(unit =>
             {
-                unit.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
-                Owner.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
+                Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), unit);
+                Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
             });
             return Task.CompletedTask;
         }
@@ -116,9 +116,9 @@ public class Card00004 : Card
 
         public override Task Do()
         {
-            Owner.Attach(new PowerBuff(this, -10, LastingTypeEnum.UntilTurnEnds));
-            Owner.Attach(new WeaponBuff(this, true, WeaponEnum.Magic, LastingTypeEnum.UntilTurnEnds));
-            Owner.Attach(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new PowerBuff(this, -10, LastingTypeEnum.UntilTurnEnds), Owner);
+            Controller.AttachItem(new WeaponBuff(this, true, WeaponEnum.Magic, LastingTypeEnum.UntilTurnEnds), Owner);
+            Controller.AttachItem(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds), Owner);
             return Task.CompletedTask;
         }
     }

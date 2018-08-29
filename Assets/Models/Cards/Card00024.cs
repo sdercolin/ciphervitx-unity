@@ -75,8 +75,8 @@ public class Card00024 : Card
         public override Task Do(Induction induction)
         {
             var target = ((MyInduction)induction).Target;
-            target.Attach(new PowerBuff(this, 20, LastingTypeEnum.UntilTurnEnds));
-            target.Attach(new DestroyTwoOrbs(this, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new PowerBuff(this, 20, LastingTypeEnum.UntilTurnEnds), target);
+            Controller.AttachItem(new DestroyTwoOrbs(this, LastingTypeEnum.UntilTurnEnds), target);
             return Task.CompletedTask;
         }
 

@@ -103,7 +103,7 @@ public class Card00002 : Card
 
         public override Task Do()
         {
-            Owner.Attach(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds), Owner);
             return Task.CompletedTask;
         }
     }

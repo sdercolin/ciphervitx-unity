@@ -54,11 +54,11 @@ public class Card00030 : Card
 
         public override Task Do()
         {
-            Owner.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
             var targets = Owner.Controller.Field.SearchCard("库洛姆");
             targets.ForEach(unit =>
             {
-                unit.Attach(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds));
+                Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), unit);
             });
             return Task.CompletedTask;
         }
