@@ -337,7 +337,7 @@ public class AddToHandMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
-    public bool Show { get { return field3; } set { field3 = value; } } 
+    public bool Show { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
         Targets.ForEach(card => card.MoveTo(card.Controller.Hand));
@@ -571,6 +571,17 @@ public class ShowCardsMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
+}
+
+public class AttachItemMessage : Message
+{
+    public IAttachable Item { get { return field1; } set { field1 = value; } }
+    public Card Target { get { return field2; } set { field2 = value; } }
+
+    public override void Do()
+    {
+        Target.Attach(Item);
+    }
 }
 
 ///// 消息种类

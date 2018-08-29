@@ -392,6 +392,15 @@ public abstract class User
         });
     }
 
+    public void AttachItem(IAttachable item, Card target)
+    {
+        Game.TryDoMessage(new AttachItemMessage()
+        {
+            Item = item,
+            Target = target
+        });
+    }
+
     public List<Card> GetDeployableHands(bool actioned = false, Skill reason = null)
     {
         return Hand.Filter(card => card.CheckDeployment(actioned, reason));
