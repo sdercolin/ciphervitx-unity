@@ -103,30 +103,35 @@ public abstract class Area
     }
 
     /// <summary>
-    /// 切洗该区域的卡
+    /// 获取一个打乱的排序
     /// </summary>
-    public void Shuffle()
+    public List<int> GetShuffledOrder()
     {
         int N = list.Count;
-        int[] array = new int[N];
+        List<int> newOrder = new List<int>();
         for (int i = 0; i < N; i++)
         {
-            array[i] = i;
+            newOrder.Add(i);
         }
         Random rnd = new Random();
         for (int j = 0; j < N; j++)
         {
             int pos = rnd.Next(j, N);
-            int temp = array[pos];
-            array[pos] = array[j];
-            array[j] = temp;
+            int temp = newOrder[pos];
+            newOrder[pos] = newOrder[j];
+            newOrder[j] = temp;
         }
-        List<Card> CardList_temp = new List<Card>();
-        for (int i = 0; i < N; i++)
+        return newOrder;
+    }
+
+    public void ApplyOrder(List<int> order)
+    {
+        var newList = new List<Card>();
+        foreach (var number in order)
         {
-            CardList_temp.Add(list[array[i]]);
+            newList.Add(list[number]);
         }
-        list = CardList_temp;
+        list = newList;
     }
 
     /// <summary>
@@ -198,7 +203,7 @@ public class Deck : Area
         if (list.Count == 0)
         {
             Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
-            Shuffle();
+            Controller.ShuffleDeck(null);
         }
     }
 }

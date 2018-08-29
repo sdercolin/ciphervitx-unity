@@ -600,6 +600,18 @@ public class ChangeDefendingUnitMessage : Message
     }
 }
 
+public class ShuffleDeckMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+    public List<int> Order { get { return field2; } set { field2 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
+
+    public override void Do()
+    {
+        User.Deck.ApplyOrder(Order);
+    }
+}
+
 ///// 消息种类
 ///// </summary>
 //public enum MessageType

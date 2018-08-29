@@ -97,9 +97,15 @@ public abstract class User
         }
     }
 
-    internal void ShuffleDeck(Card00050.Sk1 sk1)
+    public void ShuffleDeck(Skill reason)
     {
-        throw new NotImplementedException();
+        var order = Deck.GetShuffledOrder();
+        Game.TryDoMessage(new ShuffleDeckMessage()
+        {
+            User = this,
+            Order = order,
+            Reason = reason
+        });
     }
 
     public void Move(List<Card> targets, Skill reason)
@@ -709,7 +715,7 @@ public abstract class User
 
     public void SendToRetreat(Card target, Skill reason, bool asCost = false)
     {
-        if(target!=null)
+        if (target != null)
         {
             SendToRetreat(new List<Card>() { target }, reason, asCost);
         }
