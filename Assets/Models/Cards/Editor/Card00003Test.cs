@@ -13,8 +13,8 @@ public class Card00003Test
     {
         Game.Initialize();
         var player = Game.Player;
-        var card = new Card00003(player);
-        player.Deck.ImportCard(card);
+        var card = CardFactory.CreateCard(3, player);
+        player.Hand.AddCard(card);
         card.Read(new EmptyMessage());
         Assert.IsTrue(card.AttachableList.Count == 2);
 

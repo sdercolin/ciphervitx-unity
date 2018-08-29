@@ -13,18 +13,14 @@ public class Card00004Test
     {
         Game.Initialize();
         var player = Game.Player;
-        var card = new Card00004(player);
-        var card1 = new Card00006(player);
-        var card2 = new Card00007(player);
-        var card3 = new Card00001(player);
-        player.Deck.ImportCard(card);
-        player.Deck.ImportCard(card1);
-        player.Deck.ImportCard(card2);
-        player.Deck.ImportCard(card3);
-        card.MoveTo(player.FrontField);
-        card1.MoveTo(player.Hand);
-        card2.MoveTo(player.Hand);
-        card3.MoveTo(player.Hand);
+        var card = CardFactory.CreateCard(4, player);
+        var card1 = CardFactory.CreateCard(6, player);
+        var card2 = CardFactory.CreateCard(7, player);
+        var card3 = CardFactory.CreateCard(1, player);
+        player.FrontField.AddCard(card);
+        player.Hand.AddCard(card1);
+        player.Hand.AddCard(card2);
+        player.Hand.AddCard(card3);
 
         Assert.IsTrue(card.Power == 60);
 

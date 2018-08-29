@@ -39,7 +39,7 @@ public abstract class Area
         return list.Contains(card);
     }
 
-    public int Count => list.Count;
+    public int Count => Cards.Count;
 
     /// <summary>
     /// 控制者
