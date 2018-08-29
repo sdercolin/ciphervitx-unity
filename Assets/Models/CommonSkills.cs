@@ -96,14 +96,22 @@ public class Unlock : ActionSkill
         return Cost.Action(this);
     }
 
-    public override Task Do()
+    public override async Task Do()
     {
         var target = Opponent.Deck.Top;
         Opponent.ShowCard(target, this);
-        if(target.DeployCost>=3)
+        if (target.DeployCost >= 3)
         {
-            //TODO
+            var choices = Controller.GetReversableBonds(this);
+            if (choices.Count > 0)
+            {
+                if (await Request.AskIfReverseBond(1, this, Controller))
+                {
+                    await Controller.ChooseReverseBond(choices, 1, 1, this, false);
+                    Controller.DrawCard(1, this);
+                }
+            }
+
         }
-        return Task.CompletedTask;
     }
 }

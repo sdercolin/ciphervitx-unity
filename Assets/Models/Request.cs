@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public static class Request
 {
     #region Testing
-    private static Queue<dynamic> NextResults = new Queue<dynamic>(); 
+    private static Queue<dynamic> NextResults = new Queue<dynamic>();
     public static void SetNextResult(dynamic result)
     {
         NextResults.Enqueue(result);
@@ -53,7 +53,7 @@ public static class Request
 
     public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser)
     {
-        if (NextResults.Count>0)
+        if (NextResults.Count > 0)
         {
             return NextResults.Dequeue();
         }
@@ -65,6 +65,19 @@ public static class Request
     }
 
     public static async Task<bool> AskIfUse<T>(T target, User targetUser)
+    {
+        if (NextResults.Count > 0)
+        {
+            return NextResults.Dequeue();
+        }
+        else
+        {
+            // TO DO
+            return false;
+        }
+    }
+
+    public static async Task<bool> AskIfReverseBond(int number, Skill reason, User targetUser)
     {
         if (NextResults.Count > 0)
         {

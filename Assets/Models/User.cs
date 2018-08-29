@@ -158,6 +158,11 @@ public abstract class User
         }
     }
 
+    public List<Card> GetReversableBonds(Skill reason = null)
+    {
+        return Bond.UnusedBonds.FindAll(card => card.CheckReverseBond(reason));
+    }
+
     public async Task ChooseReverseBond(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
     {
         if (targets.Count > 0)

@@ -181,7 +181,7 @@ public class ReverseBondCost : Cost
 
     public override bool Check()
     {
-        Choices = Reason.Controller.Bond.UnusedBonds.FindAll(card => Condition(card) && card.CheckReverseBond(Reason));
+        Choices = Reason.Controller.GetReversableBonds(Reason).FindAll(card => Condition(card));
         if (Choices.Count >= Number)
         {
             return true;
