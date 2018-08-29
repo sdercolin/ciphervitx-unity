@@ -74,7 +74,7 @@ public class Card00076 : Card
 
         public override bool CanTarget(Card card)
         {
-            return card.Controller == Opponent;
+            return card.Controller == Opponent && card.IsOnField;
         }
 
         public override void SetItemToApply()
@@ -83,10 +83,9 @@ public class Card00076 : Card
             {
                 TargetName = "飞行特效"
             });
-            //TODO
-            ItemsToApply.Add(new CanNotGetSkill(this)
+            ItemsToApply.Add(new CanNotObtainSkill(this)
             {
-                Name = "飞行特效"
+                TargetName = "飞行特效"
             });
         }
     }

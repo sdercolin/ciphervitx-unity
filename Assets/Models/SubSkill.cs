@@ -162,6 +162,31 @@ public class DisableAllSkills : SubSkill
 }
 
 /// <summary>
+/// 不能获得能力
+/// </summary>
+public class CanNotObtainSkill : SubSkill
+{
+    public CanNotObtainSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    public string TargetName { get { return field1; } set { field1 = value; } }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        if (message is GrantSkillMessage)
+        {
+            var grantSkillMessage = message as GrantSkillMessage;
+            var skillPrototype = ((ObtainSkill)grantSkillMessage.Item).TargetPrototype;
+            if (skillPrototype.Name==TargetName)
+            {
+                substitute = new EmptyMessage();
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/// <summary>
 /// 不能被放置到羁绊区
 /// </summary>
 public class CanNotBePlacedInBond : SubSkill, IForbidPosition
