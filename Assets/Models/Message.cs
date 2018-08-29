@@ -337,7 +337,7 @@ public class AddToHandMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
-    public bool Show { get { return field3; } set { field3 = value; } } 
+    public bool Show { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
         Targets.ForEach(card => card.MoveTo(card.Controller.Hand));
@@ -394,14 +394,18 @@ public class AvoidMessage : Message
 
 public class DestroyMessage : Message
 {
-    public Card DestroyedUnit { get { return field1; } set { field1 = value; } }
-    public DestructionReasonTag Reason { get { return field2; } set { field2 = value; } }
+    public List<Card> DestroyedUnits { get { return field1; } set { field1 = value; } }
+    public DestructionReasonTag ReasonTag { get { return field2; } set { field2 = value; } }
     public Card AttackingUnit { get { return field3; } set { field3 = value; } }
-    public int Count { get { return field4; } set { field4 = value; } }
+    public Skill Reason { get { return field4; } set { field4 = value; } }
+    public int Count { get { return field5; } set { field5 = value; } }
     public override void Do()
     {
-        DestroyedUnit.DestructionReasonTag = Reason;
-        DestroyedUnit.DestroyedCount = Count;
+        DestroyedUnits.ForEach(unit =>
+        {
+            unit.DestructionReasonTag = ReasonTag;
+            unit.DestroyedCount = Count;
+        });
     }
 }
 

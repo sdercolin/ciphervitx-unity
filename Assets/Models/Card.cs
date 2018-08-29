@@ -944,6 +944,19 @@ public abstract class Card
         return targets;
     }
 
+    public bool CheckDestroyByCost(Skill reason)
+    {
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new DestroyMessage()
+        {
+            DestroyedUnits = new List<Card>() { this },
+            Count = 1,
+            ReasonTag = DestructionReasonTag.BySkillCost,
+            Reason = reason,
+            AttackingUnit = null
+        }, ref substitute);
+    }
+
     /// <summary>
     /// 重置所有状态
     /// </summary>
@@ -1147,5 +1160,6 @@ public enum DestructionReasonTag
 {
     Null, //无
     ByBattle, //被战斗击破
-    BySkill //被能力击破
+    BySkill, //被能力击破
+    BySkillCost //作为费用被击破
 }

@@ -107,7 +107,7 @@ public class Card00068 : Card
             {
                 choices.Remove(Opponent.Hero);
             }
-            await Controller.ChooseDestroy(choices, 0, 1, this);
+            await Controller.ChooseDestroy(choices, 0, 1, this, false);
         }
     }
 }

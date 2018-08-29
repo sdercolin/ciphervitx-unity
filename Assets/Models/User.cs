@@ -130,12 +130,6 @@ public abstract class User
         }
     }
 
-    //TODO
-    internal Task ChooseDestroy(List<Card> choices, int v1, int v2, Card00068.Sk2 sk2)
-    {
-        throw new NotImplementedException();
-    }
-
     public void ReverseBond(Card target, Skill reason, bool asCost = true)
     {
         if (target != null)
@@ -608,6 +602,34 @@ public abstract class User
         if (targets.Count > 0)
         {
             SetActioned(await Request.Choose(targets, min, max, this), reason, asCost);
+        }
+    }
+
+    public void Destroy(Card target, Skill reason, bool asCost)
+    {
+        if (target != null)
+        {
+            Destroy(new List<Card>() { target }, reason, asCost);
+        }
+    }
+
+    public void Destroy(List<Card> targets, Skill reason, bool asCost)
+    {
+        Game.TryDoMessage(new DestroyMessage()
+        {
+            DestroyedUnits = targets,
+            Count = 1,
+            ReasonTag = asCost ? DestructionReasonTag.BySkillCost : DestructionReasonTag.BySkill,
+            Reason = reason,
+            AttackingUnit = null
+        });
+    }
+
+    public async Task ChooseDestroy(List<Card> targets, int min, int max, Skill reason, bool asCost)
+    {
+        if (targets.Count > 0)
+        {
+            Destroy(await Request.Choose(targets, min, max, this), reason, asCost);
         }
     }
 

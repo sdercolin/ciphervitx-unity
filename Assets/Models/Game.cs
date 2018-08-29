@@ -322,9 +322,10 @@ public static class Game
         {
             TryDoMessage(new DestroyMessage()
             {
-                DestroyedUnit = DefendingUnit,
-                Reason = DestructionReasonTag.ByBattle,
+                DestroyedUnits = new List<Card>() { DefendingUnit },
+                ReasonTag = DestructionReasonTag.ByBattle,
                 AttackingUnit = AttackingUnit,
+                Reason = null,
                 Count = 1
             });
         }

@@ -52,9 +52,12 @@ public class Card00033 : Card
             var destroyMessage = message as DestroyMessage;
             if (destroyMessage != null)
             {
-                if (destroyMessage.AttackingUnit == Owner && destroyMessage.DestroyedUnit.Controller == Opponent)
+                foreach (var unit in destroyMessage.DestroyedUnits)
                 {
-                    return new Induction();
+                    if (destroyMessage.AttackingUnit == Owner && unit.Controller == Opponent)
+                    {
+                        return new Induction();
+                    }
                 }
             }
             return null;

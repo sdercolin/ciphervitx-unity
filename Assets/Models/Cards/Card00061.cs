@@ -68,7 +68,7 @@ public class Card00061 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.Action(this) + Cost.Destroy(Owner, this);
+            return Cost.Action(this) + Cost.Destroy(this);
         }
 
         public override Task Do(Induction induction)

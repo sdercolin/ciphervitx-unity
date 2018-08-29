@@ -88,12 +88,6 @@ public abstract class Cost
         return new ReverseBondCost(reason, number, condition);
     }
 
-    //TODO
-    internal Cost Destroy(Card owner, Card00061.Sk1 sk1)
-    {
-        throw new NotImplementedException();
-    }
-
     /// <summary>
     /// 横置
     /// </summary>
@@ -121,6 +115,16 @@ public abstract class Cost
         return new DiscardHandCost(reason, number, condition);
     }
     #endregion
+
+    public static Cost Destroy(Skill reason)
+    {
+        return new DestroyCost(reason);
+    }
+
+    public static Cost DestroyOthers(Skill reason, int number, Predicate<Card> condition = null)
+    {
+        return new DestroyOthersCost(reason, number, condition);
+    }
 }
 
 public class NullCost : Cost
@@ -287,5 +291,57 @@ public class DiscardHandCost : Cost
     public async override Task Pay()
     {
         await Reason.Controller.ChooseDiscardHand(Choices, Number, Number, true, Reason);
+    }
+}
+public class DestroyCost : Cost
+{
+    public DestroyCost(Skill reason) : base(reason) { }
+
+    public override bool Check()
+    {
+        return Reason.Owner.CheckDestroyByCost(Reason);
+    }
+    public override Task Pay()
+    {
+        Reason.Controller.Destroy(Reason.Owner, Reason, true);
+        return Task.CompletedTask;
+    }
+}
+
+public class DestroyOthersCost : Cost
+{
+    public int Number;
+    public Predicate<Card> Condition;
+
+    public DestroyOthersCost(Skill reason, int number, Predicate<Card> condition = null) : base(reason)
+    {
+        Number = number;
+        if (condition == null)
+        {
+            Condition = card => true;
+        }
+        else
+        {
+            Condition = condition;
+        }
+    }
+
+    public override bool Check()
+    {
+        Choices = Reason.Controller.Field.Filter(card => card.CheckDestroyByCost(Reason) && Condition(card));
+        if (Choices.Count >= Number)
+        {
+            return true;
+        }
+        else
+        {
+            Choices.Clear();
+            return false;
+        }
+    }
+
+    public async override Task Pay()
+    {
+        await Reason.Controller.ChooseDestroy(Choices, Number, Number, Reason, true);
     }
 }
