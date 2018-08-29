@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public static class Game
 {
@@ -108,6 +109,8 @@ public static class Game
     /// <param name="message">消息</param>
     public static void Broadcast(Message message)
     {
+        Debug.Log("Broadcasting message: " + Environment.NewLine
+            + StringUtils.CreateFromAny(message) + Environment.NewLine);
         //TO DO:发送消息给对方
         ForEachCard(card =>
         {
@@ -123,6 +126,8 @@ public static class Game
     /// <returns>如允许，则返回True</returns>
     public static bool BroadcastTry(Message message, ref Message substitute)
     {
+        //Debug.Log("BroadcastTrying message: " + Environment.NewLine
+        //    + StringUtils.CreateFromAny(message) + Environment.NewLine);
         foreach (Card card in AllCards)
         {
             if (!card.Try(message, ref substitute))

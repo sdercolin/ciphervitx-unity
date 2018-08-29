@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public static class Request
 {
@@ -53,6 +54,10 @@ public static class Request
 
     public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser)
     {
+        Debug.Log("Requesting Choose: " + Environment.NewLine
+            + "choices = " + ListUtils.ToString(choices) + Environment.NewLine
+            + "min = " + min + Environment.NewLine
+            + "max = " + max + Environment.NewLine);
         if (NextResults.Count > 0)
         {
             return NextResults.Dequeue();
@@ -66,6 +71,8 @@ public static class Request
 
     public static async Task<bool> AskIfUse<T>(T target, User targetUser)
     {
+        Debug.Log("Requesting AskIfUse: " + Environment.NewLine
+            + "target = " + StringUtils.CreateFromAny(target) + Environment.NewLine);
         if (NextResults.Count > 0)
         {
             return NextResults.Dequeue();
@@ -79,6 +86,9 @@ public static class Request
 
     public static async Task<bool> AskIfReverseBond(int number, Skill reason, User targetUser)
     {
+        Debug.Log("Requesting AskIfReverseBond: " + Environment.NewLine
+            + "number = " + StringUtils.CreateFromAny(number) + Environment.NewLine
+            + "reason = " + StringUtils.CreateFromAny(reason) + Environment.NewLine);
         if (NextResults.Count > 0)
         {
             return NextResults.Dequeue();
@@ -92,6 +102,7 @@ public static class Request
 
     public static async Task<bool> AskIfCriticalAttack(User targetUser)
     {
+        Debug.Log("Requesting AskIfCriticalAttack" + Environment.NewLine);
         if (NextResults.Count > 0)
         {
             return NextResults.Dequeue();
@@ -105,6 +116,7 @@ public static class Request
 
     public static async Task<bool> AskIfAvoid(User targetUser)
     {
+        Debug.Log("Requesting AskIfAvoid" + Environment.NewLine);
         if (NextResults.Count > 0)
         {
             return NextResults.Dequeue();
@@ -123,6 +135,8 @@ public static class Request
 
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
     {
+        Debug.Log("Requesting AskIfReverseBond: " + Environment.NewLine
+            + "targets = " + StringUtils.CreateFromAny(targets) + Environment.NewLine);
         if (NextResults.Count > 0)
         {
             return NextResults.Dequeue();
