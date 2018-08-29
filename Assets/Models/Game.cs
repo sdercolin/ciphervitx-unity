@@ -311,7 +311,7 @@ public static class Game
         //必殺攻撃・神速回避ステップ
         if (await TurnPlayer.CriticalAttack())
         {
-            AttackingUnit.Attach(new PowerBuff(null, AttackingUnit.Power, LastingTypeEnum.UntilBattleEnds));
+            TurnPlayer.AttachItem(new PowerBuff(null, AttackingUnit.Power, LastingTypeEnum.UntilBattleEnds), AttackingUnit);
         }
         await DoAutoCheckTiming();
         await NotTurnPlayer.Avoid();

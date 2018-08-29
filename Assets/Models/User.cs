@@ -524,7 +524,7 @@ public abstract class User
         var supportCard = Support.SupportCard;
         if (supportCard != null)
         {
-            unit.Attach(new PowerBuff(null, supportCard.Support, LastingTypeEnum.UntilBattleEnds));
+            AttachItem(new PowerBuff(null, supportCard.Support, LastingTypeEnum.UntilBattleEnds), unit);
         }
     }
 
