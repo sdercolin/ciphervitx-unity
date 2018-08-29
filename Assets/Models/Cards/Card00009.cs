@@ -48,7 +48,7 @@ public class Card00009 : Card
         {
             return card == Owner
                 && Game.BattlingUnits.Contains(card)
-                && card.Controller.Support.Filter(supportCard => supportCard.HasUnitNameOf("阿贝尔")).Count > 0;
+                && card.Controller.Support.SupportCard.HasUnitNameOf("阿贝尔");
         }
 
         public override void SetItemToApply()
