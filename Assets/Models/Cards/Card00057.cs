@@ -47,11 +47,15 @@ public class Card00057 : Card
 
         public override bool CheckConditions(Induction induction)
         {
-            return Owner.BelongedRegion == Controller.FrontField;
+            return true;
         }
 
         public override Induction CheckInduceConditions(Message message)
         {
+            if(Owner.BelongedRegion != Controller.FrontField)
+            {
+                return null;
+            }
             var attackMessage = message as AttackMessage;
             if (attackMessage != null)
             {
