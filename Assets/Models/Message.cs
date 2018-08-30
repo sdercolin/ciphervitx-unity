@@ -241,7 +241,6 @@ public class ToBondMessage : Message
     }
 }
 
-
 /// <summary>
 /// 发起攻击，对应“攻击时/被攻击时”
 /// </summary>

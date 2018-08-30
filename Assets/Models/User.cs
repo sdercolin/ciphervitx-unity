@@ -656,11 +656,11 @@ public abstract class User
         });
     }
 
-    public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason, bool show = true)
+    public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason, bool show = true, Request.RequestFlags flags = Request.RequestFlags.Null)
     {
         if (targets.Count > 0)
         {
-            AddToHand(await Request.Choose(targets, min, max, this), reason, show);
+            AddToHand(await Request.Choose(targets, min, max, this, flags), reason, show);
         }
     }
 
