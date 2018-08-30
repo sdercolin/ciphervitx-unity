@@ -9,12 +9,10 @@ public abstract class Buff : IAttachable
     /// <summary>
     /// 附加值的构造函数
     /// </summary>
-    /// <param name="giver">产生该附加值的卡</param>
     /// <param name="origin">产生该附加值的能力</param>
     /// <param name="lastingType">持续类型</param>
-    public Buff(Card giver, Skill origin, LastingTypeEnum lastingType)
+    public Buff(Skill origin, LastingTypeEnum lastingType)
     {
-        Giver = giver;
         Origin = origin;
         LastingType = lastingType;
         Guid = System.Guid.NewGuid().ToString();
@@ -28,11 +26,6 @@ public abstract class Buff : IAttachable
         toSerialize.Add("type", GetType().Name);
         toSerialize.Add("guid", Guid);
         toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));
-        toSerialize.Add("availableAreas", StringUtils.CreateFromAny(AvailableAreas));
-        if (Giver != null)
-        {
-            toSerialize.Add("giver", Giver);
-        }
         if (Owner != null)
         {
             toSerialize.Add("owner", Owner);
@@ -65,13 +58,8 @@ public abstract class Buff : IAttachable
         }
         return "{" + json + "}";
     }
+    public bool OnlyAvailableWhenFrontShown { get; set; } = true;
 
-    protected bool onlyAvailableWhenFrontShown;
-    public bool OnlyAvailableWhenFrontShown { get; set; }
-    protected List<Area> availableAreas;
-    public List<Area> AvailableAreas { get; set; }
-    protected Card giver;
-    public Card Giver { get; set; }
     protected Card owner;
     public Card Owner { get; set; }
 
@@ -80,15 +68,11 @@ public abstract class Buff : IAttachable
     protected LastingTypeEnum lastingType;
     public LastingTypeEnum LastingType { get; set; }
 
-    protected bool? isAdding;
-    protected bool? isBecoming;
-    protected dynamic value;
+    protected bool? isAdding = null;
+    protected bool? isBecoming = null;
+    protected dynamic value = null;
 
-    public virtual void Attached()
-    {
-        OnlyAvailableWhenFrontShown = true;
-        AvailableAreas = new List<Area>() { Owner.Controller.FrontField, Owner.Controller.BackField };
-    }
+    public virtual void Attached() { }
 
     public void Detach()
     {
@@ -106,31 +90,28 @@ public abstract class Buff : IAttachable
                 return;
             }
         }
-
-        if (!AvailableAreas.Contains(Owner.BelongedRegion))
-        {
-            Detach();
-            return;
-        }
-
-        switch (LastingType)
-        {
-            case LastingTypeEnum.UntilBattleEnds:
-                break;
-            case LastingTypeEnum.UntilTurnEnds:
-                break;
-            case LastingTypeEnum.UntilNextOpponentTurnEnds:
-                break;
-            case LastingTypeEnum.Forever:
-                break;
-            default:
-                break;
-        }
     }
 
     public bool Try(Message message, ref Message substitute)
     {
         return true;
+    }
+
+    public bool Equals(IAttachable item)
+    {
+        var buffItem = item as Buff;
+        if (buffItem == null)
+        {
+            return false;
+        }
+        if (buffItem.GetType() != GetType())
+        {
+            return false;
+        }
+        return LastingType == buffItem.LastingType
+            && isAdding == buffItem.isAdding
+            && isBecoming == buffItem.isBecoming
+            && value == buffItem.value;
     }
 }
 
@@ -150,7 +131,7 @@ public enum LastingTypeEnum
 /// </summary>
 public class UnitNameBuff : Buff
 {
-    public UnitNameBuff(Card giver, Skill origin, bool isAdding, string value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public UnitNameBuff(Skill origin, bool isAdding, string value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -164,13 +145,7 @@ public class UnitNameBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public string Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
+    public string Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -178,7 +153,7 @@ public class UnitNameBuff : Buff
 /// </summary>
 public class DeployCostBuff : Buff
 {
-    public DeployCostBuff(Card giver, Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public DeployCostBuff(Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Value = value;
         IsBecoming = isBecoming;
@@ -187,18 +162,12 @@ public class DeployCostBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get { return value; } set { base.value = value; } }
+    public int Value { get { return value; } set { this.value = value; } }
 
     /// <summary>
     /// 是否为“变为”类型
     /// </summary>
     public bool IsBecoming { get { return (bool)isBecoming; } set { isBecoming = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
 }
 
 /// <summary>
@@ -206,7 +175,7 @@ public class DeployCostBuff : Buff
 /// </summary>
 public class ClassChangeCostBuff : Buff
 {
-    public ClassChangeCostBuff(Card giver, Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public ClassChangeCostBuff(Skill origin, int value, bool isBecoming, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Value = value;
         IsBecoming = isBecoming;
@@ -215,18 +184,12 @@ public class ClassChangeCostBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get { return value; } set { base.value = value; } }
+    public int Value { get { return value; } set { this.value = value; } }
 
     /// <summary>
     /// 是否为“变为”类型
     /// </summary>
     public bool IsBecoming { get { return (bool)isBecoming; } set { isBecoming = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
 }
 
 /// <summary>
@@ -234,7 +197,7 @@ public class ClassChangeCostBuff : Buff
 /// </summary>
 public class PowerBuff : Buff
 {
-    public PowerBuff(Card giver, Skill origin, int value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public PowerBuff(Skill origin, int value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Value = value;
     }
@@ -242,7 +205,7 @@ public class PowerBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get { return value; } set { base.value = value; } }
+    public int Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -250,7 +213,7 @@ public class PowerBuff : Buff
 /// </summary>
 public class SupportBuff : Buff
 {
-    public SupportBuff(Card giver, Skill origin, int value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public SupportBuff(Skill origin, int value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         Value = value;
     }
@@ -258,13 +221,7 @@ public class SupportBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public int Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas.Add(Owner.Controller.Support);
-    }
+    public int Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -272,7 +229,7 @@ public class SupportBuff : Buff
 /// </summary>
 public class SymbolBuff : Buff
 {
-    public SymbolBuff(Card giver, Skill origin, bool isAdding, SymbolEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public SymbolBuff(Skill origin, bool isAdding, SymbolEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -286,7 +243,7 @@ public class SymbolBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public SymbolEnum Value { get { return value; } set { base.value = value; } }
+    public SymbolEnum Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -294,7 +251,7 @@ public class SymbolBuff : Buff
 /// </summary>
 public class WeaponBuff : Buff
 {
-    public WeaponBuff(Card giver, Skill origin, bool isAdding, WeaponEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public WeaponBuff(Skill origin, bool isAdding, WeaponEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -308,13 +265,7 @@ public class WeaponBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public WeaponEnum Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
+    public WeaponEnum Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -322,7 +273,7 @@ public class WeaponBuff : Buff
 /// </summary>
 public class GenderBuff : Buff
 {
-    public GenderBuff(Card giver, Skill origin, bool isAdding, GenderEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public GenderBuff(Skill origin, bool isAdding, GenderEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -336,13 +287,7 @@ public class GenderBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public GenderEnum Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
+    public GenderEnum Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -350,7 +295,7 @@ public class GenderBuff : Buff
 /// </summary>
 public class TypeBuff : Buff
 {
-    public TypeBuff(Card giver, Skill origin, bool isAdding, TypeEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public TypeBuff(Skill origin, bool isAdding, TypeEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -364,13 +309,7 @@ public class TypeBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public TypeEnum Value { get { return value; } set { base.value = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = Owner.Controller.AllAreas;
-    }
+    public TypeEnum Value { get { return value; } set { this.value = value; } }
 }
 
 /// <summary>
@@ -378,7 +317,7 @@ public class TypeBuff : Buff
 /// </summary>
 public class RangeBuff : Buff
 {
-    public RangeBuff(Card giver, Skill origin, bool isAdding, RangeEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(giver, origin, lastingType)
+    public RangeBuff(Skill origin, bool isAdding, RangeEnum value, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType)
     {
         IsAdding = isAdding;
         Value = value;
@@ -392,5 +331,5 @@ public class RangeBuff : Buff
     /// <summary>
     /// 附加值的值
     /// </summary>
-    public RangeEnum Value { get { return value; } set { base.value = value; } }
+    public RangeEnum Value { get { return value; } set { this.value = value; } }
 }

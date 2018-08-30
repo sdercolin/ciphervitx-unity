@@ -27,13 +27,7 @@ public abstract class Area
     /// <summary>
     /// 该区域的卡片列表的浅表拷贝
     /// </summary>
-    public virtual List<Card> Cards
-    {
-        get
-        {
-            return ListUtils.Clone(list);
-        }
-    }
+    public virtual List<Card> Cards => ListUtils.Clone(list);
 
     /// <summary>
     /// 是否包含某张卡
@@ -45,29 +39,14 @@ public abstract class Area
         return list.Contains(card);
     }
 
-    public int Count
-    {
-        get
-        {
-            return list.Count;
-        }
-    }
+    public int Count => Cards.Count;
 
     /// <summary>
     /// 控制者
     /// </summary>
     public User Controller;
 
-    public virtual void ProcessCardIn(Card card, Area fromArea)
-    {
-        card.AttachableList.ForEach(item =>
-        {
-            if (!item.AvailableAreas.Contains(this))
-            {
-                item.Detach();
-            }
-        });
-    }
+    public virtual void ProcessCardIn(Card card, Area fromArea) { }
     public virtual void ProcessCardOut(Card card, Area toArea) { }
 
     /// <summary>
@@ -124,30 +103,35 @@ public abstract class Area
     }
 
     /// <summary>
-    /// 切洗该区域的卡
+    /// 获取一个打乱的排序
     /// </summary>
-    public void Shuffle()
+    public List<int> GetShuffledOrder()
     {
         int N = list.Count;
-        int[] array = new int[N];
+        List<int> newOrder = new List<int>();
         for (int i = 0; i < N; i++)
         {
-            array[i] = i;
+            newOrder.Add(i);
         }
         Random rnd = new Random();
         for (int j = 0; j < N; j++)
         {
             int pos = rnd.Next(j, N);
-            int temp = array[pos];
-            array[pos] = array[j];
-            array[j] = temp;
+            int temp = newOrder[pos];
+            newOrder[pos] = newOrder[j];
+            newOrder[j] = temp;
         }
-        List<Card> CardList_temp = new List<Card>();
-        for (int i = 0; i < N; i++)
+        return newOrder;
+    }
+
+    public void ApplyOrder(List<int> order)
+    {
+        var newList = new List<Card>();
+        foreach (var number in order)
         {
-            CardList_temp.Add(list[array[i]]);
+            newList.Add(list[number]);
         }
-        list = CardList_temp;
+        list = newList;
     }
 
     /// <summary>
@@ -195,6 +179,13 @@ public class Deck : Area
         this.Controller = Controller;
     }
 
+    public Card Top => list[0];
+
+    public List<Card> GetTopCards(int number)
+    {
+        return list.GetRange(0, number);
+    }
+
     public void ImportCard(Card card)
     {
         list.Add(card);
@@ -202,19 +193,17 @@ public class Deck : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
+        card.Reset();
         card.FrontShown = false;
-        card.IsHorizontal = false;
         card.Visible = false;
-        base.ProcessCardIn(card, fromArea);
     }
 
     public override void ProcessCardOut(Card card, Area toArea)
     {
-        base.ProcessCardOut(card, toArea);
         if (list.Count == 0)
         {
             Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
-            Shuffle();
+            Controller.ShuffleDeck(null);
         }
     }
 }
@@ -232,10 +221,8 @@ public class Hand : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
-        card.IsHorizontal = false;
+        card.Reset();
         card.Visible = false;
-        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -252,10 +239,7 @@ public class Retreat : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
-        card.IsHorizontal = false;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
+        card.Reset();
     }
 }
 
@@ -264,18 +248,29 @@ public class Retreat : Area
 /// </summary>
 public class Support : Area
 {
+    public Card SupportCard => Count > 0 ? list[0] : null;
+
     public Support(User Controller) : base(Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
     }
 
+    public bool SupportedBy(string unitName)
+    {
+        if (SupportCard == null)
+        {
+            return false;
+        }
+        else
+        {
+            return SupportCard.HasUnitNameOf(unitName);
+        }
+    }
+
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
-        card.IsHorizontal = false;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
+        card.Reset();
     }
 }
 
@@ -293,40 +288,12 @@ public class Bond : Area
     /// <summary>
     /// 未翻面的羁绊卡数量
     /// </summary>
-    public int UnusedBondsCount
-    {
-        get
-        {
-            int count = 0;
-            foreach (Card bond in list)
-            {
-                if (bond.FrontShown)
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-    }
+    public int UnusedBondsCount => UnusedBonds.Count;
 
     /// <summary>
     /// 未翻面的羁绊卡列表
     /// </summary>
-    public List<Card> UnusedBonds
-    {
-        get
-        {
-            List<Card> result = new List<Card>();
-            foreach (Card bond in base.list)
-            {
-                if (bond.FrontShown)
-                {
-                    result.Add(bond);
-                }
-            }
-            return result;
-        }
-    }
+    public List<Card> UnusedBonds => list.FindAll(bond => bond.FrontShown);
 
     /// <summary>
     /// 是否包含具备某势力的卡
@@ -343,10 +310,8 @@ public class Bond : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
+        card.Reset();
         card.IsHorizontal = true;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -363,10 +328,9 @@ public class Orb : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
+        card.Reset();
         card.FrontShown = false;
-        card.IsHorizontal = false;
         card.Visible = false;
-        base.ProcessCardIn(card, fromArea);
     }
 }
 
@@ -380,21 +344,12 @@ public class Field : Area
         this.Controller = Controller;
     }
 
-    public override List<Card> Cards
-    {
-        get
-        {
-            return ListUtils.Combine(Controller.BackField.Cards, Controller.FrontField.Cards);
-        }
-    }
+    public override List<Card> Cards => ListUtils.Combine(Controller.BackField.Cards, Controller.FrontField.Cards);
 
     public bool HasSameNameCardWith(Card card)
     {
         return !TrueForAllCard(x => !x.HasSameUnitNameWith(card));
     }
-
-    public override void ProcessCardIn(Card card, Area fromArea) { }
-    public override void ProcessCardOut(Card card, Area toArea) { }
 }
 
 /// <summary>
@@ -412,20 +367,8 @@ public class FrontField : Area
     {
         if (!(fromArea is BackField))
         {
-            card.IsHorizontal = false;
+            card.Reset();
         }
-        card.FrontShown = true;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
-        if (!(toArea is BackField))
-        {
-            //离场
-        }
-        base.ProcessCardOut(card, toArea);
     }
 }
 
@@ -444,20 +387,8 @@ public class BackField : Area
     {
         if (!(fromArea is FrontField))
         {
-            card.IsHorizontal = false;
+            card.Reset();
         }
-        card.FrontShown = true;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
-    }
-
-    public override void ProcessCardOut(Card card, Area toArea)
-    {
-        if (!(toArea is FrontField))
-        {
-            //离场
-        }
-        base.ProcessCardOut(card, toArea);
     }
 }
 
@@ -474,9 +405,6 @@ public class Overlay : Area
 
     public override void ProcessCardIn(Card card, Area fromArea)
     {
-        card.FrontShown = true;
-        card.IsHorizontal = false;
-        card.Visible = true;
-        base.ProcessCardIn(card, fromArea);
+        card.Reset();
     }
 }

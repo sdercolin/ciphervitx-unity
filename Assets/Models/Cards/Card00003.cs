@@ -44,7 +44,7 @@ public class Card00003 : Card
             return card == Owner;
         }
 
-        public override void SetItemToApply(Card target)
+        public override void SetItemToApply()
         {
             ItemsToApply.Add(new CanNotBePlacedInBond(this));
         }

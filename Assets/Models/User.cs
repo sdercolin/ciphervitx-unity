@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 /// <summary>
 /// 玩家类
@@ -27,13 +28,7 @@ public abstract class User
         return "{\"guid\": \"" + Guid + "\" }";
     }
 
-    public List<Area> AllAreas
-    {
-        get
-        {
-            return new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
-        }
-    }
+    public List<Area> AllAreas => new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
     public Deck Deck;
     public Hand Hand;
     public Retreat Retreat;
@@ -45,20 +40,7 @@ public abstract class User
     public BackField BackField;
     public Overlay Overlay;
     public abstract User Opponent { get; }
-    public Card Hero
-    {
-        get
-        {
-            foreach (Card card in AllCards)
-            {
-                if (card.IsHero == true)
-                {
-                    return card;
-                }
-            }
-            return null;
-        }
-    }
+    public Card Hero => AllCards.Find(card => card.IsHero);
 
     /// <summary>
     /// 待处理的转职奖励计数
@@ -80,6 +62,11 @@ public abstract class User
     /// </summary>
     public bool ActionPhaseEnded = false;
 
+    /// <summary>
+    /// 附加能力列表
+    /// </summary>
+    public List<SubSkill> SubSkillList = new List<SubSkill>();
+
     public List<Card> AllCards
     {
         get
@@ -100,27 +87,7 @@ public abstract class User
         return AllAreas.TrueForAll(area => area.TrueForAllCard(predicate));
     }
 
-    public abstract void Broadcast(Message message);
-    public abstract bool BroadcastTry(Message message, ref Message substitute);
-
-
     #region 动作
-    /// <summary>
-    /// 尝试并实行动作
-    /// </summary>
-    /// <param name="message"></param>
-    protected Message TryDoMessage(Message message)
-    {
-        Message substitute = new EmptyMessage();
-        while (!BroadcastTry(message, ref substitute))
-        {
-            message = substitute;
-        }
-        message.Do();
-        Broadcast(message);
-        return message;
-    }
-
     public void Move(Card target, Skill reason)
     {
         if (target != null)
@@ -130,52 +97,164 @@ public abstract class User
         }
     }
 
+    public void ShuffleDeck(Skill reason)
+    {
+        var order = Deck.GetShuffledOrder();
+        Game.TryDoMessage(new ShuffleDeckMessage()
+        {
+            User = this,
+            Order = order,
+            Reason = reason
+        });
+    }
+
     public void Move(List<Card> targets, Skill reason)
     {
-        MoveMessage moveMessage = new MoveMessage()
+        Game.TryDoMessage(new MoveMessage()
         {
             Targets = targets,
             Reason = reason
-        };
-        TryDoMessage(moveMessage);
+        });
     }
 
-    public void UseBond(Card target, Skill reason)
+    public async Task ChooseMove(List<Card> targets, int min, int max, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            Move(await Request.Choose(targets, min, max, this), reason);
+        }
+    }
+
+    public void ReverseBond(Card target, Skill reason, bool asCost = true)
     {
         if (target != null)
         {
             List<Card> targets = new List<Card> { target };
-            UseBond(targets, reason);
+            ReverseBond(targets, reason, asCost);
         }
     }
 
-    public void UseBond(List<Card> targets, Skill reason)
+    public void ReverseBond(List<Card> targets, Skill reason, bool asCost = true)
     {
         if (targets.Count > 0)
         {
-            UseBondMessage useBondMessage = new UseBondMessage()
+            Game.TryDoMessage(new ReverseBondMessage()
             {
                 Targets = targets,
-                Reason = reason
-            };
-            TryDoMessage(useBondMessage);
+                Reason = reason,
+                AsCost = asCost
+            });
+        }
+    }
+
+    public List<Card> GetReversableBonds(Skill reason = null)
+    {
+        return Bond.UnusedBonds.FindAll(card => card.CheckReverseBond(reason));
+    }
+
+    public async Task ChooseReverseBond(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
+    {
+        if (targets.Count > 0)
+        {
+            ReverseBond(await Request.Choose(targets, min, max, this), reason, asCost);
+        }
+    }
+
+    public void Attack(Card unit, Card target)
+    {
+        Game.TryDoMessage(new AttackMessage()
+        {
+            AttackingUnit = unit,
+            DefendingUnit = target
+        });
+    }
+
+    public void SetSupportCard()
+    {
+        Game.TryDoMessage(new SetSupportMessage()
+        {
+            User = this
+        });
+    }
+
+    public void ConfirmSupportCard()
+    {
+        Card battlingUnit = Game.BattlingUnits.Find(unit => unit.Controller == this);
+        bool isSuccessful = !(Support.SupportCard == null || battlingUnit.HasSameUnitNameWith(Support.SupportCard));
+        Game.TryDoMessage(new ConfirmSupportMessage()
+        {
+            Unit = battlingUnit,
+            SupportCard = Support.SupportCard,
+            IsSuccessful = isSuccessful
+        });
+    }
+
+    public void RemoveSupportCard()
+    {
+        if (Support.SupportCard != null)
+        {
+            Game.TryDoMessage(new RemoveSupportMessage()
+            {
+                Card = Support.SupportCard
+            });
         }
     }
 
     public void StartTurn()
     {
-        StartTurnMessage startTurnMessage = new StartTurnMessage()
+        Game.TryDoMessage(new StartTurnMessage()
         {
             TurnPlayer = this
-        };
-        TryDoMessage(startTurnMessage);
+        });
     }
 
     public void GoToBondPhase()
     {
-
+        Game.TryDoMessage(new GoToBondPhaseMessage()
+        {
+            TurnPlayer = this
+        });
     }
 
+    public void GoToDeploymentPhase()
+    {
+        Game.TryDoMessage(new GoToDeploymentPhaseMessage()
+        {
+            TurnPlayer = this
+        });
+    }
+
+    public void GoToActionPhase()
+    {
+        Game.TryDoMessage(new GoToActionPhaseMessage()
+        {
+            TurnPlayer = this
+        });
+    }
+
+    public void EndTurn()
+    {
+        Game.TryDoMessage(new EndTurnMessage()
+        {
+            TurnPlayer = this
+        });
+    }
+
+    public void ClearStatusEndingTurn()
+    {
+        Game.TryDoMessage(new ClearStatusEndingTurnMessage()
+        {
+            TurnPlayer = this
+        });
+    }
+
+    public void SwitchTurn()
+    {
+        Game.TryDoMessage(new SwitchTurnMessage()
+        {
+            NextTurnPlayer = Opponent
+        });
+    }
     public void SetToBond(Card target, bool frontShown, Skill reason = null)
     {
         if (target != null)
@@ -189,29 +268,85 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            ToBondMessage toBondMessage = new ToBondMessage
+            Game.TryDoMessage(new ToBondMessage
             {
                 Targets = targets,
                 TargetFrontShown = frontShown,
                 Reason = reason
-            };
-            TryDoMessage(toBondMessage);
+            });
         }
     }
 
-    public void ChooseSetToBond(List<Card> targets, bool frontShown, int min, int max, Skill reason = null)
+    public List<Card> GetPossibleCardsToSetToBond(List<Card> targets, bool frontShown = true, Skill reason = null)
+    {
+        return targets.FindAll(card => card.CheckSetToBond(frontShown, reason));
+    }
+
+    public async Task ChooseSetToBond(List<Card> targets, int min, int max, bool frontShown = true, Skill reason = null)
     {
         if (targets.Count > 0)
         {
-            ReadyToBondMessage readyToBondMessage = new ReadyToBondMessage
+            SetToBond(await Request.Choose(GetPossibleCardsToSetToBond(targets, frontShown, reason), min, max, this), frontShown, reason);
+        }
+    }
+
+    public void DiscardHand(Card target, bool asCost, Skill reason = null)
+    {
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            DiscardHand(targets, asCost, reason);
+        }
+    }
+
+    public void DiscardHand(List<Card> targets, bool asCost, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            Game.TryDoMessage(new DiscardHandMessage
             {
                 Targets = targets,
-                TargetFrontShown = frontShown
-            };
-            readyToBondMessage = TryDoMessage(readyToBondMessage) as ReadyToBondMessage;
-            if (readyToBondMessage != null && readyToBondMessage.Targets.Count > 0)
+                AsCost = asCost,
+                Reason = reason
+            });
+        }
+    }
+
+    public async Task ChooseDiscardHand(List<Card> targets, int min, int max, bool asCost, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            DiscardHand(await Request.Choose(targets, min, max, this), asCost, reason);
+        }
+    }
+
+    public void AddToOrb(Card target, Skill reason = null)
+    {
+        if (target != null)
+        {
+            Game.TryDoMessage(new AddToOrbMessage
             {
-                SetToBond(Request.Choose(readyToBondMessage.Targets, min, max), readyToBondMessage.TargetFrontShown, readyToBondMessage.Reason);
+                Target = target,
+                Reason = reason
+            });
+        }
+    }
+
+    public async Task ChooseAddToOrb(List<Card> targets, bool optional, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            if (optional)
+            {
+                var result = await Request.ChooseUpTo(targets, 1, this);
+                if (result.Count > 0)
+                {
+                    AddToOrb(result[0], reason);
+                }
+            }
+            else
+            {
+                AddToOrb(await Request.ChooseOne(targets, this), reason);
             }
         }
     }
@@ -228,34 +363,314 @@ public abstract class User
     {
         if (targets.Count > 0)
         {
-            RefreshUnitMessage refreshUnitMessage = new RefreshUnitMessage()
+            Game.TryDoMessage(new RefreshUnitMessage()
             {
                 Targets = targets,
                 Reason = reason
-            };
-            TryDoMessage(refreshUnitMessage);
+            });
         }
     }
 
     public void DrawCard(int number, Skill reason = null)
     {
-        DrawCardMessage drawCardMessage = new DrawCardMessage()
+        Game.TryDoMessage(new DrawCardMessage()
         {
             Player = this,
             Number = number,
             Reason = reason
-        };
-        TryDoMessage(drawCardMessage);
+        });
     }
 
-    public bool DoSameNameProcess(List<Card> units, string name)
+    public void AttachItem(IAttachable item, Card target)
     {
-        ReadyForSameNameProcessMessage readyForSameNameProcessMessage = new ReadyForSameNameProcessMessage()
+        Game.TryDoMessage(new AttachItemMessage()
+        {
+            Item = item,
+            Target = target
+        });
+    }
+
+    public void GrantSkill(IAttachable item, Card target)
+    {
+        Game.TryDoMessage(new GrantSkillMessage()
+        {
+            Item = item,
+            Target = target
+        });
+    }
+
+    public List<Card> GetDeployableHands(bool actioned = false, Skill reason = null)
+    {
+        return Hand.Filter(card => card.CheckDeployment(actioned, reason));
+    }
+
+    public List<Card> GetDeployableCards(List<Card> targets, ref List<bool> toFrontField, ref List<bool> actioned, Skill reason = null)
+    {
+        List<Card> targets_new = new List<Card>();
+        List<bool> toFrontField_new = new List<bool>();
+        List<bool> actioned_new = new List<bool>();
+        foreach (var card in targets)
+        {
+            int index = targets.IndexOf(card);
+            Area area;
+            if (toFrontField[index])
+            {
+                area = card.Controller.FrontField;
+            }
+            else
+            {
+                area = card.Controller.BackField;
+            }
+            if (card.CheckDeployment(area, actioned[index], reason))
+            {
+                targets_new.Add(card);
+                toFrontField_new.Add(toFrontField[index]);
+                actioned_new.Add(actioned[index]);
+            }
+        }
+        toFrontField = toFrontField_new;
+        actioned = actioned_new;
+        return targets_new;
+    }
+
+    public void Deploy(Card target, bool toFrontField, bool actioned = false, Skill reason = null)
+    {
+        Deploy(new List<Card>() { target }, new List<bool> { toFrontField }, new List<bool> { actioned }, reason);
+    }
+
+    public void Deploy(List<Card> targets, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
+    {
+        Game.TryDoMessage(new DeployMessage()
+        {
+            Targets = targets,
+            ToFrontField = toFrontField,
+            Actioned = actioned,
+            Reason = reason
+        });
+    }
+
+    public async Task ChooseDeploy(List<Card> targets, int min, int max, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
+    {
+        if (targets.Count > 0)
+        {
+            var chosen = await Request.Choose(GetDeployableCards(targets, ref toFrontField, ref actioned, reason), min, max, this);
+            Deploy(chosen, ListUtils.UpdateParallel(chosen, targets, toFrontField), ListUtils.UpdateParallel(chosen, targets, actioned));
+        }
+    }
+
+    public List<Card> GetLevelUpableHands(Skill reason = null)
+    {
+        return Hand.Filter(card => card.CheckLevelUp(reason));
+    }
+
+    public async Task LevelUp(Card target, Skill reason = null)
+    {
+        List<Card> baseUnits = target.GetLevelUpableUnits(reason);
+        Card baseUnit;
+        if (baseUnits.Count < 1)
+        {
+            return;
+        }
+        else if (baseUnits.Count == 1)
+        {
+            baseUnit = baseUnits[0];
+        }
+        else
+        {
+            baseUnit = await Request.ChooseOne(baseUnits, this);
+        }
+        Game.TryDoMessage(new LevelUpMessage()
+        {
+            Target = target,
+            BaseUnit = baseUnit,
+            Reason = reason
+        });
+    }
+
+    public List<Card> GetPossibleCardsToUseActionSkill()
+    {
+        return AllCards.FindAll(card => card.CheckUsingActionSkill());
+    }
+
+    public List<ActionSkill> GetUsableActionSkills(Card card)
+    {
+        return card.GetUsableActionSkills();
+    }
+
+    public async Task UseActionSkill(ActionSkill skill)
+    {
+        await skill.Solve();
+    }
+
+    public async Task SolveSupportSkills()
+    {
+        var supportCard = Support.SupportCard;
+        if (supportCard == null)
+        {
+            return;
+        }
+        if (!supportCard.CheckUseSupportSkill())
+        {
+            return;
+        }
+        //TO DO: 复数支援能力
+        await supportCard.GetUsableSupportSkills()[0].Solve(Game.AttackingUnit, Game.DefendingUnit);
+    }
+
+    public void AddSupportToPower(Card unit)
+    {
+        var supportCard = Support.SupportCard;
+        if (supportCard != null)
+        {
+            AttachItem(new PowerBuff(null, supportCard.Support, LastingTypeEnum.UntilBattleEnds), unit);
+        }
+    }
+
+    public async Task<bool> CriticalAttack()
+    {
+        if (await Request.AskIfCriticalAttack(this))
+        {
+            if (Game.AttackingUnit.CheckCriticalAttack())
+            {
+                List<Card> costs = Game.AttackingUnit.GetCostsForCriticalAttack();
+                Card cost;
+                if (costs.Count > 1)
+                {
+                    cost = await Request.ChooseOne(costs, this);
+                }
+                else
+                {
+                    cost = costs[0];
+                }
+                Game.TryDoMessage(new CriticalAttackMessage()
+                {
+                    AttackingUnit = Game.AttackingUnit,
+                    DefendingUnit = Game.DefendingUnit,
+                    Cost = cost
+                });
+                return Game.CriticalFlag;
+            }
+        }
+        return false;
+    }
+
+    public async Task<bool> Avoid()
+    {
+        if (await Request.AskIfAvoid(this))
+        {
+            if (Game.DefendingUnit.CheckAvoid())
+            {
+                List<Card> costs = Game.DefendingUnit.GetCostsForAvoid();
+                Card cost;
+                if (costs.Count > 1)
+                {
+                    cost = await Request.ChooseOne(costs, this);
+                }
+                else
+                {
+                    cost = costs[0];
+                }
+                Game.TryDoMessage(new AvoidMessage()
+                {
+                    AttackingUnit = Game.AttackingUnit,
+                    DefendingUnit = Game.DefendingUnit,
+                    Cost = cost
+                });
+                return Game.AvoidFlag;
+            }
+        }
+        return false;
+    }
+
+    public void EndBattle()
+    {
+        Game.TryDoMessage(new EndBattleMessage()
+        {
+            AttackingUnit = Game.AttackingUnit,
+            DefendingUnit = Game.DefendingUnit
+        });
+    }
+
+    public void ClearStatusEndingBattle()
+    {
+        Game.TryDoMessage(new ClearStatusEndingBattleMessage()
+        {
+            AttackingUnit = Game.AttackingUnit,
+            DefendingUnit = Game.DefendingUnit
+        });
+    }
+
+    public void SetActioned(List<Card> targets, Skill reason, bool asCost = true)
+    {
+        Game.TryDoMessage(new SetActionedMessage()
+        {
+            Targets = targets,
+            Reason = reason,
+            AsCost = asCost
+        });
+    }
+
+    public async Task ChooseSetActioned(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
+    {
+        if (targets.Count > 0)
+        {
+            SetActioned(await Request.Choose(targets, min, max, this), reason, asCost);
+        }
+    }
+
+    public void Destroy(Card target, Skill reason, bool asCost)
+    {
+        if (target != null)
+        {
+            Destroy(new List<Card>() { target }, reason, asCost);
+        }
+    }
+
+    public void Destroy(List<Card> targets, Skill reason, bool asCost)
+    {
+        Game.TryDoMessage(new DestroyMessage()
+        {
+            DestroyedUnits = targets,
+            Count = 1,
+            ReasonTag = asCost ? DestructionReasonTag.BySkillCost : DestructionReasonTag.BySkill,
+            Reason = reason,
+            AttackingUnit = null
+        });
+    }
+
+    public async Task ChooseDestroy(List<Card> targets, int min, int max, Skill reason, bool asCost)
+    {
+        if (targets.Count > 0)
+        {
+            Destroy(await Request.Choose(targets, min, max, this), reason, asCost);
+        }
+    }
+
+    public void AddToHand(List<Card> targets, Skill reason, bool show = true)
+    {
+        Game.TryDoMessage(new AddToHandMessage()
+        {
+            Targets = targets,
+            Reason = reason,
+            Show = show
+        });
+    }
+
+    public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason, bool show = true)
+    {
+        if (targets.Count > 0)
+        {
+            AddToHand(await Request.Choose(targets, min, max, this), reason, show);
+        }
+    }
+
+    public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
+    {
+        ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()
         {
             Targets = units,
             Name = name
-        };
-        readyForSameNameProcessMessage = TryDoMessage(readyForSameNameProcessMessage) as ReadyForSameNameProcessMessage;
+        }) as ReadyForSameNameProcessPartialMessage;
         if (readyForSameNameProcessMessage != null && readyForSameNameProcessMessage.Targets.Count > 1)
         {
             Card savedUnit;
@@ -265,22 +680,65 @@ public abstract class User
             }
             else
             {
-                savedUnit = Request.ChooseOne(readyForSameNameProcessMessage.Targets);
+                savedUnit = await Request.ChooseOne(readyForSameNameProcessMessage.Targets, this);
             }
             List<Card> confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
             confirmedTarget.Remove(savedUnit);
-            SameNameProcessMessage sameNameProcessMessage = new SameNameProcessMessage()
-            {
-                Targets = confirmedTarget,
-                Name = name
-            };
-            TryDoMessage(sameNameProcessMessage);
-            return true;
+            return confirmedTarget;
         }
         else
         {
-            return false;
+            return new List<Card>();
         }
+    }
+
+    public void ShowCard(Card target, Skill reason)
+    {
+        if (target != null)
+        {
+            List<Card> targets = new List<Card> { target };
+            ShowCard(targets, reason);
+        }
+    }
+
+    public void ShowCard(List<Card> targets, Skill reason)
+    {
+        if (targets.Count > 0)
+        {
+            Game.TryDoMessage(new ShowCardsMessage()
+            {
+                Targets = targets,
+                Reason = reason
+            });
+        }
+    }
+
+    public void SendToRetreat(Card target, Skill reason, bool asCost = false)
+    {
+        if (target != null)
+        {
+            SendToRetreat(new List<Card>() { target }, reason, asCost);
+        }
+    }
+
+    public void SendToRetreat(List<Card> targets, Skill reason, bool asCost = false)
+    {
+        Game.TryDoMessage(new SendToRetreatMessage()
+        {
+            Targets = targets,
+            Reason = reason,
+            AsCost = asCost
+        });
+    }
+
+    public void ChangeDefendingUnit(Card toUnit, Skill reason)
+    {
+        Game.TryDoMessage(new ChangeDefendingUnitMessage()
+        {
+            FromUnit = Game.DefendingUnit,
+            ToUnit = toUnit,
+            Reason = reason
+        });
     }
     #endregion
 }
@@ -292,58 +750,7 @@ public class Player : User
 {
     public Player() : base() { }
 
-    public override User Opponent
-    {
-        get
-        {
-            return Game.Rival;
-        }
-    }
-
-    /// <summary>
-    /// 直接将消息发给对手（不广播给自己的卡）
-    /// </summary>
-    /// <param name="message">消息</param>
-    //public void Tell(Message message) { throw new NotImplementedException(); }
-
-    /// <summary>
-    /// 直接将消息发给对手并等待特定类型的回复（不广播给自己的卡）
-    /// </summary>
-    /// <param name="message">消息</param>
-    /// <param name="responsetype">要求对方回复的消息种类</param>
-    /// <returns>对方的回复</returns>
-    //internal Message Ask(Message message, MessageType responsetype) { throw new NotImplementedException(); }
-
-    /// <summary>
-    /// 广播消息
-    /// </summary>
-    /// <param name="message">消息</param>
-    public override void Broadcast(Message message)
-    {
-        //发送消息给对方
-        Game.ForEachCard(card =>
-        {
-            card.Read(message);
-        });
-    }
-
-    /// <summary>
-    /// 广播询问是否允许某操作
-    /// </summary>
-    /// <param name="message">表示该操作的消息</param>
-    /// <param name="substitute">拒绝该操作时表示作为代替的动作的的消息</param>
-    /// <returns>如允许，则返回True</returns>
-    public override bool BroadcastTry(Message message, ref Message substitute)
-    {
-        foreach (Card card in Game.AllCards)
-        {
-            if (!card.Try(message, ref substitute))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    public override User Opponent => Game.Rival;
 }
 
 /// <summary>
@@ -353,30 +760,5 @@ public class Rival : User
 {
     public Rival() : base() { }
 
-    public override User Opponent
-    {
-        get
-        {
-            return Game.Player;
-        }
-    }
-
-    /// <summary>
-    /// 复现对手动作时，不再重复广播
-    /// </summary>
-    public override void Broadcast(Message message) { }
-
-    /// <summary>
-    /// 复现对手动作时不需要Try
-    /// </summary>
-    public override bool BroadcastTry(Message message, ref Message substitute)
-    {
-        return true;
-    }
-
-    /// <summary>
-    /// 接受消息并重复其动作
-    /// </summary>
-    /// <param name="response"></param>
-    //internal void DoAsMessage(Message response) { }
+    public override User Opponent => Game.Player;
 }

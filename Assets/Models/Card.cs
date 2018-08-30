@@ -23,7 +23,7 @@ public abstract class Card
     {
         return "{\"guid\": \"" + Guid + "\" }";
     }
-    
+
     /// <summary>
     /// 卡的序列号
     /// </summary>
@@ -361,6 +361,27 @@ public abstract class Card
         });
         return hasNow;
     }
+
+    /// <summary>
+    /// 是否具备某个SubSkill
+    /// </summary>
+    /// <param name="type">SubSkill的类型</param>
+    /// <returns></returns>
+    public bool HasSubSkill(Type type)
+    {
+        return SubSkillList.Find(item => item.GetType() == type) != null;
+    }
+
+    /// <summary>
+    /// 查找所有特定类型的SubSkill
+    /// </summary>
+    /// <param name="type">SubSkill的类型</param>
+    /// <returns></returns>
+    public List<SubSkill> FindAllSubSkills(Type type)
+    {
+        return SubSkillList.FindAll(item => item.GetType() == type);
+    }
+
     #endregion
 
     #region 卡片状态
@@ -368,6 +389,11 @@ public abstract class Card
     /// 控制者
     /// </summary>
     public User Controller { get; protected set; }
+
+    /// <summary>
+    /// 对手
+    /// </summary>
+    public User Opponent => Controller.Opponent;
 
     /// <summary>
     /// 卡下方所叠放的卡
@@ -382,35 +408,27 @@ public abstract class Card
     /// <summary>
     /// 等级
     /// </summary>
-    public int Level
-    {
-        get
-        {
-            return stacks.Count + 1;
-        }
-    }
+    public int Level => stacks.Count + 1;
 
     /// <summary>
     /// 是否已升级
     /// </summary>
-    public bool IsLevelUped
-    {
-        get
-        {
-            return Level > 1;
-        }
-    }
+    public bool IsLevelUped => Level > 1;
+
+    /// <summary>
+    /// 在本回合中是否已升级
+    /// </summary>
+    public bool IsLevelUpedInThisTurn;
 
     /// <summary>
     /// 是否已转职
     /// </summary>
-    public bool IsClassChanged
-    {
-        get
-        {
-            return IsLevelUped && ClassChangeCost > 0;
-        }
-    }
+    public bool IsClassChanged => IsLevelUped && ClassChangeCost > 0;
+
+    /// <summary>
+    /// 在本回合中是否已转职
+    /// </summary>
+    public bool IsClassChangedInThisTurn;
 
     /// <summary>
     /// 卡是否横置
@@ -438,35 +456,21 @@ public abstract class Card
     public int DestroyedCount = 0;
 
     /// <summary>
+    /// 卡被击破的原因
+    /// </summary>
+    public DestructionReasonTag DestructionReasonTag = DestructionReasonTag.Null;
+
+    /// <summary>
     /// 卡是否在场
     /// </summary>
     /// <returns></returns>
-    public bool IsOnField
-    {
-        get
-        {
-            return BelongedRegion is FrontField || BelongedRegion is BackField;
-        }
-    }
+    public bool IsOnField => BelongedRegion is FrontField || BelongedRegion is BackField;
 
     /// <summary>
     /// 获取卡所在的区域
     /// </summary>
     /// <returns>卡所在的区域</returns>
-    public Area BelongedRegion
-    {
-        get
-        {
-            foreach (Area area in Controller.AllAreas)
-            {
-                if (area.Contains(this))
-                {
-                    return area;
-                }
-            }
-            return null;
-        }
-    }
+    public Area BelongedRegion => Controller.AllAreas.Find(area => area.Contains(this));
 
     /// <summary>
     /// 附加列表
@@ -480,15 +484,15 @@ public abstract class Card
     {
         get
         {
-            List<Skill> buffList = new List<Skill>();
+            List<Skill> skillList = new List<Skill>();
             foreach (var item in AttachableList)
             {
-                if (item is Skill)
+                if (item is Skill && !(item is SubSkill))
                 {
-                    buffList.Add(item as Skill);
+                    skillList.Add(item as Skill);
                 }
             }
-            return buffList;
+            return skillList;
         }
     }
 
@@ -621,17 +625,438 @@ public abstract class Card
     }
     #endregion
 
-    #region 别名
     /// <summary>
-    /// 我方
+    /// 检查是否可以被放置到羁绊区
     /// </summary>
-    public User Player { get { return Controller; } }
+    /// <param name="frontShown">是否为正面表示</param>
+    /// <param name="reason">若由能力引发，该能力</param>
+    /// <returns></returns>
+    public bool CheckSetToBond(bool frontShown = true, Skill reason = null)
+    {
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new ToBondMessage()
+        {
+            Targets = new List<Card>() { this },
+            Reason = reason,
+            TargetFrontShown = frontShown
+        }, ref substitute);
+    }
 
     /// <summary>
-    /// 对手
+    /// 检查羁绊卡是否可以被翻面（从正面翻到背面）
     /// </summary>
-    public User Rival { get { return Controller.Opponent; } }
-    #endregion
+    /// <param name="reason">若由能力引发，该能力</param>
+    /// <returns></returns>
+    public bool CheckReverseBond(Skill reason = null)
+    {
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new ReverseBondMessage()
+        {
+            Targets = new List<Card>() { this },
+            Reason = reason
+        }, ref substitute);
+    }
+
+    /// <summary>
+    /// 检查是否可以出击
+    /// </summary>
+    /// <param name="actioned">是否以已行动状态出击</param>
+    /// <param name="reason">若由能力引发，该能力</param>
+    /// <returns></returns>
+    public bool CheckDeployment(bool actioned = false, Skill reason = null)
+    {
+        return CheckDeployment(Controller.FrontField, actioned, reason) && CheckDeployment(Controller.BackField, actioned, reason);
+    }
+
+    /// <summary>
+    /// 检查是否可以出击
+    /// </summary>
+    /// <param name="area">要出击到的区域</param>
+    /// <param name="actioned">是否以已行动状态出击</param>
+    /// <param name="reason">若由能力引发，该能力</param>
+    /// <returns></returns>
+    public bool CheckDeployment(Area area, bool actioned = false, Skill reason = null)
+    {
+        bool toFrontField;
+        if (area == Controller.FrontField)
+        {
+            toFrontField = true;
+        }
+        else if (area == Controller.BackField)
+        {
+            toFrontField = false;
+        }
+        else
+        {
+            return false;
+        }
+
+        if (!HasSubSkill(typeof(AllowSameNameDeployment)))
+        {
+            if (Controller.Field.HasSameNameCardWith(this))
+            {
+                return false;
+            }
+        }
+
+        if (!HasSubSkill(typeof(CanDeployWithoutBond)))
+        {
+            foreach (var symbol in symbols)
+            {
+                if (!Controller.Bond.HasSymbolOf(symbol))
+                {
+                    return false;
+                }
+            }
+        }
+
+        if (DeployCost > Controller.Bond.Count - Controller.DeployAndCCCostCount)
+        {
+            return false;
+        }
+
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new DeployMessage()
+        {
+            Targets = new List<Card>() { this },
+            Actioned = new List<bool>() { actioned },
+            ToFrontField = new List<bool>() { toFrontField },
+            Reason = reason
+        }, ref substitute);
+    }
+
+    public bool CheckLevelUp(Skill reason = null)
+    {
+        return GetLevelUpableUnits(reason).Count > 0;
+    }
+
+    public List<Card> GetLevelUpableUnits(Skill reason = null)
+    {
+        var targets = Controller.Field.Filter(unit =>
+        {
+            if (unit.HasSameUnitNameWith(this))
+            {
+                return true;
+            }
+            if (unit.HasSubSkill(typeof(CanLevelUpToOthers)))
+            {
+                foreach (var item in unit.FindAllSubSkills(typeof(CanLevelUpToOthers)))
+                {
+                    if (HasUnitNameOf(((CanLevelUpToOthers)item).UnitName))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+        foreach (var unit in ListUtils.Clone(targets))
+        {
+            Message substitute = new EmptyMessage();
+            if (!Game.BroadcastTry(new LevelUpMessage()
+            {
+                Target = this,
+                BaseUnit = unit,
+                Reason = reason
+            }, ref substitute))
+            {
+                targets.Remove(unit);
+            }
+        }
+        return targets;
+    }
+
+    public bool CheckMoving(Skill reason = null)
+    {
+        if (reason == null && IsHorizontal)
+        {
+            return false;
+        }
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new MoveMessage()
+        {
+            Targets = new List<Card>() { this },
+            Reason = reason
+        }, ref substitute);
+    }
+
+    public bool CheckUsingActionSkill()
+    {
+        return GetUsableActionSkills().Count > 0;
+    }
+
+    public List<ActionSkill> GetUsableActionSkills()
+    {
+        var results = new List<ActionSkill>();
+        foreach (var skill in SkillList)
+        {
+            if (skill is ActionSkill)
+            {
+                if (((ActionSkill)skill).Check())
+                {
+                    results.Add((ActionSkill)skill);
+                }
+            }
+        }
+        return results;
+    }
+
+    public bool CheckAttack()
+    {
+        return GetAttackableUnits().Count > 0;
+    }
+
+    public List<Card> GetAttackableUnits()
+    {
+        var targets = new List<Card>();
+        if (IsHorizontal)
+        {
+            return targets;
+        }
+        bool canAttackFront = false;
+        bool canAttackBack = false;
+        if (BelongedRegion is FrontField)
+        {
+            if (HasRange(RangeEnum.One))
+            {
+                canAttackFront = true;
+            }
+            if (HasRange(RangeEnum.Two))
+            {
+                canAttackBack = true;
+            }
+            if (HasRange(RangeEnum.OnetoTwo) || HasRange(RangeEnum.OnetoThree))
+            {
+                canAttackFront = true;
+                canAttackBack = true;
+            }
+        }
+        else if (BelongedRegion is BackField)
+        {
+            if (HasRange(RangeEnum.Two) || HasRange(RangeEnum.OnetoTwo))
+            {
+                canAttackFront = true;
+            }
+            if (HasRange(RangeEnum.Three))
+            {
+                canAttackBack = true;
+            }
+            if (HasRange(RangeEnum.OnetoThree))
+            {
+                canAttackFront = true;
+                canAttackBack = true;
+            }
+        }
+        //TO DO: 无视射程攻击
+        if (canAttackFront)
+        {
+            targets.AddRange(Opponent.FrontField.Cards);
+        }
+        if (canAttackBack)
+        {
+            targets.AddRange(Opponent.BackField.Cards);
+        }
+        foreach (var unit in ListUtils.Clone(targets))
+        {
+            Message substitute = new EmptyMessage();
+            if (!Game.BroadcastTry(new AttackMessage()
+            {
+                AttackingUnit = this,
+                DefendingUnit = unit
+            }, ref substitute))
+            {
+                targets.Remove(unit);
+            }
+        }
+        return targets;
+    }
+
+    public bool CheckUseSupportSkill()
+    {
+        return GetUsableSupportSkills().Count > 0;
+    }
+
+    public List<SupportSkill> GetUsableSupportSkills()
+    {
+        var targets = new List<SupportSkill>();
+        if (!(BelongedRegion is Support))
+        {
+            return targets;
+        }
+        foreach (var skill in SkillList)
+        {
+            if (skill is SupportSkill)
+            {
+                if (((SupportSkill)skill).Check())
+                {
+                    targets.Add((SupportSkill)skill);
+                }
+            }
+        };
+        return targets;
+    }
+
+    public bool CheckCriticalAttack()
+    {
+        return Power > 0 && GetCostsForCriticalAttack().Count > 0;
+    }
+
+    public List<Card> GetCostsForCriticalAttack(Skill reason = null)
+    {
+        var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
+        foreach (var card in ListUtils.Clone(targets))
+        {
+            Message substitute = new EmptyMessage();
+            if (!Game.BroadcastTry(new CriticalAttackMessage()
+            {
+                AttackingUnit = this,
+                DefendingUnit = Game.DefendingUnit,
+                Cost = card
+            }, ref substitute))
+            {
+                targets.Remove(card);
+            }
+        }
+        return targets;
+    }
+
+    public bool CheckAvoid()
+    {
+        return GetCostsForAvoid().Count > 0;
+    }
+
+    public List<Card> GetCostsForAvoid(Skill reason = null)
+    {
+        var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
+        foreach (var card in ListUtils.Clone(targets))
+        {
+            Message substitute = new EmptyMessage();
+            if (!Game.BroadcastTry(new AvoidMessage()
+            {
+                AttackingUnit = Game.AttackingUnit,
+                DefendingUnit = this,
+                Cost = card
+            }, ref substitute))
+            {
+                targets.Remove(card);
+            }
+        }
+        return targets;
+    }
+
+    public bool CheckDestroyByCost(Skill reason)
+    {
+        Message substitute = new EmptyMessage();
+        return Game.BroadcastTry(new DestroyMessage()
+        {
+            DestroyedUnits = new List<Card>() { this },
+            Count = 1,
+            ReasonTag = DestructionReasonTag.BySkillCost,
+            Reason = reason,
+            AttackingUnit = null
+        }, ref substitute);
+    }
+
+    /// <summary>
+    /// 重置所有状态
+    /// </summary>
+    public void Reset()
+    {
+        DestroyedCount = 0;
+        IsHorizontal = false;
+        FrontShown = true;
+        Visible = true;
+        IsLevelUpedInThisTurn = false;
+        IsClassChangedInThisTurn = false;
+        foreach (var item in BuffList)
+        {
+            item.Detach();
+        }
+        foreach (var item in SubSkillList)
+        {
+            item.Detach();
+        }
+        foreach (var item in SkillList)
+        {
+            item.UsedInThisTurn = false;
+        }
+    }
+
+    /// <summary>
+    /// 清除与该回合有关的状态
+    /// </summary>
+    public void ClearStatusEndingTurn()
+    {
+        IsLevelUpedInThisTurn = false;
+        IsClassChangedInThisTurn = false;
+        foreach (var item in BuffList)
+        {
+            switch (item.LastingType)
+            {
+                case LastingTypeEnum.UntilTurnEnds:
+                    item.Detach();
+                    break;
+                case LastingTypeEnum.UntilNextOpponentTurnEnds:
+                    if (item.Origin != null && item.Origin.Controller != Game.TurnPlayer)
+                    {
+                        item.Detach();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        foreach (var item in SubSkillList)
+        {
+            switch (item.LastingType)
+            {
+                case LastingTypeEnum.UntilTurnEnds:
+                    item.Detach();
+                    break;
+                case LastingTypeEnum.UntilNextOpponentTurnEnds:
+                    if (item.Origin != null && item.Origin.Controller != Game.TurnPlayer)
+                    {
+                        item.Detach();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        foreach (var item in SkillList)
+        {
+            item.UsedInThisTurn = false;
+        }
+    }
+
+    /// <summary>
+    /// 战斗结束时清除有关状态
+    /// </summary>
+    public void ClearStatusEndingBattle()
+    {
+        foreach (var item in BuffList)
+        {
+            switch (item.LastingType)
+            {
+                case LastingTypeEnum.UntilBattleEnds:
+                    item.Detach();
+                    break;
+                default:
+                    break;
+            }
+        }
+        foreach (var item in SubSkillList)
+        {
+            switch (item.LastingType)
+            {
+                case LastingTypeEnum.UntilBattleEnds:
+                    item.Detach();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     /// <summary>
     /// 卡片接受消息
@@ -726,4 +1151,15 @@ public enum RangeEnum
     Three, //3
     OnetoTwo, //1-2
     OnetoThree //1-3
+}
+
+/// <summary>
+/// 被击破的原因
+/// </summary>
+public enum DestructionReasonTag
+{
+    Null, //无
+    ByBattle, //被战斗击破
+    BySkill, //被能力击破
+    BySkillCost //作为费用被击破
 }

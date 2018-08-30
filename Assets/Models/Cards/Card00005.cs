@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 /// <summary>
 /// (S01) S01-005 必殺剣の使い手 ナバール
 /// </summary>
@@ -47,12 +48,13 @@ public class Card00005 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.UseBondCost(this, 3);
+            return Cost.ReverseBond(this, 3);
         }
 
-        public override void Do()
+        public override Task Do()
         {
-            Owner.Attach(new CanNotBeAvoided(this, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new CanNotBeAvoided(this, LastingTypeEnum.UntilTurnEnds), Owner);
+            return Task.CompletedTask;
         }
     }
 
@@ -78,9 +80,9 @@ public class Card00005 : Card
                 && card.Controller.Field.TrueForAllCard(unit => unit == Owner || unit.IsHero);
         }
 
-        public override void SetItemToApply(Card target)
+        public override void SetItemToApply()
         {
-            ItemsToApply.Add(new PowerBuff(Owner, this, 10));
+            ItemsToApply.Add(new PowerBuff(this, 10));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using System.Threading.Tasks;
+
+/// <summary>
 /// (S01) S01-001 スターロード マルス
 /// </summary>
 public class Card00001 : Card
@@ -42,19 +44,22 @@ public class Card00001 : Card
             Keyword = SkillKeyword.Null;
         }
 
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return true;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                return deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
+                if (deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2))
+                {
+                    return new Induction();
+                }
             }
-            return false;
+            return null;
         }
 
         public override Cost DefineCost()
@@ -62,11 +67,9 @@ public class Card00001 : Card
             return Cost.Null;
         }
 
-        public override void Do()
+        public override async Task Do(Induction induction)
         {
-            var choices = Opponent.BackField.Cards;
-            var target = Request.ChooseUpToOne(choices);
-            Controller.Move(target, this);
+            await Controller.ChooseMove(Opponent.BackField.Cards, 0, 1, this);
         }
     }
 
@@ -75,7 +78,7 @@ public class Card00001 : Card
     /// 『ファルシオン』【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
     /// </summary>
     public Sk2 sk2;
-    public class Sk2 : PermanentSkill
+    public class Sk2 : Dragonslayer
     {
         public Sk2() : base()
         {
@@ -84,18 +87,6 @@ public class Card00001 : Card
             Description = "『法尔西昂』【常】这名单位攻击<龙>属性单位的期间，这名单位的战斗力+20。";
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CanTarget(Card card)
-        {
-            return card == Owner
-                && Game.AttackingUnit == card
-                && Game.DefencingUnit.HasType(TypeEnum.Dragon);
-        }
-
-        public override void SetItemToApply(Card target)
-        {
-            ItemsToApply.Add(new PowerBuff(Owner, this, 20));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 
 public abstract class Skill : IAttachable
 {
@@ -18,12 +19,12 @@ public abstract class Skill : IAttachable
     /// <summary>
     /// 控制者
     /// </summary>
-    public User Controller { get { return Owner.Controller; } }
+    public User Controller => Owner.Controller;
 
     /// <summary>
     /// 控制者的对手
     /// </summary>
-    public User Opponent { get { return Owner.Controller.Opponent; } }
+    public User Opponent => Owner.Controller.Opponent;
 
     /// <summary>
     /// 该能力在卡面上的记述顺序号
@@ -70,13 +71,9 @@ public abstract class Skill : IAttachable
         Guid = System.Guid.NewGuid().ToString();
     }
 
-    public virtual bool OnlyAvailableWhenFrontShown { get; set; }
-    public virtual List<Area> AvailableAreas { get; set; }
-    public virtual void Attached()
-    {
-        OnlyAvailableWhenFrontShown = true;
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
-    }
+    public bool OnlyAvailableWhenFrontShown { get; set; } = true;
+
+    public virtual void Attached() { }
     public virtual void Detach() { }
 
     /// <summary>
@@ -95,6 +92,11 @@ public abstract class Skill : IAttachable
     public virtual bool Try(Message message, ref Message substitute)
     {
         return true;
+    }
+
+    public virtual bool Equals(IAttachable item)
+    {
+        return item == this;
     }
 }
 
@@ -119,29 +121,41 @@ public abstract class ActionSkill : Skill
         {
             return false;
         }
-        else if (UsedInThisTurn)
+        if (UsedInThisTurn)
         {
             return false;
         }
-        else if (!CheckConditions())
+        if (!Owner.IsOnField)
+        {
+            if (
+                !(Controller.Bond.Contains(Owner) && Owner.FrontShown && TypeSymbols.Contains(SkillTypeSymbol.Bond))
+                && !(TypeSymbols.Contains(SkillTypeSymbol.Special))
+            )
+            {
+                return false;
+            }
+        }
+        if (Keyword == SkillKeyword.CCS && (!Owner.IsClassChanged))
         {
             return false;
         }
-        else
+        if (!CheckConditions())
         {
-            Cost = DefineCost();
-            return Cost.Check();
+            return false;
         }
+        Cost = DefineCost();
+        return Cost.Check();
+
     }
 
     /// <summary>
     /// 解决能力
     /// </summary>
-    public void Solve()
+    public async Task Solve()
     {
         //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-        Cost.Pay();
-        Do();
+        await Cost.Pay();
+        await Do();
         if (OncePerTurn)
         {
             UsedInThisTurn = true;
@@ -173,7 +187,7 @@ public abstract class ActionSkill : Skill
     /// <summary>
     /// 实行能力
     /// </summary>
-    public abstract void Do();
+    public abstract Task Do();
 }
 
 /// <summary>
@@ -188,68 +202,91 @@ public abstract class AutoSkill : Skill
 {
     public AutoSkill() : base() { }
 
-    /// <summary>
-    /// 诱发计数
-    /// </summary>
-    private int InducedCount = 0;
-
     public bool Optional = false;
 
     /// <summary>
     /// 诱发
     /// </summary>
-    public void Induce()
+    public void Induce(Induction induction)
     {
-        if (Available && (!UsedInThisTurn))
+        if (Game.InductionSetList.Count == 0)
         {
-            InducedCount++;
-            //Owner.Controller.Owner.Game.InducedSkillSet.Add(this);
+            Game.InductionSetList.Add(new List<Induction>());
         }
+        List<Induction> inductionSet = Game.InductionSetList[Game.InductionSetList.Count - 1];
+        inductionSet.Add(induction);
+    }
+
+    private void UnInduceAll()
+    {
+        foreach (var inductionSet in Game.InductionSetList)
+        {
+            inductionSet.RemoveAll(induction => induction.Skill == this);
+        }
+        Game.InductionSetList.RemoveAll(set => set.Count == 0);
     }
 
     /// <summary>
     /// 诱发状态
     /// </summary>
-    public bool IsInduced
-    {
-        get
-        {
-            return InducedCount > 0;
-        }
-    }
+    public bool IsInduced => Inductions.Count > 0;
+
+    /// <summary>
+    /// 诱发列表
+    /// </summary>
+    public List<Induction> Inductions = new List<Induction>();
 
     /// <summary>
     /// 能力解决
     /// </summary>
-    public void Solve()
+    public async Task<bool> Solve(Induction induction)
     {
-        InducedCount--;
+        Inductions.Remove(induction);
         Cost = DefineCost();
-        if (CheckConditions() && Cost.Check())
+        if (CheckConditions(induction) && Cost.Check())
         {
             if (Optional)
             {
-                if (!Request.AskIfUse(this))
+                if (!await Request.AskIfUse(this, Controller))
                 {
-                    return;
+                    return false;
                 }
             }
             //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-            Cost.Pay();
-            Do();
+            await Cost.Pay();
+            await Do(induction);
             if (OncePerTurn)
             {
                 UsedInThisTurn = true;
+                Inductions.Clear();
+                UnInduceAll();
             }
+            return true;
         }
+        return false;
     }
 
     public override void Read(Message message)
     {
-        base.Read(message);
-        if (CheckInduceConditions(message))
+        if (!Available || UsedInThisTurn)
         {
-            Induce();
+            return;
+        }
+        if (!TypeSymbols.Contains(SkillTypeSymbol.Special) && !Owner.IsOnField)
+        {
+            return;
+        }
+        if (Keyword == SkillKeyword.CCS && (!Owner.IsClassChanged))
+        {
+            return;
+        }
+        base.Read(message);
+        var induction = CheckInduceConditions(message);
+        if (induction != null)
+        {
+            induction.Message = message;
+            induction.Skill = this;
+            Induce(induction);
         }
     }
 
@@ -262,13 +299,13 @@ public abstract class AutoSkill : Skill
     /// 判断诱发条件
     /// </summary>
     /// <returns>若满足诱发条件，则返回true</returns>
-    public abstract bool CheckInduceConditions(Message message);
+    public abstract Induction CheckInduceConditions(Message message);
 
     /// <summary>
     /// 判断实行条件
     /// </summary>
     /// <returns>若满足实行条件，则返回true</returns>
-    public abstract bool CheckConditions();
+    public abstract bool CheckConditions(Induction induction);
 
     /// <summary>
     /// 定义费用
@@ -279,7 +316,15 @@ public abstract class AutoSkill : Skill
     /// <summary>
     /// 能力实行
     /// </summary>
-    public abstract void Do();
+    public abstract Task Do(Induction induction);
+
+
+}
+
+public class Induction
+{
+    public AutoSkill Skill;
+    public Message Message;
 }
 
 /// <summary>
@@ -342,19 +387,49 @@ public abstract class PermanentSkill : Skill
             DetachAll();
             return;
         }
+        if (Keyword == SkillKeyword.CCS && (!Owner.IsClassChanged))
+        {
+            return;
+        }
         foreach (Card card in Game.AllCards)
         {
             if (CanTarget(card) && !Targets.Contains(card))
             {
                 ItemsToApply.Clear();
-                SetItemToApply(card);
+                SetItemToApply();
                 Attach(card, ItemsToApply);
             }
             else if (!CanTarget(card) && Targets.Contains(card))
             {
                 Detach(card);
             }
+            else if (CanTarget(card) && Targets.Contains(card))
+            {
+                ItemsToApply.Clear();
+                SetItemToApply();
+                if (CheckItemUpdated(card))
+                {
+                    Detach(card);
+                    Attach(card, ItemsToApply);
+                }
+            }
         }
+    }
+
+    private bool CheckItemUpdated(Card card)
+    {
+        if (ItemsApplied[card].Length != ItemsToApply.Count)
+        {
+            return true;
+        }
+        for (int i = 0; i < ItemsToApply.Count; i++)
+        {
+            if (!ItemsToApply[i].Equals(ItemsApplied[card][i]))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public override bool Try(Message message, ref Message substitute)
@@ -372,77 +447,7 @@ public abstract class PermanentSkill : Skill
     /// <summary>
     /// 准备待设置的附加量或附加能力（需填入ItemsToApply）
     /// </summary>
-    /// <param name="target">效果的对象</param>
-    public abstract void SetItemToApply(Card target);
-}
-
-/// <summary>
-/// 支援型能力
-/// </summary>
-public abstract class SupportSkill : Skill
-{
-    public SupportSkill() : base() { }
-
-    /// <summary>
-    /// 支援能力种类
-    /// </summary>
-    public SupportSkillType Type;
-
-    public bool Optional = false;
-
-    /// <summary>
-    /// 能力解决，在流程中被调用
-    /// </summary>
-    /// <param name="AttackingUnit">攻击单位</param>
-    /// <param name="AttackedUnit">被攻击单位</param>
-    public void Solve(Card AttackingUnit, Card AttackedUnit)
-    {
-        Cost = DefineCost();
-        if (CheckConditions(AttackingUnit, AttackedUnit) && Cost.Check())
-        {
-            if (Optional)
-            {
-                if (!Request.AskIfUse(this))
-                {
-                    return;
-                }
-            }
-            //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
-            Cost.Pay();
-            Do(AttackingUnit, AttackedUnit);
-        }
-    }
-
-    /// <summary>
-    /// 判断是否符合发动条件
-    /// </summary>
-    /// <param name="AttackingUnit">攻击单位</param>
-    /// <param name="AttackedUnit">被攻击单位</param>
-    /// <returns>若符合，则返回true</returns>
-    public abstract bool CheckConditions(Card AttackingUnit, Card AttackedUnit);
-
-    /// <summary>
-    /// 实行能力
-    /// </summary>
-    /// <param name="AttackingUnit">攻击单位</param>
-    /// <param name="AttackedUnit">被攻击单位</param>
-    public abstract void Do(Card AttackingUnit, Card AttackedUnit);
-
-    /// <summary>
-    /// 定义费用
-    /// </summary>
-    public abstract Cost DefineCost();
-    public Cost Cost;
-}
-
-/// <summary>
-/// 支援能力种类
-/// </summary>
-public enum SupportSkillType
-{
-    Attacking, //攻击型
-    Defending, //防御型
-    AttackingDefending //攻防型
+    public abstract void SetItemToApply();
 }
 
 /// <summary>
@@ -474,229 +479,7 @@ public enum SkillKeyword
     CF, //化形
     BS, //羁绊技
     RM, //龙脉
+    HS, //英雄技
+    TS, //双子技
     IS, //连发技
-}
-
-/// <summary>
-/// 附加能力
-/// </summary>
-public abstract class SubSkill : Skill
-{
-    public SubSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base()
-    {
-        Origin = origin;
-        LastingType = lastingType;
-    }
-
-    /// <summary>
-    /// 产生该附加能力的能力
-    /// </summary>
-    public Skill Origin;
-
-    /// <summary>
-    /// 持续类型
-    /// </summary>
-    public LastingTypeEnum LastingType;
-
-    public override bool OnlyAvailableWhenFrontShown { get; set; }
-    public override List<Area> AvailableAreas { get; set; }
-
-    private static int fieldNumber = 10;
-    protected dynamic field1 = null;
-    protected dynamic field2 = null;
-    protected dynamic field3 = null;
-    protected dynamic field4 = null;
-    protected dynamic field5 = null;
-
-    public override string ToString()
-    {
-        Dictionary<string, dynamic> toSerialize = new Dictionary<string, dynamic>();
-        toSerialize.Add("type", GetType().Name);
-        toSerialize.Add("guid", Guid);
-        toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));
-        toSerialize.Add("availableAreas", StringUtils.CreateFromAny(AvailableAreas));
-        if (Owner != null)
-        {
-            toSerialize.Add("owner", Owner);
-        }
-        if (Origin != null)
-        {
-            toSerialize.Add("origin", Origin);
-        }
-        toSerialize.Add("lastingType", LastingType);
-        for (int i = 0; i < fieldNumber; i++)
-        {
-            dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
-            if (field != null)
-            {
-                toSerialize.Add("field" + (i + 1).ToString(), StringUtils.CreateFromAny(field));
-            }
-        }
-        string json = String.Empty;
-        foreach (var pair in toSerialize)
-        {
-            if (String.IsNullOrEmpty(json))
-            {
-                json += ", ";
-            }
-            json += "\"" + pair.Key + "\": " + StringUtils.CreateFromAny(pair.Value);
-        }
-        return "{" + json + "}";
-    }
-
-    public override void Attached()
-    {
-        OnlyAvailableWhenFrontShown = true;
-        AvailableAreas = new List<Area>() { base.Owner.Controller.FrontField, base.Owner.Controller.BackField };
-    }
-    protected virtual void Detaching() { }
-
-    public override void Detach()
-    {
-        Detaching();
-        Owner.AttachableList.Remove(this);
-        Owner = null;
-    }
-
-    public override void Read(Message message)
-    {
-        if (OnlyAvailableWhenFrontShown)
-        {
-            if (!Owner.FrontShown)
-            {
-                Detach();
-                return;
-            }
-        }
-
-        if (!AvailableAreas.Contains(Owner.BelongedRegion))
-        {
-            Detach();
-            return;
-        }
-
-        switch (LastingType)
-        {
-            case LastingTypeEnum.UntilBattleEnds:
-                break;
-            case LastingTypeEnum.UntilTurnEnds:
-                break;
-            case LastingTypeEnum.UntilNextOpponentTurnEnds:
-                break;
-            case LastingTypeEnum.Forever:
-                break;
-            default:
-                break;
-        }
-    }
-}
-
-/// <summary>
-/// 无效能力
-/// </summary>
-public class DisableSkill : SubSkill
-{
-    public DisableSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-
-    Skill Target { get { return field1; } set { field1 = value; } }
-
-    public override void Attached()
-    {
-        base.Attached();
-        Target.Available = false;
-    }
-
-    protected override void Detaching()
-    {
-        base.Detaching();
-        Target.Available = true;
-    }
-}
-
-/// <summary>
-/// 无效全部能力
-/// </summary>
-public class DisableAllSkills : SubSkill
-{
-    public DisableAllSkills(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-
-    public override void Attached()
-    {
-        base.Attached();
-        Owner.SkillList.ForEach(skill => skill.Available = false);
-    }
-
-    protected override void Detaching()
-    {
-        base.Detaching();
-        Owner.SkillList.ForEach(skill => skill.Available = true);
-    }
-}
-
-/// <summary>
-/// 不能被放置到羁绊区
-/// </summary>
-public class CanNotBePlacedInBond : SubSkill
-{
-    public CanNotBePlacedInBond(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-
-    public override void Attached()
-    {
-        base.Attached();
-        AvailableAreas = ListUtils.Clone(Owner.Controller.AllAreas);
-    }
-
-    public override bool Try(Message message, ref Message substitute)
-    {
-        if (message is ToBondMessage)
-        {
-            var toBondMessage = message as ToBondMessage;
-            if (toBondMessage.Targets.Contains(Owner))
-            {
-                substitute = toBondMessage.Clone();
-                ((ToBondMessage)substitute).Targets.Remove(Owner);
-                return false;
-            }
-        }
-        if (message is ReadyToBondMessage)
-        {
-            var readyToBondMessage = message as ReadyToBondMessage;
-            if (readyToBondMessage.Targets.Contains(Owner))
-            {
-                substitute = readyToBondMessage.Clone();
-                ((ReadyToBondMessage)substitute).Targets.Remove(Owner);
-                return false;
-            }
-        }
-        return true;
-    }
-}
-
-/// <summary>
-/// 不能被神速回避
-/// </summary>
-public class CanNotBeAvoided : SubSkill
-{
-    public CanNotBeAvoided(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-
-    public override bool Try(Message message, ref Message substitute)
-    {
-        if (message is AvoidMessage)
-        {
-            if ((message as AvoidMessage).AttackingUnit == Owner)
-            {
-                substitute = new EmptyMessage();
-                return false;
-            }
-        }
-        else if (message is ReadyToAvoidMessage)
-        {
-            if ((message as ReadyToAvoidMessage).AttackingUnit == Owner)
-            {
-                substitute = new EmptyMessage();
-                return false;
-            }
-        }
-        return true;
-    }
 }

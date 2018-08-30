@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 /// <summary>
 /// (S01) S01-002 戦場を翔ける王女 シーダ
 /// </summary>
@@ -43,19 +45,22 @@ public class Card00002 : Card
             Keyword = SkillKeyword.Null;
         }
 
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return true;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                return deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
+                if (deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2))
+                {
+                    return new Induction();
+                }
             }
-            return false;
+            return null;
         }
 
         public override Cost DefineCost()
@@ -63,11 +68,10 @@ public class Card00002 : Card
             return Cost.Null;
         }
 
-        public override void Do()
+        public override async Task Do(Induction induction)
         {
             var choices = Controller.Field.Cards;
-            var targets = Request.Choose(choices);
-            Controller.Move(targets, this);
+            await Controller.ChooseMove(choices, 0, choices.Count);
         }
     }
 
@@ -94,12 +98,13 @@ public class Card00002 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.UseBondCost(this, 1);
+            return Cost.ReverseBond(this, 1);
         }
 
-        public override void Do()
+        public override Task Do()
         {
-            Owner.Attach(new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds), Owner);
+            return Task.CompletedTask;
         }
     }
 }

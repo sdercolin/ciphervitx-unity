@@ -137,8 +137,8 @@ public class EmptyMessage : Message
 public class DeployMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public List<bool> TargetsToFrontField { get { return field2; } set { field2 = value; } }
-    public List<bool> TargetsActioned { get { return field3; } set { field3 = value; } }
+    public List<bool> ToFrontField { get { return field2; } set { field2 = value; } }
+    public List<bool> Actioned { get { return field3; } set { field3 = value; } }
     public Skill Reason { get { return field4; } set { field4 = value; } }
     public override void Do()
     {
@@ -149,7 +149,7 @@ public class DeployMessage : Message
                 card.Controller.DeployAndCCCostCount += card.DeployCost;
             }
             Area toArea;
-            if (TargetsToFrontField[Targets.IndexOf(card)])
+            if (ToFrontField[Targets.IndexOf(card)])
             {
                 toArea = card.Controller.FrontField;
             }
@@ -158,7 +158,29 @@ public class DeployMessage : Message
                 toArea = card.Controller.BackField;
             }
             card.MoveTo(toArea);
-            card.IsHorizontal = TargetsActioned[Targets.IndexOf(card)];
+            card.IsHorizontal = Actioned[Targets.IndexOf(card)];
+        }
+    }
+}
+
+public class LevelUpMessage : Message
+{
+    public Card Target { get { return field1; } set { field1 = value; } }
+    public Card BaseUnit { get { return field2; } set { field2 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
+
+    public bool IsClassChange => Target.ClassChangeCost > 0;
+
+    public override void Do()
+    {
+        if (Reason == null)
+        {
+            Target.Controller.DeployAndCCCostCount += IsClassChange ? Target.ClassChangeCost : Target.DeployCost;
+        }
+        Target.StackOver(BaseUnit);
+        if (IsClassChange)
+        {
+            Game.CCBonusList.Add(Target);
         }
     }
 }
@@ -179,14 +201,19 @@ public class MoveMessage : Message
             {
                 card.MoveTo(card.Controller.BackField);
             }
+            if (Reason == null)
+            {
+                card.IsHorizontal = true;
+            }
         }
     }
 }
 
-public class UseBondMessage : Message
+public class ReverseBondMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public Skill Reason { get { return field2; } set { field2 = value; } }
+    public bool AsCost { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
         foreach (Card card in Targets)
@@ -194,12 +221,6 @@ public class UseBondMessage : Message
             card.FrontShown = false;
         }
     }
-}
-
-public class ReadyToUseBondMessage : Message
-{
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public Skill Reason { get { return field2; } set { field2 = value; } }
 }
 
 public class ToBondMessage : Message
@@ -220,29 +241,178 @@ public class ToBondMessage : Message
     }
 }
 
-public class ReadyToBondMessage : Message
+
+/// <summary>
+/// 发起攻击，对应“攻击时/被攻击时”
+/// </summary>
+public class AttackMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+    public override void Do()
+    {
+        AttackingUnit.IsHorizontal = true;
+        Game.AttackingUnit = AttackingUnit;
+        Game.DefendingUnit = DefendingUnit;
+    }
+}
+
+/// <summary>
+/// 配置支援卡，对应“被放置到支援区时”
+/// </summary>
+public class SetSupportMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        User.Deck.Top.MoveTo(User.Support);
+    }
+}
+
+/// <summary>
+/// 判断支援是否成功，对应“被XXX支援时”
+/// </summary>
+public class ConfirmSupportMessage : Message
+{
+    public Card Unit { get { return field1; } set { field1 = value; } }
+    public Card SupportCard { get { return field2; } set { field2 = value; } }
+    public bool IsSuccessful { get { return field3; } set { field3 = value; } }
+    public override void Do()
+    {
+        if (!IsSuccessful && SupportCard != null)
+        {
+            SupportCard.MoveTo(SupportCard.Controller.Retreat);
+        }
+    }
+}
+
+/// <summary>
+/// 将支援卡放置到退避区
+/// </summary>
+public class RemoveSupportMessage : Message
+{
+    public Card Card { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        Card.MoveTo(Card.Controller.Retreat);
+    }
+}
+
+/// <summary>
+/// 战斗结束
+/// </summary>
+public class EndBattleMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+}
+
+public class SendToRetreatMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public bool TargetFrontShown { get { return field2; } set { field2 = value; } }
-    public Skill Reason { get { return field3; } set { field3 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public bool AsCost { get { return field3; } set { field3 = value; } }
+    public override void Do()
+    {
+        Targets.ForEach(card => card.MoveTo(card.Controller.Retreat));
+    }
+}
+
+public class SetActionedMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public bool AsCost { get { return field3; } set { field3 = value; } }
+    public override void Do()
+    {
+        Targets.ForEach(card => card.IsHorizontal = true);
+    }
+}
+
+public class DiscardHandMessage : SendToRetreatMessage
+{
+}
+
+public class AddToHandMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public bool Show { get { return field3; } set { field3 = value; } }
+    public override void Do()
+    {
+        Targets.ForEach(card => card.MoveTo(card.Controller.Hand));
+    }
+}
+
+public class AddToOrbMessage : Message
+{
+    public Card Target { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+    public override void Do()
+    {
+        Target.MoveTo(Target.Controller.Orb);
+    }
+}
+
+public class ClearStatusEndingBattleMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+    public override void Do()
+    {
+        Game.ForEachCard(card => card.ClearStatusEndingBattle());
+        Game.CriticalFlag = false;
+        Game.AvoidFlag = false;
+        Game.AttackingUnit = null;
+        Game.DefendingUnit = null;
+    }
+}
+
+public class CriticalAttackMessage : Message
+{
+    public Card AttackingUnit { get { return field1; } set { field1 = value; } }
+    public Card DefendingUnit { get { return field2; } set { field2 = value; } }
+    public Card Cost { get { return field3; } set { field3 = value; } }
+    public override void Do()
+    {
+        Cost.MoveTo(Cost.Controller.Retreat);
+        Game.CriticalFlag = true;
+    }
 }
 
 public class AvoidMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
-    public Card CardForAvoiding { get { return field3; } set { field3 = value; } }
+    public Card Cost { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
-        CardForAvoiding.MoveTo(CardForAvoiding.Controller.Retreat);
+        Cost.MoveTo(Cost.Controller.Retreat);
+        Game.AvoidFlag = true;
     }
 }
 
-public class ReadyToAvoidMessage : Message
+public class DestroyMessage : Message
+{
+    public List<Card> DestroyedUnits { get { return field1; } set { field1 = value; } }
+    public DestructionReasonTag ReasonTag { get { return field2; } set { field2 = value; } }
+    public Card AttackingUnit { get { return field3; } set { field3 = value; } }
+    public Skill Reason { get { return field4; } set { field4 = value; } }
+    public int Count { get { return field5; } set { field5 = value; } }
+    public override void Do()
+    {
+        DestroyedUnits.ForEach(unit =>
+        {
+            unit.DestructionReasonTag = ReasonTag;
+            unit.DestroyedCount = Count;
+        });
+    }
+}
+
+public class AttackFailureMessage : Message
 {
     public Card AttackingUnit { get { return field1; } set { field1 = value; } }
     public Card DefendingUnit { get { return field2; } set { field2 = value; } }
-    public List<Card> CardsReadyForAvoiding { get { return field3; } set { field3 = value; } }
 }
 
 public class StartTurnMessage : Message
@@ -266,6 +436,52 @@ public class GoToBondPhaseMessage : Message
     }
 }
 
+public class GoToDeploymentPhaseMessage : Message
+{
+    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        Game.CurrentPhase = Phase.DeploymentPhase;
+    }
+}
+
+public class GoToActionPhaseMessage : Message
+{
+    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        Game.CurrentPhase = Phase.ActionPhase;
+    }
+}
+
+public class EndTurnMessage : Message
+{
+    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        Game.CurrentPhase = Phase.EndPhase;
+    }
+}
+
+public class ClearStatusEndingTurnMessage : Message
+{
+    public User TurnPlayer { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        Game.ForEachCard(card => card.ClearStatusEndingTurn());
+    }
+}
+public class SwitchTurnMessage : Message
+{
+    public User NextTurnPlayer { get { return field1; } set { field1 = value; } }
+    public override void Do()
+    {
+        if (Game.Player == NextTurnPlayer)
+        {
+            Game.StartTurn();
+        }
+    }
+}
 public class RefreshUnitMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
@@ -294,22 +510,105 @@ public class DrawCardMessage : Message
     }
 }
 
-public class ReadyForSameNameProcessMessage : Message
+public class ReadyForSameNameProcessPartialMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
     public string Name { get { return field2; } set { field2 = value; } }
 }
 
-public class SameNameProcessMessage : Message
+public class SendToRetreatSameNameProcessMessage : SendToRetreatMessage { }
+
+public class ReadyForDestructionProcessMessage : Message
 {
-    public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public string Name { get { return field2; } set { field2 = value; } }
+    public List<Card> CardsToSendToRetreat { get { return field1; } set { field1 = value; } }
+    public Dictionary<User, int> OrbsDetructionCountDict { get { return field2; } set { field2 = value; } }
+}
+
+public class ObtainOrbDestructionProcessMessage : Message
+{
+    public Card Target { get { return field1; } set { field1 = value; } }
+    public Card Reason { get { return field2; } set { field2 = value; } }
 
     public override void Do()
     {
-        Targets.ForEach(card=>{
-            card.MoveTo(card.Controller.Retreat);
+        Target.MoveTo(Target.Controller.Hand);
+        Reason.DestroyedCount--;
+        if (Reason.IsHero && Reason.Controller.Orb.Count == 0)
+        {
+            Reason.DestroyedCount = 0;
+        }
+    }
+}
+
+public class SendToRetreatDestructionProcessMessage : SendToRetreatMessage
+{
+    public override void Do()
+    {
+        Targets.ForEach(target =>
+        {
+            target.MoveTo(target.Controller.Retreat);
+            target.DestroyedCount = 0;
         });
+    }
+}
+
+public class SendToRetreatPositionProcessMessage : SendToRetreatMessage
+{
+}
+
+public class MoveMarchingProcessMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        Targets.ForEach(target =>
+        {
+            target.MoveTo(target.Controller.FrontField);
+        });
+    }
+}
+
+public class ShowCardsMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+}
+
+public class AttachItemMessage : Message
+{
+    public IAttachable Item { get { return field1; } set { field1 = value; } }
+    public Card Target { get { return field2; } set { field2 = value; } }
+
+    public override void Do()
+    {
+        Target.Attach(Item);
+    }
+}
+
+public class GrantSkillMessage : AttachItemMessage { }
+
+public class ChangeDefendingUnitMessage : Message
+{
+    public Card FromUnit { get { return field1; } set { field1 = value; } }
+    public Card ToUnit { get { return field2; } set { field2 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
+
+    public override void Do()
+    {
+        Game.DefendingUnit = ToUnit;
+    }
+}
+
+public class ShuffleDeckMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+    public List<int> Order { get { return field2; } set { field2 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
+
+    public override void Do()
+    {
+        User.Deck.ApplyOrder(Order);
     }
 }
 

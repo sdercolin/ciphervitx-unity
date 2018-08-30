@@ -2,12 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public static class Request
 {
-    public static T ChooseUpToOne<T>(List<T> choices)
+    #region Testing
+    private static Queue<dynamic> NextResults = new Queue<dynamic>();
+    public static void SetNextResult(dynamic result)
     {
-        List<T> results = Choose(choices, 0, 1);
+        NextResults.Enqueue(result);
+    }
+    public static void ClearNextResults()
+    {
+        NextResults.Clear();
+    }
+    #endregion
+
+    public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser)
+    {
+        List<T> results = await Choose(choices, 0, 1, targetUser);
         if (results.Count == 0)
         {
             return default(T);
@@ -18,34 +32,132 @@ public static class Request
         }
     }
 
-    public static T ChooseOne<T>(List<T> choices)
+    public static async Task<T> ChooseOne<T>(List<T> choices, User targetUser)
     {
-        return Choose(choices, 1, 1)[0];
+        return (await Choose(choices, 1, 1, targetUser))[0];
     }
 
-    public static List<T> ChooseUpTo<T>(List<T> choices, int max)
+    public static async Task<List<T>> ChooseUpTo<T>(List<T> choices, int max, User targetUser)
     {
-        return Choose(choices, 0, max);
+        return await Choose(choices, 0, max, targetUser);
     }
 
-    public static List<T> Choose<T>(List<T> choices, int number)
+    public static async Task<List<T>> Choose<T>(List<T> choices, int number, User targetUser)
     {
-        return Choose(choices, number, number);
+        return await Choose(choices, number, number, targetUser);
     }
 
-    public static List<T> Choose<T>(List<T> choices)
+    public static async Task<List<T>> Choose<T>(List<T> choices, User targetUser)
     {
-        return Choose(choices, 0, choices.Count);
+        return await Choose(choices, 0, choices.Count, targetUser);
     }
 
-    public static List<T> Choose<T>(List<T> choices, int min, int max)
+    public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser)
     {
-        throw new NotImplementedException();
+        Debug.Log("Requesting Choose: " + Environment.NewLine
+            + "choices = " + ListUtils.ToString(choices) + Environment.NewLine
+            + "min = " + min + Environment.NewLine
+            + "max = " + max);
+        if (NextResults.Count > 0)
+        {
+            var result = NextResults.Dequeue();
+            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            return result;
+        }
+        else
+        {
+            // TO DO
+            return null;
+        }
     }
 
-    public static bool AskIfUse<T>(T target)
+    public static async Task<bool> AskIfUse<T>(T target, User targetUser)
     {
-        throw new NotImplementedException();
+        Debug.Log("Requesting AskIfUse: " + Environment.NewLine
+            + "target = " + StringUtils.CreateFromAny(target));
+        if (NextResults.Count > 0)
+        {
+            var result = NextResults.Dequeue();
+            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            return result;
+        }
+        else
+        {
+            // TO DO
+            return false;
+        }
+    }
+
+    public static async Task<bool> AskIfReverseBond(int number, Skill reason, User targetUser)
+    {
+        Debug.Log("Requesting AskIfReverseBond: " + Environment.NewLine
+            + "number = " + StringUtils.CreateFromAny(number) + Environment.NewLine
+            + "reason = " + StringUtils.CreateFromAny(reason));
+        if (NextResults.Count > 0)
+        {
+            var result = NextResults.Dequeue();
+            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            return result;
+        }
+        else
+        {
+            // TO DO
+            return false;
+        }
+    }
+
+    public static async Task<bool> AskIfCriticalAttack(User targetUser)
+    {
+        Debug.Log("Requesting AskIfCriticalAttack");
+        if (NextResults.Count > 0)
+        {
+            var result = NextResults.Dequeue();
+            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            return result;
+        }
+        else
+        {
+            // TO DO
+            return false;
+        }
+    }
+
+    public static async Task<bool> AskIfAvoid(User targetUser)
+    {
+        Debug.Log("Requesting AskIfAvoid");
+        if (NextResults.Count > 0)
+        {
+            var result = NextResults.Dequeue();
+            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            return result;
+        }
+        else
+        {
+            // TO DO
+            return false;
+        }
+    }
+
+    public static async Task<bool> AskIfSendToRetreat(Card target, User targetUser)
+    {
+        return await AskIfSendToRetreat(new List<Card>() { target }, targetUser);
+    }
+
+    public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser)
+    {
+        Debug.Log("Requesting AskIfReverseBond: " + Environment.NewLine
+            + "targets = " + StringUtils.CreateFromAny(targets));
+        if (NextResults.Count > 0)
+        {
+            var result = NextResults.Dequeue();
+            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            return result;
+        }
+        else
+        {
+            // TO DO
+            return false;
+        }
     }
 }
 

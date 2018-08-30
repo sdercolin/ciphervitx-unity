@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 /// <summary>
 /// (S01) S01-004 剛剣の使い手 オグマ
 /// </summary>
@@ -42,36 +44,47 @@ public class Card00004 : Card
             Keyword = SkillKeyword.Null;
         }
 
-        List<Card> Targets;
-
-        public override bool CheckConditions()
+        public override bool CheckConditions(Induction induction)
         {
             return true;
         }
 
-        public override bool CheckInduceConditions(Message message)
+        public override Induction CheckInduceConditions(Message message)
         {
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                Targets = deployMessage.Filter(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
-                return Targets.Count > 0;
+                var targets = deployMessage.Filter(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2);
+                if (targets.Count > 0)
+                {
+                    return new MyInduction()
+                    {
+                        Targets = targets
+                    };
+                }
             }
-            return false;
+            return null;
         }
 
-        public override void Do()
+        public override Task Do(Induction induction)
         {
-            Targets.ForEach(unit =>
+            var targets = ((MyInduction)induction).Targets;
+            targets.ForEach(unit =>
             {
-                unit.Attach(new PowerBuff(Owner, this, 10, LastingTypeEnum.UntilTurnEnds));
-                Owner.Attach(new PowerBuff(Owner, this, 10, LastingTypeEnum.UntilTurnEnds));
+                Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), unit);
+                Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
             });
+            return Task.CompletedTask;
         }
 
         public override Cost DefineCost()
         {
             return Cost.Null;
+        }
+
+        public class MyInduction : Induction
+        {
+            public List<Card> Targets;
         }
     }
 
@@ -98,14 +111,15 @@ public class Card00004 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.UseBondCost(this, 1);
+            return Cost.ReverseBond(this, 1);
         }
 
-        public override void Do()
+        public override Task Do()
         {
-            Owner.Attach(new PowerBuff(Owner, this, -10, LastingTypeEnum.UntilTurnEnds));
-            Owner.Attach(new WeaponBuff(Owner, this, true, WeaponEnum.Magic, LastingTypeEnum.UntilTurnEnds));
-            Owner.Attach(new RangeBuff(Owner, this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds));
+            Controller.AttachItem(new PowerBuff(this, -10, LastingTypeEnum.UntilTurnEnds), Owner);
+            Controller.AttachItem(new WeaponBuff(this, true, WeaponEnum.Magic, LastingTypeEnum.UntilTurnEnds), Owner);
+            Controller.AttachItem(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds), Owner);
+            return Task.CompletedTask;
         }
     }
 }
