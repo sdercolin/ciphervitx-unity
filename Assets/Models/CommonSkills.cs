@@ -49,7 +49,7 @@ public class WingedDeliverer : ActionSkill
 
     public override Cost DefineCost()
     {
-        return Cost.Action(this);
+        return Cost.ActionSelf(this);
     }
 
     public override async Task Do()
@@ -93,7 +93,7 @@ public class Unlock : ActionSkill
 
     public override Cost DefineCost()
     {
-        return Cost.Action(this);
+        return Cost.ActionSelf(this);
     }
 
     public override async Task Do()
@@ -131,7 +131,7 @@ public class Heal : ActionSkill
 
     public override Cost DefineCost()
     {
-        return Cost.Action(this) + Cost.ReverseBond(this, 2);
+        return Cost.ActionSelf(this) + Cost.ReverseBond(this, 2);
     }
 
     public override async Task Do()

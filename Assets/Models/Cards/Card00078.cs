@@ -48,7 +48,7 @@ public class Card00078 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.Action(this) + Cost.ReverseBond(this, 3);
+            return Cost.ActionSelf(this) + Cost.ReverseBond(this, 3);
         }
 
         public override async Task Do()

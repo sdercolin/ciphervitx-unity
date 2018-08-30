@@ -50,7 +50,7 @@ public class Card00006 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.Action(this) + Cost.ActionOthers(this, 1);
+            return Cost.ActionSelf(this) + Cost.ActionOthers(this, 1);
         }
 
         public override async Task Do()
