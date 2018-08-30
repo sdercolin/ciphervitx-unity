@@ -115,3 +115,27 @@ public class Unlock : ActionSkill
         }
     }
 }
+
+/// <summary>
+/// 『ライブ』【起】[横置，翻面2]自分の退避エリアから『……』以外のカードを１枚選び、手札に加える。
+/// 需指定除……以外的单位名
+/// </summary>
+public class Heal : ActionSkill
+{
+    public string ExceptName { get; protected set; }
+
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.Action(this) + Cost.ReverseBond(this, 2);
+    }
+
+    public override async Task Do()
+    {
+        await Controller.ChooseAddToHand(Controller.Retreat.Filter(unit => !unit.HasUnitNameOf(ExceptName)), 1, 1, this);
+    }
+}

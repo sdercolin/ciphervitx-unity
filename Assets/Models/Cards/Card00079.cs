@@ -2,25 +2,24 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 /// <summary>
-/// (S02) B01-072 罵詈雑言の令嬢 マリアベル
+/// (B01) B01-033 マケドニアの妹姫 マリア
 /// </summary>
-public class Card00045 : Card
+public class Card00079 : Card
 {
-    public Card00045(User controller) : base(controller)
+    public Card00079(User controller) : base(controller)
     {
-        Serial = "00045";
-        Pack = "S02";
-        CardNum = "B01-072";
-        Title = "出言不逊的大小姐";
-        UnitName = "玛丽亚贝尔";
+        Serial = "00079";
+        Pack = "B01";
+        CardNum = "B01-033";
+        Title = "马凯多尼亚的小公主";
+        UnitName = "玛莉娅";
         power = 20;
         support = 20;
         deployCost = 1;
         classChangeCost = 0;
-        symbols.Add(SymbolEnum.Blue);
+        symbols.Add(SymbolEnum.Red);
         genders.Add(GenderEnum.Female);
         weapons.Add(WeaponEnum.Staff);
-        types.Add(TypeEnum.Beast);
         ranges.Add(RangeEnum.None);
         sk1 = new Sk1();
         Attach(sk1);
@@ -32,7 +31,7 @@ public class Card00045 : Card
 
     /// <summary>
     /// スキル1
-    /// 『ライブ』【起】[横置，翻面2]自分の退避エリアから『マリアベル』以外のカードを１枚選び、手札に加える。
+    /// 『ライブ』【起】[横置，翻面2]自分の退避エリアから『マリア』以外のカードを１枚選び、手札に加える。
     /// </summary>
     public Sk1 sk1;
     public class Sk1 : Heal
@@ -41,16 +40,16 @@ public class Card00045 : Card
         {
             Number = 1;
             Name = "回复之杖";
-            Description = "『回复之杖』【起】[横置，翻面2]从自己的退避区中选择1张「玛丽亚贝尔」以外的卡，将其加入手牌。";
+            Description = "『回复之杖』【起】[横置，翻面2]从自己的退避区中选择1张「玛莉娅」以外的卡，将其加入手牌。";
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-            ExceptName = "玛丽亚贝尔";
+            ExceptName = "玛莉娅";
         }
     }
 
     /// <summary>
     /// スキル2
-    /// 『令嬢の嗜み』【常】自分のターン中、味方の『リズ』の戦闘力は＋２０される。
+    /// 『マリアの想い』【常】味方の『ミネルバ』と『ミシェイル』の戦闘力は＋１０される。
     /// </summary>
     public Sk2 sk2;
     public class Sk2 : PermanentSkill
@@ -58,23 +57,22 @@ public class Card00045 : Card
         public Sk2() : base()
         {
             Number = 2;
-            Name = "大小姐的用心";
-            Description = "『大小姐的用心』【常】自己的回合中，我方的「莉兹」的战斗力+20。";
+            Name = "玛利娅的心绪";
+            Description = "『玛利娅的心绪』【常】我方的「密涅瓦」和「米歇尔」的战斗力+10。";
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
         }
 
         public override bool CanTarget(Card card)
         {
-            return Game.TurnPlayer == Controller
-                && card.Controller == Controller
+            return card.Controller == Controller
                 && card.IsOnField
-                && card.HasUnitNameOf("莉兹");
+                && (card.HasUnitNameOf("密涅瓦") || card.HasUnitNameOf("米歇尔"));
         }
 
         public override void SetItemToApply()
         {
-            ItemsToApply.Add(new PowerBuff(this, 20));
+            ItemsToApply.Add(new PowerBuff(this, 10));
         }
     }
 
