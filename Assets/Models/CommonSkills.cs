@@ -139,3 +139,25 @@ public class Heal : ActionSkill
         await Controller.ChooseAddToHand(Controller.Retreat.Filter(unit => !unit.HasUnitNameOf(ExceptName)), 1, 1, this);
     }
 }
+
+/// <summary>
+///【起】〖1回合1次〗[翻面1]ターン終了まで、このユニットの戦闘力は＋２０される。
+/// </summary>
+public class ReverseBondToAdd20 : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.ReverseBond(this, 1);
+    }
+
+    public override Task Do()
+    {
+        Controller.AttachItem(new PowerBuff(this, 20, LastingTypeEnum.UntilTurnEnds), Owner);
+        return Task.CompletedTask;
+    }
+}
