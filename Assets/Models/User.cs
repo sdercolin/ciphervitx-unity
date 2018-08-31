@@ -383,6 +383,22 @@ public abstract class User
 
     public void AttachItem(IAttachable item, Card target)
     {
+        var powerBuff = item as PowerBuff;
+        if (powerBuff != null)
+        {
+            if (powerBuff.Value == 0)
+            {
+                return;
+            }
+        }
+        var supportBuff = item as SupportBuff;
+        if (supportBuff != null)
+        {
+            if (supportBuff.Value == 0)
+            {
+                return;
+            }
+        }
         Game.TryDoMessage(new AttachItemMessage()
         {
             Item = item,
@@ -471,7 +487,7 @@ public abstract class User
     {
         await ChooseDeploy(new List<Card>() { target }, 1, 1, null, actionedDict, reason);
     }
-    
+
     /// <summary>
     /// 出击（询问出击位置）
     /// </summary>
