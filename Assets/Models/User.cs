@@ -43,29 +43,9 @@ public abstract class User
     public Card Hero => AllCards.Find(card => card.IsHero);
 
     /// <summary>
-    /// 待处理的转职奖励计数
-    /// </summary>
-    public int CCBonusInducedCount = 0;
-
-    /// <summary>
-    /// 败北标志
-    /// </summary>
-    public bool LoseFlag = false;
-
-    /// <summary>
     /// 本回合中已经出击（升级）过的费用数
     /// </summary>
     public int DeployAndCCCostCount = 0;
-
-    /// <summary>
-    /// 行动阶段结束标志
-    /// </summary>
-    public bool ActionPhaseEnded = false;
-
-    /// <summary>
-    /// 附加能力列表
-    /// </summary>
-    public List<SubSkill> SubSkillList = new List<SubSkill>();
 
     public List<Card> AllCards
     {
