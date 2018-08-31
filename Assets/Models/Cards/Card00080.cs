@@ -50,12 +50,11 @@ public class Card00080 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.ActionUnits(this, 1, unit => unit.DeployCost<=2);
+            return Cost.ActionUnits(this, 1, unit => unit.DeployCost <= 2);
         }
 
         public override Task Do()
         {
-            //TODO
             Controller.AttachItem(new CanNotBeAvoidedAttackWing(this, LastingTypeEnum.UntilTurnEnds), Owner);
             return Task.CompletedTask;
         }
@@ -76,5 +75,25 @@ public class Card00080 : Card
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
         }
+    }
+
+    public class CanNotBeAvoidedAttackWing : CanNotBeAvoided
+    {
+        public CanNotBeAvoidedAttackWing(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+        public override bool Try(Message message, ref Message substitute)
+        {
+            var avoidMessage = message as AvoidMessage;
+            if (avoidMessage != null)
+            {
+                if (avoidMessage.AttackingUnit == Owner && avoidMessage.DefendingUnit.HasType(TypeEnum.Flight))
+                {
+                    substitute = new EmptyMessage();
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
 }
