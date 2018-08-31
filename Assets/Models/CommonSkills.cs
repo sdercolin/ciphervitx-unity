@@ -111,7 +111,6 @@ public class Unlock : ActionSkill
                     Controller.DrawCard(1, this);
                 }
             }
-
         }
     }
 }
