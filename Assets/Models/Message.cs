@@ -137,8 +137,8 @@ public class EmptyMessage : Message
 public class DeployMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }
-    public List<bool> ToFrontField { get { return field2; } set { field2 = value; } }
-    public List<bool> Actioned { get { return field3; } set { field3 = value; } }
+    public List<bool> ToFrontFieldList { get { return field2; } set { field2 = value; } }
+    public List<bool> ActionedList { get { return field3; } set { field3 = value; } }
     public Skill Reason { get { return field4; } set { field4 = value; } }
     public override void Do()
     {
@@ -149,7 +149,7 @@ public class DeployMessage : Message
                 card.Controller.DeployAndCCCostCount += card.DeployCost;
             }
             Area toArea;
-            if (ToFrontField[Targets.IndexOf(card)])
+            if (ToFrontFieldList[Targets.IndexOf(card)])
             {
                 toArea = card.Controller.FrontField;
             }
@@ -158,7 +158,22 @@ public class DeployMessage : Message
                 toArea = card.Controller.BackField;
             }
             card.MoveTo(toArea);
-            card.IsHorizontal = Actioned[Targets.IndexOf(card)];
+            card.IsHorizontal = ActionedList[Targets.IndexOf(card)];
+        }
+    }
+
+    public bool RemoveTarget(Card target)
+    {
+        if(Targets.Contains(target))
+        {
+            int index = Targets.IndexOf(target);
+            ToFrontFieldList.RemoveAt(index);
+            ActionedList.RemoveAt(index);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }

@@ -160,6 +160,23 @@ public static class Request
         }
     }
 
+    public static async Task<bool> AskIfDeployToFrontField(Card target)
+    {
+        Debug.Log("Requesting AskIfDeployToFrontField: " + Environment.NewLine
+            + "target = " + StringUtils.CreateFromAny(target));
+        if (NextResults.Count > 0)
+        {
+            var result = NextResults.Dequeue();
+            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            return result;
+        }
+        else
+        {
+            // TO DO
+            return true;
+        }
+    }
+
     [Flags]
     public enum RequestFlags
     {

@@ -404,57 +404,135 @@ public abstract class User
         return Hand.Filter(card => card.CheckDeployment(actioned, reason));
     }
 
-    public List<Card> GetDeployableCards(List<Card> targets, ref List<bool> toFrontField, ref List<bool> actioned, Skill reason = null)
+    public List<Card> GetDeployableCards(List<Card> targets, ref Dictionary<Card, bool> toFrontFieldDict, ref Dictionary<Card, bool> actionedDict, Skill reason = null)
     {
-        List<Card> targets_new = new List<Card>();
-        List<bool> toFrontField_new = new List<bool>();
-        List<bool> actioned_new = new List<bool>();
+        var targets_new = ListUtils.Clone(targets);
         foreach (var card in targets)
         {
-            int index = targets.IndexOf(card);
-            Area area;
-            if (toFrontField[index])
+            Area area = null;
+            if (toFrontFieldDict.ContainsKey(card))
             {
-                area = card.Controller.FrontField;
+                if (toFrontFieldDict[card])
+                {
+                    area = card.Controller.FrontField;
+                }
+                else
+                {
+                    area = card.Controller.BackField;
+                }
+            }
+            bool actioned = actionedDict.ContainsKey(card) ? actionedDict[card] : false;
+            bool canDeploy;
+            if (area == null)
+            {
+                canDeploy = card.CheckDeployment(card.Controller.FrontField, actioned, reason)
+                    && card.CheckDeployment(card.Controller.BackField, actioned, reason);
             }
             else
             {
-                area = card.Controller.BackField;
+                canDeploy = card.CheckDeployment(area, actioned, reason);
             }
-            if (card.CheckDeployment(area, actioned[index], reason))
+            if (!canDeploy)
             {
-                targets_new.Add(card);
-                toFrontField_new.Add(toFrontField[index]);
-                actioned_new.Add(actioned[index]);
+                targets_new.Remove(card);
+                toFrontFieldDict.Remove(card);
+                actionedDict.Remove(card);
             }
         }
-        toFrontField = toFrontField_new;
-        actioned = actioned_new;
         return targets_new;
     }
 
+    /// <summary>
+    /// 执行出击动作
+    /// </summary>
     public void Deploy(Card target, bool toFrontField, bool actioned = false, Skill reason = null)
     {
         Deploy(new List<Card>() { target }, new List<bool> { toFrontField }, new List<bool> { actioned }, reason);
     }
 
-    public void Deploy(List<Card> targets, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
+    /// <summary>
+    /// 执行出击动作
+    /// </summary>
+    public void Deploy(List<Card> targets, List<bool> toFrontFieldList, List<bool> actionedList, Skill reason = null)
     {
         Game.TryDoMessage(new DeployMessage()
         {
             Targets = targets,
-            ToFrontField = toFrontField,
-            Actioned = actioned,
+            ToFrontFieldList = toFrontFieldList,
+            ActionedList = actionedList,
             Reason = reason
         });
     }
 
-    public async Task ChooseDeploy(List<Card> targets, int min, int max, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
+    /// <summary>
+    /// 出击（询问出击位置）
+    /// </summary>
+    public async Task DeployChooseArea(Card target, Dictionary<Card, bool> actionedDict = null, Skill reason = null)
     {
-        if (targets.Count > 0)
+        await ChooseDeploy(new List<Card>() { target }, 1, 1, null, actionedDict, reason);
+    }
+    
+    /// <summary>
+    /// 出击（询问出击位置）
+    /// </summary>
+    public async Task DeployChooseArea(List<Card> targets, Dictionary<Card, bool> actionedDict = null, Skill reason = null)
+    {
+        await ChooseDeploy(targets, targets.Count, targets.Count, null, actionedDict, reason);
+    }
+
+    /// <summary>
+    /// 选择出击
+    /// </summary>
+    /// <param name="choices">选择项</param>
+    /// <param name="min">最少选择数量</param>
+    /// <param name="max">最多选择数量</param>
+    /// <param name="toFrontFieldDict">对选择项的出击位置的规定</param>
+    /// <param name="actionedDict">对选择项的出击后的行动状态的规定</param>
+    /// <param name="reason">引发本次出击的能力</param>
+    /// <returns></returns>
+    public async Task ChooseDeploy(List<Card> choices, int min, int max, Dictionary<Card, bool> toFrontFieldDict = null, Dictionary<Card, bool> actionedDict = null, Skill reason = null)
+    {
+        if (choices.Count > 0)
         {
-            var chosen = await Request.Choose(GetDeployableCards(targets, ref toFrontField, ref actioned, reason), min, max, this);
-            Deploy(chosen, ListUtils.UpdateParallel(chosen, targets, toFrontField), ListUtils.UpdateParallel(chosen, targets, actioned));
+            if (toFrontFieldDict == null)
+            {
+                toFrontFieldDict = new Dictionary<Card, bool>();
+            }
+            if (actionedDict == null)
+            {
+                actionedDict = new Dictionary<Card, bool>();
+            }
+            List<Card> chosen;
+            if (choices.Count == min)
+            {
+                chosen = choices;
+            }
+            else
+            {
+                chosen = await Request.Choose(GetDeployableCards(choices, ref toFrontFieldDict, ref actionedDict, reason), min, max, this);
+            }
+            var toFrontFieldList = new List<bool>();
+            var actionedList = new List<bool>();
+            foreach (var card in chosen)
+            {
+                if (toFrontFieldDict.ContainsKey(card))
+                {
+                    toFrontFieldList.Add(toFrontFieldDict[card]);
+                }
+                else
+                {
+                    toFrontFieldList.Add(await Request.AskIfDeployToFrontField(card));
+                }
+                if (actionedDict.ContainsKey(card))
+                {
+                    actionedList.Add(actionedDict[card]);
+                }
+                else
+                {
+                    actionedList.Add(false);
+                }
+            }
+            Deploy(chosen, toFrontFieldList, actionedList, reason);
         }
     }
 
