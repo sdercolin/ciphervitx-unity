@@ -48,15 +48,12 @@ public class Card00092 : Card
 
         public override bool CanTarget(Card card)
         {
-            //TODO
-            return Game.TurnPlayer == Controller
-                && Game.BattlingUnits.Contains(Owner)
-                && Controller.Support.Contains(card);
+            return card == Owner && Game.TurnPlayer == Controller;
         }
 
         public override void SetItemToApply()
         {
-
+            ItemsToApply.Add(new SetSupportCardToBondInsteadOfRetreat(this));
         }
     }
 
@@ -101,6 +98,30 @@ public class Card00092 : Card
             Description = "『神龙石』【常】这名单位攻击<龙>属性单位的期间，这名单位的战斗力+20。";
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
+        }
+    }
+
+    public class SetSupportCardToBondInsteadOfRetreat : SubSkill
+    {
+        public SetSupportCardToBondInsteadOfRetreat(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+        public override bool Try(Message message, ref Message substitute)
+        {
+            var removeSupportMessage = message as RemoveSupportMessage;
+            if (removeSupportMessage != null)
+            {
+                if (Game.AttackingUnit == Owner)
+                {
+                    substitute = new SendToRetreatMessage()
+                    {
+                        Targets = new List<Card>() { removeSupportMessage.Card },
+                        Reason = this,
+                        AsCost = false
+                    };
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
