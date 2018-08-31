@@ -410,14 +410,13 @@ public class CanNotDeploy : SubSkill
     public CanNotDeploy(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
     public override bool Try(Message message, ref Message substitute)
     {
-        //TODO
         if (message is DeployMessage)
         {
             var deployMessage = message as DeployMessage;
             if (deployMessage.Targets.Contains(Owner))
             {
                 substitute = deployMessage.Clone();
-                ((DeployMessage)substitute).Targets.Remove(Owner);
+                ((DeployMessage)substitute).RemoveTarget(Owner);
                 return false;
             }
         }
