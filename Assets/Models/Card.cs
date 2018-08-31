@@ -719,8 +719,8 @@ public abstract class Card
         return Game.BroadcastTry(new DeployMessage()
         {
             Targets = new List<Card>() { this },
-            Actioned = new List<bool>() { actioned },
-            ToFrontField = new List<bool>() { toFrontField },
+            ActionedList = new List<bool>() { actioned },
+            ToFrontFieldList = new List<bool>() { toFrontField },
             Reason = reason
         }, ref substitute);
     }
