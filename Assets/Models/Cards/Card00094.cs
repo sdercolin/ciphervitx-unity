@@ -55,8 +55,13 @@ public class Card00094 : Card
 
         public override async Task Do()
         {
-            //TODO
-            await Controller.ChooseDeploy(Controller.Retreat.Filter(card => card.DeployCost <= 2 && card.HasSymbol(SymbolEnum.Red)), 1, 1, null, null, this);
+            var targets = Controller.Retreat.Filter(card => card.DeployCost <= 2 && card.HasSymbol(SymbolEnum.Red));
+            if (targets.Count > 0)
+            {
+                await Controller.ChooseDeploy(targets, 1, 1, null, null, this);
+                Controller.AttachItem(new CanNotAumStaff(this, LastingTypeEnum.Forever), Owner);
+            }
+
         }
     }
 
@@ -85,5 +90,12 @@ public class Card00094 : Card
         {
             ItemsToApply.Add(new PowerBuff(this, 10));
         }
+    }
+
+    //TODO
+    public class CanNotAumStaff : SubSkill
+    {
+        public CanNotAumStaff(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
     }
 }
