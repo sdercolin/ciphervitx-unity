@@ -397,7 +397,11 @@ public abstract class PermanentSkill : Skill
             {
                 ItemsToApply.Clear();
                 SetItemToApply();
-                Attach(card, ItemsToApply);
+                CleanItemsToApply();
+                if (ItemsToApply.Count > 0)
+                {
+                    Attach(card, ItemsToApply);
+                }
             }
             else if (!CanTarget(card) && Targets.Contains(card))
             {
@@ -407,6 +411,7 @@ public abstract class PermanentSkill : Skill
             {
                 ItemsToApply.Clear();
                 SetItemToApply();
+                CleanItemsToApply();
                 if (CheckItemUpdated(card))
                 {
                     Detach(card);
@@ -435,6 +440,30 @@ public abstract class PermanentSkill : Skill
     public override bool Try(Message message, ref Message substitute)
     {
         return base.Try(message, ref substitute);
+    }
+
+    private void CleanItemsToApply()
+    {
+        ItemsToApply.RemoveAll(item =>
+        {
+            var powerBuff = item as PowerBuff;
+            if (powerBuff != null)
+            {
+                if (powerBuff.Value == 0)
+                {
+                    return true;
+                }
+            }
+            var supportBuff = item as SupportBuff;
+            if (supportBuff != null)
+            {
+                if (supportBuff.Value == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     /// <summary>
