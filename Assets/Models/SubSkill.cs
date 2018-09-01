@@ -101,7 +101,7 @@ public abstract class SubSkill : Skill
         {
             dynamic fieldThis = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(subSkillItem);
-            if(fieldThis!=field)
+            if (fieldThis != field)
             {
                 return false;
             }
@@ -147,11 +147,11 @@ public class DisableSkill : SubSkill
     public override void Attached()
     {
         base.Attached();
-        Owner.SkillList.FindAll(skill => skill.Name == TargetName).ForEach( skill =>
-        {
-            skill.Available = false;
-            targets.Add(skill);
-        });
+        Owner.SkillList.FindAll(skill => skill.Name == TargetName).ForEach(skill =>
+       {
+           skill.Available = false;
+           targets.Add(skill);
+       });
     }
 
     protected override void Detaching()
@@ -199,7 +199,7 @@ public class CanNotObtainSkill : SubSkill
         {
             var grantSkillMessage = message as GrantSkillMessage;
             var skillPrototype = ((ObtainSkill)grantSkillMessage.Item).TargetPrototype;
-            if (skillPrototype.Name==TargetName)
+            if (skillPrototype.Name == TargetName)
             {
                 substitute = new EmptyMessage();
                 return false;
@@ -399,5 +399,27 @@ public class DestroyTwoOrbs : SubSkill
                 destroyMessage.Count = 2;
             }
         }
+    }
+}
+
+/// <summary>
+/// 不能出击
+/// </summary>
+public class CanNotDeploy : SubSkill
+{
+    public CanNotDeploy(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+    public override bool Try(Message message, ref Message substitute)
+    {
+        var deployMessage = message as DeployMessage;
+        if (deployMessage != null)
+        {
+            if (deployMessage.Targets.Contains(Owner))
+            {
+                substitute = deployMessage.Clone();
+                ((DeployMessage)substitute).RemoveTarget(Owner);
+                return false;
+            }
+        }
+        return true;
     }
 }
