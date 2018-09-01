@@ -59,7 +59,7 @@ public class Card00094 : Card
             if (targets.Count > 0)
             {
                 await Controller.ChooseDeploy(targets, 1, 1, null, null, this);
-                Controller.AttachItem(new CanNotAumStaff(this, LastingTypeEnum.Forever), Owner);
+                Controller.AttachItem(new UserForbidAumStaff(this, LastingTypeEnum.Forever), Owner);
             }
 
         }
@@ -91,11 +91,11 @@ public class Card00094 : Card
             ItemsToApply.Add(new PowerBuff(this, 10));
         }
     }
-
-    //TODO
-    public class CanNotAumStaff : SubSkill
+    
+    public class UserForbidAumStaff : SubSkill, IUserForbidActionSkill
     {
-        public CanNotAumStaff(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+        public UserForbidAumStaff(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
+        public string ForbiddenSkillName => "复活之杖";
     }
 }

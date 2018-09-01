@@ -117,6 +117,19 @@ public abstract class ActionSkill : Skill
     /// <returns>若可以发动，返回true</returns>
     public bool Check()
     {
+        foreach (var card in Controller.AllCards)
+        {
+            foreach (var item in card.SubSkillList)
+            {
+                if (item is IUserForbidActionSkill)
+                {
+                    if (((IUserForbidActionSkill)item).ForbiddenSkillName == Name)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
         if (!Available)
         {
             return false;
@@ -145,7 +158,6 @@ public abstract class ActionSkill : Skill
         }
         Cost = DefineCost();
         return Cost.Check();
-
     }
 
     /// <summary>
