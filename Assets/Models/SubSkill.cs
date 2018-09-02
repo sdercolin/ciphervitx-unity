@@ -76,6 +76,10 @@ public abstract class SubSkill : Skill
 
     public override void Read(Message message)
     {
+        if (Owner == null)
+        {
+            return;
+        }
         if (OnlyAvailableWhenFrontShown)
         {
             if (!Owner.FrontShown)
