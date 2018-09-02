@@ -15,9 +15,9 @@ public class Card00005Test
         Game.Initialize();
         var player = Game.Player;
         Game.TurnPlayer = player;
-        var card00005 = new Card00005(player);
-        var card00001 = new Card00001(player);
-        var card00003 = new Card00003(player);
+        var card00005 = CardFactory.CreateCard(5, player);
+        var card00001 = CardFactory.CreateCard(1, player);
+        var card00003 = CardFactory.CreateCard(3, player);
 
         player.FrontField.AddCard(card00005);
         player.Hand.AddCard(card00001);
