@@ -14,37 +14,29 @@ public class Card00005Test
     {
         Game.Initialize();
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
-        var marth = new Card00001(player);
-        var myLowCostUnit1 = CardFactory.CreateCard(9, player);
-        var myLowCostUnit2 = CardFactory.CreateCard(11, player);
-        var myHighCostUnit = CardFactory.CreateCard(3, player);
-        player.FrontField.AddCard(marth);
-        player.Hand.AddCard(myLowCostUnit1);
-        player.Hand.AddCard(myLowCostUnit2);
-        player.Hand.AddCard(myHighCostUnit);
-        var hisUnit1 = CardFactory.CreateCard(6, rival);
-        var hisUnit2 = CardFactory.CreateCard(7, rival);
-        var hisUnit3 = CardFactory.CreateCard(8, rival);
-        rival.FrontField.AddCard(hisUnit1);
-        rival.BackField.AddCard(hisUnit2);
-        rival.BackField.AddCard(hisUnit3);
+        var card00005 = new Card00005(player);
+        var card00001 = new Card00001(player);
+        var card00003 = new Card00003(player);
 
-        player.Deploy(myHighCostUnit, true);
-        Assert.IsTrue(Game.InductionSetList.Count == 0);
-        Request.ClearNextResults();
+        player.FrontField.AddCard(card00005);
+        player.Hand.AddCard(card00001);
+        player.Hand.AddCard(card00003);
 
-        player.Deploy(myLowCostUnit1, true);
-        Request.SetNextResult(new List<Induction>() { Game.InductionSetList[0][0] });
-        Request.SetNextResult(true);
-        Request.SetNextResult(new List<Card>() { hisUnit2 });
-        Game.DoAutoCheckTiming();
-        Assert.IsTrue(rival.BackField.Cards.SequenceEqual(new List<Card>() { hisUnit3 }));
-        Request.ClearNextResults();
+        card00005.IsHero = true;
 
+        Game.TryDoMessage(new EmptyMessage());
+        Assert.IsTrue(card00005.Power == 70);
 
-        player.Deploy(myLowCostUnit2, true);
-        Assert.IsTrue(Game.InductionSetList.Count == 0);
+        player.Deploy(card00001, true);
+        Assert.IsTrue(card00005.Power == 60);
+
+        card00005.IsHero = false;
+        card00001.IsHero = true;
+        Game.TryDoMessage(new EmptyMessage());
+        Assert.IsTrue(card00005.Power == 70);
+
+        player.Deploy(card00003, true);
+        Assert.IsTrue(card00005.Power == 60);
     }
 }
