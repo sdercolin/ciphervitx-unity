@@ -16,7 +16,7 @@ public class Card00001Test
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;
-        var marth = new Card00001(player);
+        var marth = CardFactory.CreateCard(1, player);
         var myLowCostUnit1 = CardFactory.CreateCard(9, player);
         var myLowCostUnit2 = CardFactory.CreateCard(11, player);
         var myHighCostUnit = CardFactory.CreateCard(3, player);
