@@ -9,13 +9,62 @@ public static class Request
 {
     #region Testing
     private static Queue<dynamic> NextResults = new Queue<dynamic>();
-    public static void SetNextResult(dynamic result)
+    private static Queue<bool> NextResultsAreIndexes = new Queue<bool>();
+    /// <summary>
+    /// 设置下一个请求的结果
+    /// </summary>
+    /// <param name="result">结果，若为空则为默认结果</param>
+    /// <param name="isIndex">（仅针对选择）若为true，则对应传入需选择项的Index列表</param>
+    public static void SetNextResult(dynamic result = null, bool isIndex = false)
     {
         NextResults.Enqueue(result);
+        NextResultsAreIndexes.Enqueue(isIndex);
     }
     public static void ClearNextResults()
     {
         NextResults.Clear();
+        NextResultsAreIndexes.Clear();
+    }
+    public static List<T> GetNextChooseResult<T>(List<T> choices, int min, int max)
+    {
+        dynamic nextResult = NextResults.Dequeue();
+        bool isDefault = nextResult == null;
+        bool isIndex = NextResultsAreIndexes.Dequeue();
+        if (isDefault)
+        {
+            return choices.GetRange(0, max);
+        }
+        else
+        {
+            if(isIndex)
+            {
+                var result = new List<T>();
+                var indexList = nextResult as List<int>;
+                foreach (var index in indexList)
+                {
+                    result.Add(choices[index]);
+                }
+                return result;
+            }
+            else
+            {
+                return nextResult;
+            }
+        }
+    }
+    public static bool GetNextAskResult()
+    {
+        dynamic nextResult = NextResults.Dequeue();
+        bool isDefault = nextResult == null;
+        bool isIndex = NextResultsAreIndexes.Dequeue();
+        if (isDefault)
+        {
+            return false;
+        }
+        else
+        {
+            return nextResult;
+        }
     }
     #endregion
 
@@ -60,7 +109,7 @@ public static class Request
             + "max = " + max);
         if (NextResults.Count > 0)
         {
-            var result = NextResults.Dequeue();
+            var result = GetNextChooseResult<T>(choices, min, max);
             Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
@@ -77,7 +126,7 @@ public static class Request
             + "target = " + StringUtils.CreateFromAny(target));
         if (NextResults.Count > 0)
         {
-            var result = NextResults.Dequeue();
+            var result = GetNextAskResult();
             Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
@@ -95,7 +144,7 @@ public static class Request
             + "reason = " + StringUtils.CreateFromAny(reason));
         if (NextResults.Count > 0)
         {
-            var result = NextResults.Dequeue();
+            var result = GetNextAskResult();
             Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
@@ -111,7 +160,7 @@ public static class Request
         Debug.Log("Requesting AskIfCriticalAttack");
         if (NextResults.Count > 0)
         {
-            var result = NextResults.Dequeue();
+            var result = GetNextAskResult();
             Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
@@ -127,7 +176,7 @@ public static class Request
         Debug.Log("Requesting AskIfAvoid");
         if (NextResults.Count > 0)
         {
-            var result = NextResults.Dequeue();
+            var result = GetNextAskResult();
             Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
@@ -149,7 +198,7 @@ public static class Request
             + "targets = " + StringUtils.CreateFromAny(targets));
         if (NextResults.Count > 0)
         {
-            var result = NextResults.Dequeue();
+            var result = GetNextAskResult();
             Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
@@ -166,7 +215,7 @@ public static class Request
             + "target = " + StringUtils.CreateFromAny(target));
         if (NextResults.Count > 0)
         {
-            var result = NextResults.Dequeue();
+            var result = GetNextAskResult();
             Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }

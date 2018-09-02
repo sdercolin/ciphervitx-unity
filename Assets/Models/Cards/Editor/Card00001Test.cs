@@ -10,7 +10,7 @@ public class Card00001Test
 {
 
     [Test]
-    public void SkillTest()
+    public void Skill1Test()
     {
         Game.Initialize();
         var player = Game.Player;
@@ -31,20 +31,12 @@ public class Card00001Test
         rival.BackField.AddCard(hisUnit2);
         rival.BackField.AddCard(hisUnit3);
 
-        player.Deploy(myHighCostUnit, true);
-        Assert.IsTrue(Game.InductionSetList.Count == 0);
-        Request.ClearNextResults();
+        Game.DoDeployment(myHighCostUnit, true); //什么都没发生
 
-        player.Deploy(myLowCostUnit1, true);
-        Request.SetNextResult(new List<Induction>() { Game.InductionSetList[0][0] });
-        Request.SetNextResult(true);
-        Request.SetNextResult(new List<Card>() { hisUnit2 });
-        Game.DoAutoCheckTiming();
+        Request.SetNextResult(); //默认选择第一个Induction
+        Request.SetNextResult(true); //选择使用
+        Request.SetNextResult(new List<Card>() { hisUnit2 }); //选择对象
+        Game.DoDeployment(myLowCostUnit1, true);
         Assert.IsTrue(rival.BackField.Cards.SequenceEqual(new List<Card>() { hisUnit3 }));
-        Request.ClearNextResults();
-
-
-        player.Deploy(myLowCostUnit2, true);
-        Assert.IsTrue(Game.InductionSetList.Count == 0);
     }
 }

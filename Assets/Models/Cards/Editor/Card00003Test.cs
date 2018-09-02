@@ -15,9 +15,9 @@ public class Card00003Test
         var player = Game.Player;
         var card = CardFactory.CreateCard(3, player);
         player.Hand.AddCard(card);
-        card.Read(new EmptyMessage());
+        Game.TryDoMessage(new EmptyMessage());
         Assert.IsTrue(card.AttachableList.Count == 2);
-
+        
         player.SetToBond(card, true, null);
         Assert.IsFalse(card.BelongedRegion is Bond);
     }

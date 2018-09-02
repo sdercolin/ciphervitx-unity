@@ -25,7 +25,7 @@ public class Card00010Test
         player2.BackField.AddCard(card4);
 
 
-        card1.Read(new EmptyMessage());
+        Game.TryDoMessage(new EmptyMessage());
 
         Assert.IsFalse(card4.GetAttackableUnits().Contains(card1));
         Assert.IsFalse(card4.GetAttackableUnits().Contains(card3));
