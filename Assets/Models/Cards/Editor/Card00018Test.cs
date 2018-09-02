@@ -46,14 +46,14 @@ public class Card00018Test
         rival.Orb.AddCard(rivalOrb1);
         rival.Orb.AddCard(rivalOrb2);
 
-        Request.SetNextResult();
-        Request.SetNextResult(true);
-        Request.SetNextResult();
-        Request.SetNextResult();
+        Request.SetNextResult(); //选择被诱发的Skill
+        Request.SetNextResult(true); //选择发动Skill
+        Request.SetNextResult(); //横置1
+        Request.SetNextResult(); //横置2
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Request.SetNextResult();
-        Request.SetNextResult();
+        Request.SetNextResult(); //拿一个宝玉
+        Request.SetNextResult(); //拿一个宝玉
         Game.DoBattle(card, card4);
         
         Assert.IsTrue(rival.Orb.Count == 0);
