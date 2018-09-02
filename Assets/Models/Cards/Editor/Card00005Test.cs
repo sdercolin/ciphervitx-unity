@@ -88,18 +88,9 @@ public class Card00005Test
         Game.Initialize();
         var player = Game.Player;
         Game.TurnPlayer = player;
-<<<<<<< HEAD
-        var card00005 = new Card00005(player);
-        var card00001 = new Card00001(player);
-        var card00003 = new Card00003(player);
-        var bondCard1 = CardFactory.CreateCard(1, player);
-        var bondCard2 = CardFactory.CreateCard(1, player);
-        var bondCard3 = CardFactory.CreateCard(1, player);
-=======
         var card00005 = CardFactory.CreateCard(5, player);
         var card00001 = CardFactory.CreateCard(1, player);
         var card00003 = CardFactory.CreateCard(3, player);
->>>>>>> model
 
         player.FrontField.AddCard(card00005);
         player.Hand.AddCard(card00001);
@@ -120,7 +111,5 @@ public class Card00005Test
 
         player.Deploy(card00003, true);
         Assert.IsTrue(card00005.Power == 60);
-
-        Request.SetNextResult(new List<Card>() { bondCard1, bondCard2, bondCard3 });
     }
 }
