@@ -23,6 +23,10 @@ public class Card00007Test
         player.FrontField.AddCard(costCard);
         player.FrontField.AddCard(costCard);
 
+        Request.SetNextResult(new List<Card>() { costCard });
+        Request.SetNextResult(new List<Card>() { targetCard });
+        Game.DoActionSkill(xida.GetUsableActionSkills()[0]);
+
         Assert.IsTrue(targetCard.Power == 80);
     }
 }
