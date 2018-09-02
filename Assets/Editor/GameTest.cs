@@ -65,13 +65,11 @@ public class GameTest
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(card1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 2);
 
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(hero1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 1);
     }
 
@@ -105,13 +103,11 @@ public class GameTest
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(card1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 2);
 
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(hero1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 1);
     }
 
@@ -144,13 +140,11 @@ public class GameTest
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(card1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 2);
 
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(hero1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 1);
     }
 
@@ -178,7 +172,6 @@ public class GameTest
         Request.SetNextResult(false);
         Request.SetNextResult(new List<Card>() { orb1 });
         Game.DoBattle(hero1, hero2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Orb.Count == 0);
         Assert.IsTrue(rival.Hand.Count == 1);
     }
