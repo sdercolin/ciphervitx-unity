@@ -66,6 +66,11 @@ public abstract class User
     {
         return AllAreas.TrueForAll(area => area.TrueForAllCard(predicate));
     }
+    //TODO
+    internal Task ChooseAddToDeckTop(Hand hand, int v1, int v2, Card00100.Sk1 sk1)
+    {
+        throw new NotImplementedException();
+    }
 
     #region 动作
     public void Move(Card target, Skill reason)
