@@ -84,7 +84,7 @@ public class Card00050 : Card
     /// 『天空を翔ける者』【起】〖1回合1次〗このユニットを移動させる。このスキルはこのユニットが未行動でなければ使用できない。
     /// </summary>
     public Sk2 sk2;
-    public class Sk2 : ActionSkill
+    public class Sk2 : AngelicFlight
     {
         public Sk2() : base()
         {
@@ -94,22 +94,6 @@ public class Card00050 : Card
             OncePerTurn = true;
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CheckConditions()
-        {
-            return !Owner.IsHorizontal;
-        }
-
-        public override Cost DefineCost()
-        {
-            return Cost.Null;
-        }
-
-        public override Task Do()
-        {
-            Controller.Move(Owner, this);
-            return Task.CompletedTask;
         }
     }
 }

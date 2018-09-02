@@ -160,3 +160,25 @@ public class ReverseBondToAdd20 : ActionSkill
         return Task.CompletedTask;
     }
 }
+
+/// <summary>
+/// 『天空を翔ける者』【起】〖1回合1次〗このユニットを移動させる。このスキルはこのユニットが未行動でなければ使用できない。
+/// </summary>
+public class AngelicFlight : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return !Owner.IsHorizontal;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.Null;
+    }
+
+    public override Task Do()
+    {
+        Controller.Move(Owner, this);
+        return Task.CompletedTask;
+    }
+}
