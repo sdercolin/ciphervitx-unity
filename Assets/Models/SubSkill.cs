@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 /// <summary>
@@ -393,16 +394,23 @@ public class WillNotBeAttackedFromBackField : SubSkill
 public class DestroyTwoOrbs : SubSkill
 {
     public DestroyTwoOrbs(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-    public override void Read(Message message)
+
+    public override bool Try(Message message, ref Message substitute)
     {
         var destroyMessage = message as DestroyMessage;
         if (destroyMessage != null)
         {
-            if (destroyMessage.AttackingUnit == Owner)
+            if (destroyMessage.AttackingUnit == Owner
+                && destroyMessage.DestroyedUnits.SequenceEqual(new List<Card>() { Opponent.Hero })
+                && destroyMessage.ReasonTag == DestructionReasonTag.ByBattle
+                && destroyMessage.Count != 2)
             {
-                destroyMessage.Count = 2;
+                substitute = destroyMessage.Clone();
+                ((DestroyMessage)substitute).Count = 2;
+                return false;
             }
         }
+        return true;
     }
 }
 
