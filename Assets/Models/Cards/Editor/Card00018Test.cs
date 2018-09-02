@@ -36,6 +36,7 @@ public class Card00018Test
         player.Deck.AddCard(support);
 
         var card4 = CardFactory.CreateCard(1, rival);
+        card4.IsHero = true;
         var rivalOrb1 = CardFactory.CreateCard(6, rival);
         var rivalOrb2 = CardFactory.CreateCard(6, rival);
         var rivalSupport = CardFactory.CreateCard(2, rival);
@@ -45,15 +46,16 @@ public class Card00018Test
         rival.Orb.AddCard(rivalOrb1);
         rival.Orb.AddCard(rivalOrb2);
 
-        Request.SetNextResult(new List<Card>() { card1});
-        Request.SetNextResult(new List<Card>() { card2});
+        Request.SetNextResult();
+        Request.SetNextResult(true);
+        Request.SetNextResult();
+        Request.SetNextResult();
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
+        Request.SetNextResult();
+        Request.SetNextResult();
         Game.DoBattle(card, card4);
-        Game.DoAutoCheckTiming();
-
-        // 40+20+50+support30
-        Assert.IsTrue(card.Power == 140);
+        
         Assert.IsTrue(rival.Orb.Count == 0);
     }
 }

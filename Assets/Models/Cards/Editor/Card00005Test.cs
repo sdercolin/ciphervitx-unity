@@ -67,17 +67,21 @@ public class Card00005Test
         player.Deck.AddCard(support);
 
         var rivalUnit = CardFactory.CreateCard(6, rival);
+        rivalUnit.IsHero = true;
         rival.FrontField.AddCard(rivalUnit);
         var rivalSupport = CardFactory.CreateCard(2, rival);
         rival.Deck.AddCard(rivalSupport);
         var rivalHand = CardFactory.CreateCard(6, rival);
         rival.Hand.AddCard(rivalHand);
+        var rivalOrb = CardFactory.CreateCard(6, rival);
+        rival.Orb.AddCard(rivalOrb);
 
         Request.SetNextResult(new List<Card>() { bond1, bond2, bond3 }); //设定要翻的费
         Game.DoActionSkill(card.GetUsableActionSkills()[0]); //发动
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(true); //回避，但是应该不需要选择，因为不能回避
+        Request.SetNextResult(); //拿走一个宝玉
         Game.DoBattle(card, rivalUnit);
         Assert.IsTrue(rival.Orb.Count == 0); //应该被击破了
     }
