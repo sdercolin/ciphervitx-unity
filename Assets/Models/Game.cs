@@ -505,7 +505,8 @@ public static class Game
                     {
                         TryDoMessage(new ObtainOrbDestructionProcessMessage()
                         {
-                            Target = await Request.ChooseOne(user.Orb.Cards, user)
+                            Target = await Request.ChooseOne(user.Orb.Cards, user),
+                            Reason = user.Hero
                         });
                         processed = true;
                     }
