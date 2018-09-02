@@ -547,7 +547,7 @@ public class ObtainOrbDestructionProcessMessage : Message
     {
         Target.MoveTo(Target.Controller.Hand);
         Reason.DestroyedCount--;
-        if (Reason.IsHero && Reason.Controller.Orb.Count == 0)
+        if (Reason.Controller.Orb.Count == 0)
         {
             Reason.DestroyedCount = 0;
         }
