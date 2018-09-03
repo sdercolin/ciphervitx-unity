@@ -130,11 +130,11 @@ public class Message
 
     public static Message operator +(Message a, Message b)
     {
-        if (a is EmptyMessage)
+        if (a is EmptyMessage || a == null)
         {
             return b;
         }
-        else if (b is EmptyMessage)
+        else if (b is EmptyMessage || b == null)
         {
             return a;
         }
