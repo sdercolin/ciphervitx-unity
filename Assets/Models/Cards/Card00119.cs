@@ -99,9 +99,12 @@ public class Card00119 : Card
             var destroyMessage = message as DestroyMessage;
             if (destroyMessage != null)
             {
-                if (destroyMessage.Reason == ((Card00119)Owner).sk1)
+                foreach (var unit in destroyMessage.DestroyedUnits)
                 {
-                    return new Induction();
+                    if (destroyMessage.Reason == ((Card00119)Owner).sk1 && unit.Controller == Opponent)
+                    {
+                        return new Induction();
+                    }
                 }
             }
             return null;
