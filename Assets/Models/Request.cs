@@ -230,7 +230,8 @@ public static class Request
     public enum RequestFlags
     {
         Null = 0,
-        DoNotAllowSameName = 1
+        DoNotAllowSameName = 1,
+        ShowOrder = 2
     }
 }
 

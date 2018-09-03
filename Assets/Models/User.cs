@@ -66,11 +66,6 @@ public abstract class User
     {
         return AllAreas.TrueForAll(area => area.TrueForAllCard(predicate));
     }
-    //TODO
-    internal Task ChooseAddToDeckTop(Hand hand, int v1, int v2, Card00100.Sk1 sk1)
-    {
-        throw new NotImplementedException();
-    }
 
     #region 动作
     public void Move(Card target, Skill reason)
@@ -816,6 +811,15 @@ public abstract class User
         {
             FromUnit = Game.DefendingUnit,
             ToUnit = toUnit,
+            Reason = reason
+        });
+    }
+
+    public async Task ChooseSetToDeckTop(List<Card> targets, int min, int max, Skill reason, Request.RequestFlags flags = Request.RequestFlags.Null)
+    {
+        Game.TryDoMessage(new SetToDeckTopMessage()
+        {
+            Targets = await Request.Choose(targets, min, max, this, flags),
             Reason = reason
         });
     }

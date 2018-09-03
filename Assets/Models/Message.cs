@@ -164,7 +164,7 @@ public class DeployMessage : Message
 
     public bool RemoveTarget(Card target)
     {
-        if(Targets.Contains(target))
+        if (Targets.Contains(target))
         {
             int index = Targets.IndexOf(target);
             ToFrontFieldList.RemoveAt(index);
@@ -623,6 +623,20 @@ public class ShuffleDeckMessage : Message
     public override void Do()
     {
         User.Deck.ApplyOrder(Order);
+    }
+}
+
+public class SetToDeckTopMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field3; } set { field3 = value; } }
+
+    public override void Do()
+    {
+        foreach (var target in Targets)
+        {
+            target.MoveTo(target.Controller.Deck.Top);
+        }
     }
 }
 

@@ -59,12 +59,12 @@ public class Card00100 : Card
             if (!Owner.IsClassChanged)
             {
                 Controller.DrawCard(2, this);
-                await Controller.ChooseAddToDeckTop(Controller.Hand, 1, 1, this);
+                await Controller.ChooseSetToDeckTop(Controller.Hand.Cards, 1, 1, this);
             }
             else
             {
                 Controller.DrawCard(3, this);
-                await Controller.ChooseAddToDeckTop(Controller.Hand, 2, 2, this);
+                await Controller.ChooseSetToDeckTop(Controller.Hand.Cards, 2, 2, this, Request.RequestFlags.ShowOrder);
             }
         }
     }
