@@ -87,11 +87,6 @@ public abstract class User
             Reason = reason
         });
     }
-    //TODO
-    internal void Untap(Card owner, Card00121.Sk1 sk1)
-    {
-        throw new NotImplementedException();
-    }
 
     public void Move(List<Card> targets, Skill reason)
     {

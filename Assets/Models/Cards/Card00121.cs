@@ -75,7 +75,7 @@ public class Card00121 : Card
 
         public override Task Do(Induction induction)
         {
-            Controller.Untap(Owner, this);
+            Controller.RefreshUnit(Owner, this);
             return Task.CompletedTask;
         }
     }
