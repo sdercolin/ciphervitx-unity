@@ -127,6 +127,55 @@ public class Message
         }
         return newMessage;
     }
+
+    public static Message operator +(Message a, Message b)
+    {
+        if (a is EmptyMessage)
+        {
+            return b;
+        }
+        else if (b is EmptyMessage)
+        {
+            return a;
+        }
+        else
+        {
+            List<Message> newElements = new List<Message>();
+            if (a is MultipleMessage)
+            {
+                if (b is MultipleMessage)
+                {
+                    newElements = ListUtils.Combine(((MultipleMessage)a).Elements, ((MultipleMessage)b).Elements);
+                }
+                else
+                {
+                    newElements.AddRange(((MultipleMessage)a).Elements);
+                    newElements.Add(b);
+                }
+            }
+            else if (b is MultipleMessage)
+            {
+                newElements.Add(a);
+                newElements.AddRange(((MultipleMessage)b).Elements);
+            }
+            else
+            {
+                newElements.Add(a);
+                newElements.Add(b);
+            }
+            return new MultipleMessage(newElements.ToArray());
+        }
+    }
+}
+
+public class MultipleMessage : Message
+{
+    public MultipleMessage(params Message[] elements) : base()
+    {
+        Elements.AddRange(elements);
+    }
+
+    public List<Message> Elements = new List<Message>();
 }
 
 public class EmptyMessage : Message
