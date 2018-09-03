@@ -58,13 +58,17 @@ public class Card00123 : Card
 
         public override bool Try(Message message, ref Message substitute)
         {
-            var sendToRetreatDestructionProcessMessage = message as SendToRetreatDestructionProcessMessage
-;
+            var sendToRetreatDestructionProcessMessage = message as SendToRetreatDestructionProcessMessage;
             if (sendToRetreatDestructionProcessMessage != null)
             {
                 if (sendToRetreatDestructionProcessMessage.Targets.Contains(Owner) && Owner.DestructionReasonTag == DestructionReasonTag.ByBattle)
                 {
-                    substitute = new ToBondMessage()
+                    sendToRetreatDestructionProcessMessage.Targets.Remove(Owner);
+                    if (sendToRetreatDestructionProcessMessage.Targets.Count == 0)
+                    {
+                        sendToRetreatDestructionProcessMessage = null;
+                    }
+                    substitute = sendToRetreatDestructionProcessMessage + new ToBondMessage()
                     {
                         Targets = new List<Card>() { Owner },
                         TargetFrontShown = true,
