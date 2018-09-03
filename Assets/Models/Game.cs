@@ -664,9 +664,13 @@ public static class Game
         ///
     }
 
-    private static void Over(List<User> losingUsers)
+    public static void Over(List<User> losingUsers, Skill reason = null)
     {
-        //TO DO: Game Over
+        TryDoMessage(new GameOverMessage()
+        {
+             LosingUsers =losingUsers,
+             Reason = reason
+        });
     }
 }
 

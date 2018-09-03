@@ -640,6 +640,11 @@ public class SetToDeckTopMessage : Message
     }
 }
 
+public class GameOverMessage : Message
+{
+    public List<User> LosingUsers { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+}
 ///// 消息种类
 ///// </summary>
 //public enum MessageType
