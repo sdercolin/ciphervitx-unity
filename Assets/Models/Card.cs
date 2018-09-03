@@ -968,6 +968,8 @@ public abstract class Card
         Visible = true;
         IsLevelUpedInThisTurn = false;
         IsClassChangedInThisTurn = false;
+        DestroyedCount = 0;
+        DestructionReasonTag = DestructionReasonTag.Null;
         foreach (var item in BuffList)
         {
             item.Detach();

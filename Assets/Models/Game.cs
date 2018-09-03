@@ -445,7 +445,9 @@ public static class Game
         {
             var sameNameProcessMessage = new SendToRetreatSameNameProcessMessage()
             {
-                Targets = cardsToSendToRetreat
+                Targets = cardsToSendToRetreat,
+                Reason = null,
+                AsCost = false
             };
             TryDoMessage(sameNameProcessMessage);
             return true;
@@ -516,7 +518,9 @@ public static class Game
             {
                 TryDoMessage(new SendToRetreatDestructionProcessMessage()
                 {
-                    Targets = cardsToSendToRetreat
+                    Targets = cardsToSendToRetreat,
+                    Reason = null,
+                    AsCost = false
                 });
                 processed = true;
             }
@@ -568,7 +572,9 @@ public static class Game
         {
             TryDoMessage(new SendToRetreatPositionProcessMessage()
             {
-                Targets = cardsToSendToRetreat
+                Targets = cardsToSendToRetreat,
+                Reason = null,
+                AsCost = false
             });
             return true;
         }
@@ -668,8 +674,8 @@ public static class Game
     {
         TryDoMessage(new GameOverMessage()
         {
-             LosingUsers =losingUsers,
-             Reason = reason
+            LosingUsers = losingUsers,
+            Reason = reason
         });
     }
 }

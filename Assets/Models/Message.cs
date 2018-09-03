@@ -303,14 +303,7 @@ public class ConfirmSupportMessage : Message
 /// <summary>
 /// 将支援卡放置到退避区
 /// </summary>
-public class RemoveSupportMessage : Message
-{
-    public Card Card { get { return field1; } set { field1 = value; } }
-    public override void Do()
-    {
-        Card.MoveTo(Card.Controller.Retreat);
-    }
-}
+public class RemoveSupportMessage : SendToRetreatMessage { }
 
 /// <summary>
 /// 战斗结束
@@ -343,9 +336,7 @@ public class SetActionedMessage : Message
     }
 }
 
-public class DiscardHandMessage : SendToRetreatMessage
-{
-}
+public class DiscardHandMessage : SendToRetreatMessage { }
 
 public class AddToHandMessage : Message
 {
@@ -554,21 +545,9 @@ public class ObtainOrbDestructionProcessMessage : Message
     }
 }
 
-public class SendToRetreatDestructionProcessMessage : SendToRetreatMessage
-{
-    public override void Do()
-    {
-        Targets.ForEach(target =>
-        {
-            target.MoveTo(target.Controller.Retreat);
-            target.DestroyedCount = 0;
-        });
-    }
-}
+public class SendToRetreatDestructionProcessMessage : SendToRetreatMessage { }
 
-public class SendToRetreatPositionProcessMessage : SendToRetreatMessage
-{
-}
+public class SendToRetreatPositionProcessMessage : SendToRetreatMessage { }
 
 public class MoveMarchingProcessMessage : Message
 {

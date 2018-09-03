@@ -114,7 +114,7 @@ public class Card00092 : Card
                 {
                     substitute = new ToBondMessage()
                     {
-                        Targets = new List<Card>() { removeSupportMessage.Card },
+                        Targets = removeSupportMessage.Targets,
                         TargetFrontShown = true,
                         Reason = this
                     };

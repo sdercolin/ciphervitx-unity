@@ -180,7 +180,9 @@ public abstract class User
         {
             Game.TryDoMessage(new RemoveSupportMessage()
             {
-                Card = Support.SupportCard
+                Targets = new List<Card>() { Support.SupportCard },
+                Reason = null,
+                AsCost = false
             });
         }
     }
