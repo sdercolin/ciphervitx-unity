@@ -182,3 +182,19 @@ public class AngelicFlight : ActionSkill
         return Task.CompletedTask;
     }
 }
+
+/// <summary>
+/// 【常】相手の手札が４枚以下の場合、このユニットの戦闘力は＋１０される。
+/// </summary>
+public class Hand4OrLessAdd10 : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return card == Owner && Opponent.Hand.Count <= 4;
+    }
+
+    public override void SetItemToApply()
+    {
+        ItemsToApply.Add(new PowerBuff(this, 10));
+    }
+}
