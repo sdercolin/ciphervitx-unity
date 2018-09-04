@@ -242,9 +242,11 @@ public class LevelUpMessage : Message
             Target.Controller.DeployAndCCCostCount += IsClassChange ? Target.ClassChangeCost : Target.DeployCost;
         }
         Target.StackOver(BaseUnit);
+        Target.IsLevelUpedInThisTurn = true;
         if (IsClassChange)
         {
             Game.CCBonusList.Add(Target);
+            Target.IsClassChangedInThisTurn = true;
         }
     }
 }
