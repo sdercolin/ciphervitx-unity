@@ -315,6 +315,7 @@ public class AttackMessage : Message
     public override void Do()
     {
         AttackingUnit.IsHorizontal = true;
+        AttackingUnit.HasAttackedInThisTurn = true;
         Game.AttackingUnit = AttackingUnit;
         Game.DefendingUnit = DefendingUnit;
     }

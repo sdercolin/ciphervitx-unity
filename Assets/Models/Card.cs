@@ -431,6 +431,11 @@ public abstract class Card
     public bool IsClassChangedInThisTurn;
 
     /// <summary>
+    /// 在本回合中是否已攻击
+    /// </summary>
+    public bool HasAttackedInThisTurn;
+
+    /// <summary>
     /// 卡是否横置
     /// </summary>
     public bool IsHorizontal = false;
