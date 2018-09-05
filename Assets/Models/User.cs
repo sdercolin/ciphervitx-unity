@@ -90,11 +90,14 @@ public abstract class User
 
     public void Move(List<Card> targets, Skill reason)
     {
-        Game.TryDoMessage(new MoveMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            Reason = reason
-        });
+            Game.TryDoMessage(new MoveMessage()
+            {
+                Targets = targets,
+                Reason = reason
+            });
+        }
     }
 
     public async Task ChooseMove(List<Card> targets, int min, int max, Skill reason = null)
@@ -137,19 +140,25 @@ public abstract class User
 
     public void Attack(Card unit, Card target)
     {
-        Game.TryDoMessage(new AttackMessage()
+        if (unit != null && target != null)
         {
-            AttackingUnit = unit,
-            DefendingUnit = target
-        });
+            Game.TryDoMessage(new AttackMessage()
+            {
+                AttackingUnit = unit,
+                DefendingUnit = target
+            });
+        }
     }
 
     public void SetSupportCard()
     {
-        Game.TryDoMessage(new SetSupportMessage()
+        if (Deck.Count > 0)
         {
-            User = this
-        });
+            Game.TryDoMessage(new SetSupportMessage()
+            {
+                User = this
+            });
+        }
     }
 
     public void ConfirmSupportCard()
@@ -351,6 +360,10 @@ public abstract class User
 
     public void AttachItem(IAttachable item, Card target)
     {
+        if (item == null || target == null)
+        {
+            return;
+        }
         var powerBuff = item as PowerBuff;
         if (powerBuff != null)
         {
@@ -376,11 +389,14 @@ public abstract class User
 
     public void GrantSkill(IAttachable item, Card target)
     {
-        Game.TryDoMessage(new GrantSkillMessage()
+        if (item != null && target != null)
         {
-            Item = item,
-            Target = target
-        });
+            Game.TryDoMessage(new GrantSkillMessage()
+            {
+                Item = item,
+                Target = target
+            });
+        }
     }
 
     public List<Card> GetDeployableHands(bool actioned = false, Skill reason = null)
@@ -439,13 +455,16 @@ public abstract class User
     /// </summary>
     public void Deploy(List<Card> targets, List<bool> toFrontFieldList, List<bool> actionedList, Skill reason = null)
     {
-        Game.TryDoMessage(new DeployMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            ToFrontFieldList = toFrontFieldList,
-            ActionedList = actionedList,
-            Reason = reason
-        });
+            Game.TryDoMessage(new DeployMessage()
+            {
+                Targets = targets,
+                ToFrontFieldList = toFrontFieldList,
+                ActionedList = actionedList,
+                Reason = reason
+            });
+        }
     }
 
     /// <summary>
@@ -484,15 +503,7 @@ public abstract class User
         {
             actionedDict = new Dictionary<Card, bool>();
         }
-        List<Card> chosen;
-        if (choices.Count == min)
-        {
-            chosen = choices;
-        }
-        else
-        {
-            chosen = await Request.Choose(GetDeployableCards(choices, ref toFrontFieldDict, ref actionedDict, reason), min, max, this);
-        }
+        List<Card> chosen = await Request.Choose(GetDeployableCards(choices, ref toFrontFieldDict, ref actionedDict, reason), min, max, this);
         var toFrontFieldList = new List<bool>();
         var actionedList = new List<bool>();
         foreach (var card in chosen)
@@ -538,12 +549,15 @@ public abstract class User
         {
             baseUnit = await Request.ChooseOne(baseUnits, this);
         }
-        Game.TryDoMessage(new LevelUpMessage()
+        if (target != null && baseUnit != null)
         {
-            Target = target,
-            BaseUnit = baseUnit,
-            Reason = reason
-        });
+            Game.TryDoMessage(new LevelUpMessage()
+            {
+                Target = target,
+                BaseUnit = baseUnit,
+                Reason = reason
+            });
+        }
     }
 
     public List<Card> GetPossibleCardsToUseActionSkill()
@@ -651,12 +665,15 @@ public abstract class User
 
     public void SetActioned(List<Card> targets, Skill reason, bool asCost = true)
     {
-        Game.TryDoMessage(new SetActionedMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            Reason = reason,
-            AsCost = asCost
-        });
+            Game.TryDoMessage(new SetActionedMessage()
+            {
+                Targets = targets,
+                Reason = reason,
+                AsCost = asCost
+            });
+        }
     }
 
     public async Task ChooseSetActioned(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
@@ -674,14 +691,17 @@ public abstract class User
 
     public void Destroy(List<Card> targets, Skill reason, bool asCost)
     {
-        Game.TryDoMessage(new DestroyMessage()
+        if (targets.Count > 0)
         {
-            DestroyedUnits = targets,
-            Count = 1,
-            ReasonTag = asCost ? DestructionReasonTag.BySkillCost : DestructionReasonTag.BySkill,
-            Reason = reason,
-            AttackingUnit = null
-        });
+            Game.TryDoMessage(new DestroyMessage()
+            {
+                DestroyedUnits = targets,
+                Count = 1,
+                ReasonTag = asCost ? DestructionReasonTag.BySkillCost : DestructionReasonTag.BySkill,
+                Reason = reason,
+                AttackingUnit = null
+            });
+        }
     }
 
     public async Task ChooseDestroy(List<Card> targets, int min, int max, Skill reason, bool asCost)
@@ -691,12 +711,15 @@ public abstract class User
 
     public void AddToHand(List<Card> targets, Skill reason, bool show = true)
     {
-        Game.TryDoMessage(new AddToHandMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            Reason = reason,
-            Show = show
-        });
+            Game.TryDoMessage(new AddToHandMessage()
+            {
+                Targets = targets,
+                Reason = reason,
+                Show = show
+            });
+        }
     }
 
     public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason, bool show = true, Request.RequestFlags flags = Request.RequestFlags.Null)
@@ -763,31 +786,40 @@ public abstract class User
 
     public void SendToRetreat(List<Card> targets, Skill reason, bool asCost = false)
     {
-        Game.TryDoMessage(new SendToRetreatMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            Reason = reason,
-            AsCost = asCost
-        });
+            Game.TryDoMessage(new SendToRetreatMessage()
+            {
+                Targets = targets,
+                Reason = reason,
+                AsCost = asCost
+            });
+        }
     }
 
     public void ChangeDefendingUnit(Card toUnit, Skill reason)
     {
-        Game.TryDoMessage(new ChangeDefendingUnitMessage()
+        if (toUnit != null)
         {
-            FromUnit = Game.DefendingUnit,
-            ToUnit = toUnit,
-            Reason = reason
-        });
+            Game.TryDoMessage(new ChangeDefendingUnitMessage()
+            {
+                FromUnit = Game.DefendingUnit,
+                ToUnit = toUnit,
+                Reason = reason
+            });
+        }
     }
 
     public async Task ChooseSetToDeckTop(List<Card> targets, int min, int max, Skill reason, Request.RequestFlags flags = Request.RequestFlags.Null)
     {
-        Game.TryDoMessage(new SetToDeckTopMessage()
+        if (targets.Count > 0)
         {
-            Targets = await Request.Choose(targets, min, max, this, flags),
-            Reason = reason
-        });
+            Game.TryDoMessage(new SetToDeckTopMessage()
+            {
+                Targets = await Request.Choose(targets, min, max, this, flags),
+                Reason = reason
+            });
+        }
     }
     #endregion
 }
