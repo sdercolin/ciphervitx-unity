@@ -47,7 +47,10 @@ public class Card00130 : Card
 
         public override bool CanTarget(Card card)
         {
-            return card != Owner && card.Controller == Controller && card.HasType(TypeEnum.Flight);
+            return card != Owner
+                && card.Controller == Controller
+                && card.IsOnField
+                && card.HasType(TypeEnum.Flight);
         }
 
         public override void SetItemToApply()

@@ -68,7 +68,7 @@ public class Card00014 : Card
     /// 『飛行特効』【常】このユニットが<飛行>を攻撃している場合、このユニットの戦闘力は＋３０される。
     /// </summary>
     public Sk2 sk2;
-    public class Sk2 : PermanentSkill
+    public class Sk2 : Wingslayer
     {
         public Sk2() : base()
         {
@@ -77,18 +77,6 @@ public class Card00014 : Card
             Description = "『飞行特效』【常】这名单位攻击<飞行>属性单位的期间，这名单位的战斗力+30。";
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CanTarget(Card card)
-        {
-            return card == Owner
-                && Game.AttackingUnit == card
-                && Game.DefendingUnit.HasType(TypeEnum.Flight);
-        }
-
-        public override void SetItemToApply()
-        {
-            ItemsToApply.Add(new PowerBuff(this, 30));
         }
     }
 

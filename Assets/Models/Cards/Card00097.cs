@@ -56,7 +56,7 @@ public class Card00097 : Card
         public override async Task Do()
         {
             var choices = Opponent.Field.Cards;
-            await Controller.ChooseMove(choices, 0, choices.Count);
+            await Controller.ChooseMove(choices, 0, choices.Count, this);
             Controller.Field.ForEachCard(unit =>
             {
                 Controller.AttachItem(new PowerBuff(this, 30, LastingTypeEnum.UntilTurnEnds), unit);
