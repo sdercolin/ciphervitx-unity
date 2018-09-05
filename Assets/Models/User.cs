@@ -99,10 +99,7 @@ public abstract class User
 
     public async Task ChooseMove(List<Card> targets, int min, int max, Skill reason = null)
     {
-        if (targets.Count > 0)
-        {
-            Move(await Request.Choose(targets, min, max, this), reason);
-        }
+        Move(await Request.Choose(targets, min, max, this), reason);
     }
 
     public void ReverseBond(Card target, Skill reason, bool asCost = true)
@@ -134,11 +131,9 @@ public abstract class User
 
     public async Task ChooseReverseBond(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
     {
-        if (targets.Count > 0)
-        {
-            ReverseBond(await Request.Choose(targets, min, max, this), reason, asCost);
-        }
+        ReverseBond(await Request.Choose(targets, min, max, this), reason, asCost);
     }
+
 
     public void Attack(Card unit, Card target)
     {
@@ -266,10 +261,7 @@ public abstract class User
 
     public async Task ChooseSetToBond(List<Card> targets, int min, int max, bool frontShown = true, Skill reason = null)
     {
-        if (targets.Count > 0)
-        {
-            SetToBond(await Request.Choose(GetPossibleCardsToSetToBond(targets, frontShown, reason), min, max, this), frontShown, reason);
-        }
+        SetToBond(await Request.Choose(GetPossibleCardsToSetToBond(targets, frontShown, reason), min, max, this), frontShown, reason);
     }
 
     public void DiscardHand(Card target, bool asCost, Skill reason = null)
@@ -296,10 +288,7 @@ public abstract class User
 
     public async Task ChooseDiscardHand(List<Card> targets, int min, int max, bool asCost, Skill reason = null)
     {
-        if (targets.Count > 0)
-        {
-            DiscardHand(await Request.Choose(targets, min, max, this), asCost, reason);
-        }
+        DiscardHand(await Request.Choose(targets, min, max, this), asCost, reason);
     }
 
     public void AddToOrb(Card target, Skill reason = null)
@@ -316,20 +305,17 @@ public abstract class User
 
     public async Task ChooseAddToOrb(List<Card> targets, bool optional, Skill reason = null)
     {
-        if (targets.Count > 0)
+        if (optional)
         {
-            if (optional)
+            var result = await Request.ChooseUpToOne(targets, this);
+            if (result != null)
             {
-                var result = await Request.ChooseUpTo(targets, 1, this);
-                if (result.Count > 0)
-                {
-                    AddToOrb(result[0], reason);
-                }
+                AddToOrb(result, reason);
             }
-            else
-            {
-                AddToOrb(await Request.ChooseOne(targets, this), reason);
-            }
+        }
+        else
+        {
+            AddToOrb(await Request.ChooseOne(targets, this), reason);
         }
     }
 
@@ -490,48 +476,45 @@ public abstract class User
     /// <returns></returns>
     public async Task ChooseDeploy(List<Card> choices, int min, int max, Dictionary<Card, bool> toFrontFieldDict = null, Dictionary<Card, bool> actionedDict = null, Skill reason = null)
     {
-        if (choices.Count > 0)
+        if (toFrontFieldDict == null)
         {
-            if (toFrontFieldDict == null)
+            toFrontFieldDict = new Dictionary<Card, bool>();
+        }
+        if (actionedDict == null)
+        {
+            actionedDict = new Dictionary<Card, bool>();
+        }
+        List<Card> chosen;
+        if (choices.Count == min)
+        {
+            chosen = choices;
+        }
+        else
+        {
+            chosen = await Request.Choose(GetDeployableCards(choices, ref toFrontFieldDict, ref actionedDict, reason), min, max, this);
+        }
+        var toFrontFieldList = new List<bool>();
+        var actionedList = new List<bool>();
+        foreach (var card in chosen)
+        {
+            if (toFrontFieldDict.ContainsKey(card))
             {
-                toFrontFieldDict = new Dictionary<Card, bool>();
-            }
-            if (actionedDict == null)
-            {
-                actionedDict = new Dictionary<Card, bool>();
-            }
-            List<Card> chosen;
-            if (choices.Count == min)
-            {
-                chosen = choices;
+                toFrontFieldList.Add(toFrontFieldDict[card]);
             }
             else
             {
-                chosen = await Request.Choose(GetDeployableCards(choices, ref toFrontFieldDict, ref actionedDict, reason), min, max, this);
+                toFrontFieldList.Add(await Request.AskIfDeployToFrontField(card));
             }
-            var toFrontFieldList = new List<bool>();
-            var actionedList = new List<bool>();
-            foreach (var card in chosen)
+            if (actionedDict.ContainsKey(card))
             {
-                if (toFrontFieldDict.ContainsKey(card))
-                {
-                    toFrontFieldList.Add(toFrontFieldDict[card]);
-                }
-                else
-                {
-                    toFrontFieldList.Add(await Request.AskIfDeployToFrontField(card));
-                }
-                if (actionedDict.ContainsKey(card))
-                {
-                    actionedList.Add(actionedDict[card]);
-                }
-                else
-                {
-                    actionedList.Add(false);
-                }
+                actionedList.Add(actionedDict[card]);
             }
-            Deploy(chosen, toFrontFieldList, actionedList, reason);
+            else
+            {
+                actionedList.Add(false);
+            }
         }
+        Deploy(chosen, toFrontFieldList, actionedList, reason);
     }
 
     public List<Card> GetLevelUpableHands(Skill reason = null)
@@ -609,22 +592,17 @@ public abstract class User
             if (Game.AttackingUnit.CheckCriticalAttack())
             {
                 List<Card> costs = Game.AttackingUnit.GetCostsForCriticalAttack();
-                Card cost;
-                if (costs.Count > 1)
+                Card cost = await Request.ChooseUpToOne(costs, this);
+                if (cost != null)
                 {
-                    cost = await Request.ChooseOne(costs, this);
+                    Game.TryDoMessage(new CriticalAttackMessage()
+                    {
+                        AttackingUnit = Game.AttackingUnit,
+                        DefendingUnit = Game.DefendingUnit,
+                        Cost = cost
+                    });
+                    return Game.CriticalFlag;
                 }
-                else
-                {
-                    cost = costs[0];
-                }
-                Game.TryDoMessage(new CriticalAttackMessage()
-                {
-                    AttackingUnit = Game.AttackingUnit,
-                    DefendingUnit = Game.DefendingUnit,
-                    Cost = cost
-                });
-                return Game.CriticalFlag;
             }
         }
         return false;
@@ -637,22 +615,17 @@ public abstract class User
             if (Game.DefendingUnit.CheckAvoid())
             {
                 List<Card> costs = Game.DefendingUnit.GetCostsForAvoid();
-                Card cost;
-                if (costs.Count > 1)
+                Card cost = await Request.ChooseUpToOne(costs, this);
+                if (cost != null)
                 {
-                    cost = await Request.ChooseOne(costs, this);
+                    Game.TryDoMessage(new AvoidMessage()
+                    {
+                        AttackingUnit = Game.AttackingUnit,
+                        DefendingUnit = Game.DefendingUnit,
+                        Cost = cost
+                    });
+                    return Game.AvoidFlag;
                 }
-                else
-                {
-                    cost = costs[0];
-                }
-                Game.TryDoMessage(new AvoidMessage()
-                {
-                    AttackingUnit = Game.AttackingUnit,
-                    DefendingUnit = Game.DefendingUnit,
-                    Cost = cost
-                });
-                return Game.AvoidFlag;
             }
         }
         return false;
@@ -688,10 +661,7 @@ public abstract class User
 
     public async Task ChooseSetActioned(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
     {
-        if (targets.Count > 0)
-        {
-            SetActioned(await Request.Choose(targets, min, max, this), reason, asCost);
-        }
+        SetActioned(await Request.Choose(targets, min, max, this), reason, asCost);
     }
 
     public void Destroy(Card target, Skill reason, bool asCost)
@@ -716,10 +686,7 @@ public abstract class User
 
     public async Task ChooseDestroy(List<Card> targets, int min, int max, Skill reason, bool asCost)
     {
-        if (targets.Count > 0)
-        {
-            Destroy(await Request.Choose(targets, min, max, this), reason, asCost);
-        }
+        Destroy(await Request.Choose(targets, min, max, this), reason, asCost);
     }
 
     public void AddToHand(List<Card> targets, Skill reason, bool show = true)
@@ -734,10 +701,7 @@ public abstract class User
 
     public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason, bool show = true, Request.RequestFlags flags = Request.RequestFlags.Null)
     {
-        if (targets.Count > 0)
-        {
-            AddToHand(await Request.Choose(targets, min, max, this, flags), reason, show);
-        }
+        AddToHand(await Request.Choose(targets, min, max, this, flags), reason, show);
     }
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)

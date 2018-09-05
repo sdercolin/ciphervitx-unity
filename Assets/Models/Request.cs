@@ -107,6 +107,8 @@ public static class Request
             + "choices = " + ListUtils.ToString(choices) + Environment.NewLine
             + "min = " + min + Environment.NewLine
             + "max = " + max);
+        max = Math.Max(max, choices.Count);
+        min = Math.Min(min, max);
         if (NextResults.Count > 0)
         {
             var result = GetNextChooseResult<T>(choices, min, max);
