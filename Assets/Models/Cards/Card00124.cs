@@ -70,7 +70,7 @@ public class Card00124 : Card
 
         public override async Task Do(Induction induction)
         {
-            await Controller.ChooseAddToHand(Controller.Orb.Cards, 1, 1, this);
+            await Controller.ChooseAddToHand(Controller.Bond.Cards, 1, 1, this);
         }
     }
 
