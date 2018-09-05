@@ -32,7 +32,7 @@ public class Card00023 : Card
     /// 『サンダー』【起】〖1回合1次〗[翻面1]ターン終了まで、このユニットの戦闘力は＋１０される。
     /// </summary>
     public Sk1 sk1;
-    public class Sk1 : ActionSkill
+    public class Sk1 : ReverseBondToAdd10
     {
         public Sk1() : base()
         {
@@ -42,22 +42,6 @@ public class Card00023 : Card
             OncePerTurn = true;
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CheckConditions()
-        {
-            return true;
-        }
-
-        public override Cost DefineCost()
-        {
-            return Cost.ReverseBond(this, 1);
-        }
-
-        public override Task Do()
-        {
-            Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
-            return Task.CompletedTask;
         }
     }
 
