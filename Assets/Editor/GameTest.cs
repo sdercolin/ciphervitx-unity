@@ -33,6 +33,7 @@ public class GameTest
         Assert.IsTrue(Game.Player.Hand.Count == 0);
 
         Game.TurnCount = 2;
+        Request.SetNextResult(new List<Card>() { });
         Game.StartTurn();
         Assert.IsTrue(Game.Player.Hand.Count == 1);
     }
