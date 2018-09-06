@@ -220,3 +220,19 @@ public class Hand4OrLessAdd10 : PermanentSkill
         ItemsToApply.Add(new PowerBuff(this, 10));
     }
 }
+
+/// <summary>
+/// 【特】このカードは味方に『アンナ』がいても出撃させることができ、『アンナ』が２体以上味方にいてもよい。【特】このカードと同じカード名のカードをデッキに５枚以上入れてもよい。【常】『アンナ』のカードはこのユニットの支援に成功する。
+/// </summary>
+public class Annas : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return card == Owner;
+    }
+
+    public override void SetItemToApply()
+    {
+        ItemsToApply.Add(new AllowSameNameDeployment(this));
+    }
+}
