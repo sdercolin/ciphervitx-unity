@@ -112,11 +112,11 @@ public class Card00092 : Card
             {
                 if (Game.AttackingUnit == Owner)
                 {
-                    substitute = new SendToRetreatMessage()
+                    substitute = new ToBondMessage()
                     {
-                        Targets = new List<Card>() { removeSupportMessage.Card },
-                        Reason = this,
-                        AsCost = false
+                        Targets = removeSupportMessage.Targets,
+                        TargetFrontShown = true,
+                        Reason = this
                     };
                     return false;
                 }

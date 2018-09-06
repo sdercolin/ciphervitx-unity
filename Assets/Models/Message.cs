@@ -127,6 +127,55 @@ public class Message
         }
         return newMessage;
     }
+
+    public static Message operator +(Message a, Message b)
+    {
+        if (a is EmptyMessage || a == null)
+        {
+            return b;
+        }
+        else if (b is EmptyMessage || b == null)
+        {
+            return a;
+        }
+        else
+        {
+            List<Message> newElements = new List<Message>();
+            if (a is MultipleMessage)
+            {
+                if (b is MultipleMessage)
+                {
+                    newElements = ListUtils.Combine(((MultipleMessage)a).Elements, ((MultipleMessage)b).Elements);
+                }
+                else
+                {
+                    newElements.AddRange(((MultipleMessage)a).Elements);
+                    newElements.Add(b);
+                }
+            }
+            else if (b is MultipleMessage)
+            {
+                newElements.Add(a);
+                newElements.AddRange(((MultipleMessage)b).Elements);
+            }
+            else
+            {
+                newElements.Add(a);
+                newElements.Add(b);
+            }
+            return new MultipleMessage(newElements.ToArray());
+        }
+    }
+}
+
+public class MultipleMessage : Message
+{
+    public MultipleMessage(params Message[] elements) : base()
+    {
+        Elements.AddRange(elements);
+    }
+
+    public List<Message> Elements = new List<Message>();
 }
 
 public class EmptyMessage : Message
@@ -164,7 +213,7 @@ public class DeployMessage : Message
 
     public bool RemoveTarget(Card target)
     {
-        if(Targets.Contains(target))
+        if (Targets.Contains(target))
         {
             int index = Targets.IndexOf(target);
             ToFrontFieldList.RemoveAt(index);
@@ -193,9 +242,11 @@ public class LevelUpMessage : Message
             Target.Controller.DeployAndCCCostCount += IsClassChange ? Target.ClassChangeCost : Target.DeployCost;
         }
         Target.StackOver(BaseUnit);
+        Target.IsLevelUpedInThisTurn = true;
         if (IsClassChange)
         {
             Game.CCBonusList.Add(Target);
+            Target.IsClassChangedInThisTurn = true;
         }
     }
 }
@@ -266,6 +317,7 @@ public class AttackMessage : Message
     public override void Do()
     {
         AttackingUnit.IsHorizontal = true;
+        AttackingUnit.HasAttackedInThisTurn = true;
         Game.AttackingUnit = AttackingUnit;
         Game.DefendingUnit = DefendingUnit;
     }
@@ -303,14 +355,7 @@ public class ConfirmSupportMessage : Message
 /// <summary>
 /// 将支援卡放置到退避区
 /// </summary>
-public class RemoveSupportMessage : Message
-{
-    public Card Card { get { return field1; } set { field1 = value; } }
-    public override void Do()
-    {
-        Card.MoveTo(Card.Controller.Retreat);
-    }
-}
+public class RemoveSupportMessage : SendToRetreatMessage { }
 
 /// <summary>
 /// 战斗结束
@@ -343,9 +388,7 @@ public class SetActionedMessage : Message
     }
 }
 
-public class DiscardHandMessage : SendToRetreatMessage
-{
-}
+public class DiscardHandMessage : SendToRetreatMessage { }
 
 public class AddToHandMessage : Message
 {
@@ -554,21 +597,9 @@ public class ObtainOrbDestructionProcessMessage : Message
     }
 }
 
-public class SendToRetreatDestructionProcessMessage : SendToRetreatMessage
-{
-    public override void Do()
-    {
-        Targets.ForEach(target =>
-        {
-            target.MoveTo(target.Controller.Retreat);
-            target.DestroyedCount = 0;
-        });
-    }
-}
+public class SendToRetreatDestructionProcessMessage : SendToRetreatMessage { }
 
-public class SendToRetreatPositionProcessMessage : SendToRetreatMessage
-{
-}
+public class SendToRetreatPositionProcessMessage : SendToRetreatMessage { }
 
 public class MoveMarchingProcessMessage : Message
 {
@@ -626,6 +657,25 @@ public class ShuffleDeckMessage : Message
     }
 }
 
+public class SetToDeckTopMessage : Message
+{
+    public List<Card> Targets { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+
+    public override void Do()
+    {
+        foreach (var target in Targets)
+        {
+            target.MoveTo(target.Controller.Deck.Top);
+        }
+    }
+}
+
+public class GameOverMessage : Message
+{
+    public List<User> LosingUsers { get { return field1; } set { field1 = value; } }
+    public Skill Reason { get { return field2; } set { field2 = value; } }
+}
 ///// 消息种类
 ///// </summary>
 //public enum MessageType

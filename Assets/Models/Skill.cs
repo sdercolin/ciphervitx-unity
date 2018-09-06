@@ -401,6 +401,7 @@ public abstract class PermanentSkill : Skill
         }
         if (Keyword == SkillKeyword.CCS && (!Owner.IsClassChanged))
         {
+            DetachAll();
             return;
         }
         foreach (Card card in Game.AllCards)

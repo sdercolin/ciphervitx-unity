@@ -160,3 +160,41 @@ public class ReverseBondToAdd20 : ActionSkill
         return Task.CompletedTask;
     }
 }
+
+/// <summary>
+/// 『天空を翔ける者』【起】〖1回合1次〗このユニットを移動させる。このスキルはこのユニットが未行動でなければ使用できない。
+/// </summary>
+public class AngelicFlight : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return !Owner.IsHorizontal;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.Null;
+    }
+
+    public override Task Do()
+    {
+        Controller.Move(Owner, this);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+/// 【常】相手の手札が４枚以下の場合、このユニットの戦闘力は＋１０される。
+/// </summary>
+public class Hand4OrLessAdd10 : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return card == Owner && Opponent.Hand.Count <= 4;
+    }
+
+    public override void SetItemToApply()
+    {
+        ItemsToApply.Add(new PowerBuff(this, 10));
+    }
+}
