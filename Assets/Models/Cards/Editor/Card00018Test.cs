@@ -21,6 +21,7 @@ public class Card00018Test
         /// 『戦士の心得』【常】自分のターン中、このユニットの戦闘力は＋２０される。
         /// </summary>
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

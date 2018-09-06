@@ -19,6 +19,7 @@ public class MessageTest
         //Debug.Log(message1Json);
 
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         var card = new Card00001(Game.Player);
         var targets = new List<Card>() { card };
         var message2 = new MoveMessage()

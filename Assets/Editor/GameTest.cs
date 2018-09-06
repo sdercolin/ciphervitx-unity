@@ -10,6 +10,7 @@ public class GameTest
     public void StartTurnTest()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var card1 = CardFactory.CreateCard(1, Game.Player);
         Game.Player.FrontField.AddCard(card1);
@@ -40,6 +41,7 @@ public class GameTest
     public void BattleTest1()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -78,6 +80,7 @@ public class GameTest
     public void BattleTest2()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -115,6 +118,7 @@ public class GameTest
     public void BattleTest3()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -152,6 +156,7 @@ public class GameTest
     public void BattleTest4()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;

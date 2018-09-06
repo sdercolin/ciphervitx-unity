@@ -12,6 +12,7 @@ public class Card00004Test
     public void SkillTest()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         var player = Game.Player;
         var card = CardFactory.CreateCard(4, player);
         var card1 = CardFactory.CreateCard(6, player);

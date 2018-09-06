@@ -17,6 +17,7 @@ public static class Game
         CCBonusList = new List<Card>();
         InductionSetList = new List<List<Induction>>();
         Request.ClearNextResults(); // for testing
+        LosingProcessDisabled = false; // for testing
     }
 
     public static Player Player;
@@ -38,6 +39,9 @@ public static class Game
     //自动处理检查时点相关
     public static List<Card> CCBonusList; //存放触发了CC Bonus的卡
     public static List<List<Induction>> InductionSetList;//存放处于诱发状态的能力组
+
+    //测试用
+    public static bool LosingProcessDisabled;
 
     public static List<Card> AllCards => ListUtils.Combine(Player.AllCards, Rival.AllCards);
 
@@ -557,6 +561,10 @@ public static class Game
     //敗北処理
     private static void DoLosingProcess()
     {
+        if (LosingProcessDisabled)
+        {
+            return;
+        }
         List<User> losingUsers = new List<User>();
         foreach (var user in AllUsers)
         {

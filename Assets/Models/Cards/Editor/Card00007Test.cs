@@ -13,6 +13,7 @@ public class Card00007Test
     public void SkillTest()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         var player = Game.Player;
         Game.TurnPlayer = player;
         var xida = CardFactory.CreateCard(7, player);

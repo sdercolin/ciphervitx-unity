@@ -17,6 +17,7 @@ public class Card00020Test
         /// </summary>
         /// 
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         var player = Game.Player;
         Game.TurnPlayer = player;
 
