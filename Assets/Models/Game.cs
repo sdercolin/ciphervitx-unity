@@ -16,6 +16,7 @@ public static class Game
         AvoidFlag = false;
         CCBonusList = new List<Card>();
         InductionSetList = new List<List<Induction>>();
+        PlayFirstTurn = false;
         Request.ClearNextResults(); // for testing
         LosingProcessDisabled = false; // for testing
     }
@@ -24,6 +25,7 @@ public static class Game
     public static Rival Rival;
 
     //回合信息
+    public static bool PlayFirstTurn;
     public static User TurnPlayer;
     public static User NotTurnPlayer => TurnPlayer.Opponent;
     public static int TurnCount;
@@ -221,7 +223,7 @@ public static class Game
 
     public static async Task PrepareDeck()
     {
-        //Called by UI
+        //Called by UI (Check Game.Rival.Synchronized first)
         string deckFileName;
         bool usePresetHero;
         do
@@ -232,10 +234,77 @@ public static class Game
         while (!await Player.SetDeck(deckFileName, usePresetHero));
     }
 
-    public static void Start(bool ifFirstPlay)
+    public static async Task PrepareGame()
     {
-        //Called by UI
-        if (ifFirstPlay)
+        //Called by UI of HostPlayer(Check Game.Player.DeckLoaded and Game.Rival.DeckLoaded first)
+        Player.SetHeroUnit();
+        Rival.SetHeroUnit();
+        Player.ShuffleDeck(null);
+        Rival.ShuffleDeck(null);
+        await DecidePlayingOrder();
+        Player.SetFirstHand();
+        Rival.SetFirstHand();
+        var changeHandAnswers = await Task.WhenAll(Request.AskIfChangeFirstHand(Player), Request.AskIfChangeFirstHand(Rival));
+        if (changeHandAnswers[0])
+        {
+            Player.PutBackFirstHand();
+            Player.ShuffleDeck(null);
+            Player.SetFirstHand();
+        }
+        if (changeHandAnswers[1])
+        {
+            Rival.PutBackFirstHand();
+            Rival.ShuffleDeck(null);
+            Rival.SetFirstHand();
+        }
+        Player.SetFirstOrbs();
+        Rival.SetFirstOrbs();
+        DoMessage(new GameStartMessage());
+    }
+
+    public static async Task DecidePlayingOrder()
+    {
+        bool decided = false;
+        do
+        {
+            var choices = await Task.WhenAll(Request.ChooseRPS(Player), Request.ChooseRPS(Rival));
+            User winner = null;
+            if (choices[0] != choices[1])
+            {
+                decided = true;
+                switch (choices[0] - choices[1])
+                {
+                    // 石头：0，剪刀：1，布：2
+                    case 1:
+                        winner = Rival;
+                        break;
+                    case 2:
+                        winner = Player;
+                        break;
+                    case -1:
+                        winner = Player;
+                        break;
+                    case -2:
+                        winner = Rival;
+                        break;
+                }
+            }
+            DoMessage(new ConfirmRPSMessage()
+            {
+                ResultDict = new Dictionary<User, int>()
+                {
+                     { Player, choices[0] },
+                     { Rival, choices[1] }
+                },
+                Winner = winner
+            });
+        } while (!decided);
+    }
+
+    public static void Start()
+    {
+        //Called by Message when everything prepared
+        if (PlayFirstTurn)
         {
             TurnPlayer = Player;
             StartTurn();

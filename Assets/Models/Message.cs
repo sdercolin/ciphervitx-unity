@@ -224,6 +224,78 @@ public class SetDeckMessage : Message
                 newCard.IsHero = true;
             }
         }
+        User.DeckLoaded = true;
+    }
+}
+
+public class SetHeroUnitMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        User.Hero.MoveTo(User.FrontField);
+    }
+}
+
+public class ConfirmRPSMessage : Message
+{
+    public Dictionary<User, int> ResultDict { get { return field1; } set { field1 = value; } }
+    public User Winner { get { return field2; } set { field2 = value; } }
+
+    public override void Do()
+    {
+        if (Winner == Game.Player)
+        {
+            Game.PlayFirstTurn = true;
+        }
+    }
+}
+
+public class SetFirstHandMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            User.Deck.Top.MoveTo(User.Hand);
+        }
+    }
+}
+
+public class PutBackFirstHandMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        while (User.Hand.Count != 0)
+        {
+            User.Hand.Cards[0].MoveTo(User.Deck);
+        }
+    }
+}
+
+public class SetFirstOrbsMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            User.Deck.Top.MoveTo(User.Orb);
+        }
+    }
+}
+
+public class GameStartMessage : Message
+{
+    public override void Do()
+    {
+        Game.Start();
     }
 }
 
@@ -606,7 +678,7 @@ public class DrawCardMessage : Message
     {
         for (int i = 0; i < Number; i++)
         {
-            Player.Deck.Cards[0].MoveTo(Player.Hand);
+            Player.Deck.Top.MoveTo(Player.Hand);
         }
     }
 }

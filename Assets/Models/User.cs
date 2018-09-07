@@ -43,6 +43,8 @@ public abstract class User
     public abstract User Opponent { get; }
     public Card Hero => AllCards.Find(card => card.IsHero);
 
+    public bool DeckLoaded = false;
+
     /// <summary>
     /// 本回合中已经出击（升级）过的费用数
     /// </summary>
@@ -161,6 +163,38 @@ public abstract class User
             //提示错误
             return false;
         }
+    }
+
+    public void SetHeroUnit()
+    {
+        Game.DoMessage(new SetHeroUnitMessage()
+        {
+            User = this
+        });
+    }
+
+    public void SetFirstHand()
+    {
+        Game.DoMessage(new SetFirstHandMessage()
+        {
+            User = this
+        });
+    }
+
+    public void PutBackFirstHand()
+    {
+        Game.DoMessage(new PutBackFirstHandMessage()
+        {
+            User = this
+        });
+    }
+
+    public void SetFirstOrbs()
+    {
+        Game.DoMessage(new SetFirstOrbsMessage()
+        {
+            User = this
+        });
     }
 
     public void Move(Card target, Skill reason)
@@ -939,4 +973,5 @@ public class Rival : User
     public override User Opponent => Game.Player;
 
     public bool Synchronized = false;
+    public bool DeckLoaded = false;
 }
