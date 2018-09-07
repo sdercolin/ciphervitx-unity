@@ -210,6 +210,14 @@ public static class Game
         Broadcast(message);
     }
 
+    public static async Task<bool> PrepareGame(string deckFileName, bool usePresetHero)
+    {
+        if(await Player.SetDeck(deckFileName, usePresetHero))
+        {
+
+        }
+    }
+
     public static void Start(bool ifFirstPlay)
     {
         //Called by UI

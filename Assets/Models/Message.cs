@@ -183,6 +183,27 @@ public class EmptyMessage : Message
     public override void Do() { }
 }
 
+public class SetDeckMessage : Message
+{
+    public User User { get { return field1; } set { field1 = value; } }
+    public Dictionary<string, int> CardDict { get { return field2; } set { field2 = value; } }
+    public string HeroGuid { get { return field3; } set { field3 = value; } }
+
+    public override void Do()
+    {
+        foreach (var guid in CardDict.Keys)
+        {
+            Card newCard = CardFactory.CreateCard(CardDict[guid], User);
+            User.Deck.ImportCard(newCard);
+            newCard.Guid = guid;
+            if (guid == HeroGuid)
+            {
+                newCard.IsHero = true;
+            }
+        }
+    }
+}
+
 public class DeployMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }

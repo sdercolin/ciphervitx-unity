@@ -138,14 +138,22 @@ public abstract class User
         }
         if (errorText == String.Empty)
         {
+            if (cardlistTemp.FindAll(card => card.IsHero).Count == 0)
+            {
+                (await Request.ChooseOne(cardlistTemp.FindAll(card => card.DeployCost == 1), this, Request.RequestFlags.Null, "请选择作为主人公的卡。"))
+                    .IsHero = true;
+            }
+            Dictionary<string, int> cardDict = new Dictionary<string, int>();
             foreach (var card in cardlistTemp)
             {
-                Deck.ImportCard(card);
+                cardDict.Add(card.Guid, int.Parse(card.Serial.TrimStart('0')));
             }
-            if (Hero == null)
+            Game.DoMessage(new SetDeckMessage()
             {
-                await Request.ChooseOne(Deck.Filter(card => card.DeployCost == 1), this, Request.RequestFlags.Null, "请选择作为主人公的卡。");
-            }
+                User = this,
+                CardDict = cardDict,
+                HeroGuid = cardlistTemp.Find(card => card.IsHero).Guid
+            });
             return true;
         }
         else
