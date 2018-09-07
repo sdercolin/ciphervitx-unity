@@ -115,7 +115,7 @@ public class Card00146 : Card
         {
             ItemsToApply.Add(new CanBeSupportedBy(this)
             {
-                UnitName = "安娜";
+                UnitName = "安娜"
             });
         }
     }
