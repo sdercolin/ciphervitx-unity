@@ -937,4 +937,6 @@ public class Rival : User
     public Rival() : base() { }
 
     public override User Opponent => Game.Player;
+
+    public bool Synchronized = false;
 }

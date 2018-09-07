@@ -219,12 +219,17 @@ public static class Game
         });
     }
 
-    public static async Task<bool> PrepareGame(string deckFileName, bool usePresetHero)
+    public static async Task PrepareDeck()
     {
-        if (await Player.SetDeck(deckFileName, usePresetHero))
+        //Called by UI
+        string deckFileName;
+        bool usePresetHero;
+        do
         {
-
+            deckFileName = ""; //TO DO: obtained from UI
+            usePresetHero = true; //TO DO: obtained from UI
         }
+        while (!await Player.SetDeck(deckFileName, usePresetHero));
     }
 
     public static void Start(bool ifFirstPlay)

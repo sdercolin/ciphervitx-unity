@@ -201,6 +201,7 @@ public class UserInformationMessage : Message
             area.Guid = AreaGuids[index];
             index++;
         }
+        Game.Rival.Synchronized = true;
     }
 
 }
