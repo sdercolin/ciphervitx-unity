@@ -36,7 +36,7 @@ public static class Request
         }
         else
         {
-            if(isIndex)
+            if (isIndex)
             {
                 var result = new List<T>();
                 var indexList = nextResult as List<int>;
@@ -68,7 +68,7 @@ public static class Request
     }
     #endregion
 
-    public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null)
+    public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
         List<T> results = await Choose(choices, 0, 1, targetUser);
         if (results.Count == 0)
@@ -81,27 +81,27 @@ public static class Request
         }
     }
 
-    public static async Task<T> ChooseOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null)
+    public static async Task<T> ChooseOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
-        return (await Choose(choices, 1, 1, targetUser))[0];
+        return (await Choose(choices, 1, 1, targetUser, flags, description))[0];
     }
 
-    public static async Task<List<T>> ChooseUpTo<T>(List<T> choices, int max, User targetUser, RequestFlags flags = RequestFlags.Null)
+    public static async Task<List<T>> ChooseUpTo<T>(List<T> choices, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
-        return await Choose(choices, 0, max, targetUser);
+        return await Choose(choices, 0, max, targetUser, flags, description);
     }
 
-    public static async Task<List<T>> Choose<T>(List<T> choices, int number, User targetUser, RequestFlags flags = RequestFlags.Null)
+    public static async Task<List<T>> Choose<T>(List<T> choices, int number, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
-        return await Choose(choices, number, number, targetUser);
+        return await Choose(choices, number, number, targetUser, flags, description);
     }
 
-    public static async Task<List<T>> Choose<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null)
+    public static async Task<List<T>> Choose<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
-        return await Choose(choices, 0, choices.Count, targetUser);
+        return await Choose(choices, 0, choices.Count, targetUser, flags, description);
     }
 
-    public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser, RequestFlags flags = RequestFlags.Null)
+    public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
         Debug.Log("Requesting Choose: " + Environment.NewLine
             + "choices = " + ListUtils.ToString(choices) + Environment.NewLine
@@ -191,7 +191,7 @@ public static class Request
 
     public static async Task<bool> AskIfSendToRetreat(Card target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        return await AskIfSendToRetreat(new List<Card>() { target }, targetUser);
+        return await AskIfSendToRetreat(new List<Card>() { target }, targetUser,flags);
     }
 
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -211,7 +211,7 @@ public static class Request
         }
     }
 
-    public static async Task<bool> AskIfDeployToFrontField(Card target)
+    public static async Task<bool> AskIfDeployToFrontField(Card target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         Debug.Log("Requesting AskIfDeployToFrontField: " + Environment.NewLine
             + "target = " + StringUtils.CreateFromAny(target));
