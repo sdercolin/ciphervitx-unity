@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.IO;
 
 /// <summary>
 /// 玩家类
@@ -68,6 +69,88 @@ public abstract class User
     }
 
     #region 动作
+    public bool SetDeck(string filename, bool usePresetHero)
+    {
+        int heroIndex = -1;
+        string[] lines = File.ReadAllLines(filename);
+        string errorText = String.Empty;
+        List<Card> cardlistTemp = new List<Card>();
+        Dictionary<string, int> SameNameCountDictionary = new Dictionary<string, int>();
+
+        foreach (string serial in lines)
+        {
+            int serialInt;
+            bool success = false;
+            if (int.TryParse(serial.Trim('*', '+'), out serialInt))
+            {
+                Card newcard = CardFactory.CreateCard(serialInt, this);
+                if (newcard != null)
+                {
+                    cardlistTemp.Add(newcard);
+                    if (newcard.SkillList.FindAll(skill => skill is AllowOverFourInDeck).Count == 0)
+                    {
+                        if (SameNameCountDictionary.ContainsKey(newcard.CardName))
+                        {
+                            SameNameCountDictionary[newcard.CardName]++;
+                        }
+                        else
+                        {
+                            SameNameCountDictionary.Add(newcard.CardName, 1);
+                        }
+                    }
+                    success = true;
+                }
+                if (serial.Contains("*") && heroIndex == -1)
+                {
+                    heroIndex = cardlistTemp.IndexOf(newcard);
+                }
+            }
+            if (!success)
+            {
+                errorText += "> 未找到卡片：" + serial + Environment.NewLine;
+            }
+        }
+
+        if (cardlistTemp.Count < 50)
+        {
+            errorText += "> 卡组不足50张。" + Environment.NewLine;
+        }
+
+        foreach (var cardname in SameNameCountDictionary.Keys)
+        {
+            if (SameNameCountDictionary[cardname] > 4)
+            {
+                errorText += "> 卡片「" + cardname + "」超过卡组可容纳数量。" + Environment.NewLine;
+            }
+        }
+
+        if (usePresetHero && heroIndex >= 0)
+        {
+            Card hero = cardlistTemp[heroIndex];
+            if (hero.DeployCost != 1)
+            {
+                errorText += "> 预设的主人公「" + hero.CardName + "」的出击费用不为1。" + Environment.NewLine;
+            }
+            else
+            {
+                hero.IsHero = true;
+            }
+        }
+        if (errorText == String.Empty)
+        {
+            foreach (var card in cardlistTemp)
+            {
+                Deck.ImportCard(card);
+            }
+            return true;
+        }
+        else
+        {
+            //提示错误
+            return false;
+        }
+    }
+
     public void Move(Card target, Skill reason)
     {
         if (target != null)

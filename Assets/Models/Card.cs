@@ -51,6 +51,11 @@ public abstract class Card
     public string UnitName { get; protected set; }
 
     /// <summary>
+    /// 卡名
+    /// </summary>
+    public string CardName => Title + " " + UnitName;
+
+    /// <summary>
     /// 当前具备的全部单位名
     /// </summary>
     public List<string> AllUnitNames
