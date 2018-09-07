@@ -53,8 +53,7 @@ public class Card00129 : Card
 
         public override async Task Do()
         {
-            //TODO
-            Controller.RefreshUnit(await Request.Choose(Controller.Field.Cards, 1, 1, Controller), this);
+            Controller.RefreshUnit(await Request.Choose(Controller.Field.Filter(unit => unit.HasAttackedInThisTurn), 1, 1, Controller), this);
         }
     }
 }

@@ -140,6 +140,28 @@ public class Heal : ActionSkill
 }
 
 /// <summary>
+///【起】〖1回合1次〗[翻面1]ターン終了まで、このユニットの戦闘力は＋１０される。
+/// </summary>
+public class ReverseBondToAdd10 : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.ReverseBond(this, 1);
+    }
+
+    public override Task Do()
+    {
+        Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
 ///【起】〖1回合1次〗[翻面1]ターン終了まで、このユニットの戦闘力は＋２０される。
 /// </summary>
 public class ReverseBondToAdd20 : ActionSkill
@@ -196,5 +218,21 @@ public class Hand4OrLessAdd10 : PermanentSkill
     public override void SetItemToApply()
     {
         ItemsToApply.Add(new PowerBuff(this, 10));
+    }
+}
+
+/// <summary>
+/// 【特】このカードは味方に『アンナ』がいても出撃させることができ、『アンナ』が２体以上味方にいてもよい。【特】このカードと同じカード名のカードをデッキに５枚以上入れてもよい。【常】『アンナ』のカードはこのユニットの支援に成功する。
+/// </summary>
+public class Annas : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return card == Owner;
+    }
+
+    public override void SetItemToApply()
+    {
+        ItemsToApply.Add(new AllowSameNameDeployment(this));
     }
 }
