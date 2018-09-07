@@ -183,6 +183,28 @@ public class EmptyMessage : Message
     public override void Do() { }
 }
 
+public class UserInformationMessage : Message
+{
+    public string UserGuid { get { return field1; } set { field1 = value; } }
+    public List<string> AreaGuids { get { return field1; } set { field1 = value; } }
+
+    public override void Do()
+    {
+        if (SendBySelf)
+        {
+            return;
+        }
+        Game.Rival.Guid = UserGuid;
+        int index = 0;
+        foreach (var area in Game.Rival.AllAreas)
+        {
+            area.Guid = AreaGuids[index];
+            index++;
+        }
+    }
+
+}
+
 public class SetDeckMessage : Message
 {
     public User User { get { return field1; } set { field1 = value; } }

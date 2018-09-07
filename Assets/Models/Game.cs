@@ -210,9 +210,18 @@ public static class Game
         Broadcast(message);
     }
 
+    public static void SendUserInformation()
+    {
+        DoMessage(new UserInformationMessage()
+        {
+            UserGuid = Player.Guid,
+            AreaGuids = Player.AllAreas.ConvertAll(area => area.Guid)
+        });
+    }
+
     public static async Task<bool> PrepareGame(string deckFileName, bool usePresetHero)
     {
-        if(await Player.SetDeck(deckFileName, usePresetHero))
+        if (await Player.SetDeck(deckFileName, usePresetHero))
         {
 
         }
