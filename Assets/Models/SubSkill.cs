@@ -435,3 +435,31 @@ public class CanNotDeploy : SubSkill
         return true;
     }
 }
+
+
+/// <summary>
+/// 同名卡支援成功
+/// </summary>
+public class CanBeSupportedBy : SubSkill
+{
+    public CanBeSupportedBy(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    public string UnitName { get { return field1; } set { field1 = value; } }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        var confirmSupportMessage = message as ConfirmSupportMessage;
+        if (confirmSupportMessage != null)
+        {
+            if (confirmSupportMessage.Unit == Owner
+                && confirmSupportMessage.SupportCard.HasUnitNameOf(UnitName)
+                && confirmSupportMessage.IsSuccessful == false)
+            {
+                substitute = confirmSupportMessage.Clone();
+                ((ConfirmSupportMessage)substitute).IsSuccessful = true;
+                return false;
+            }
+        }
+        return true;
+    }
+}

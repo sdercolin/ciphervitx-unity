@@ -54,7 +54,7 @@ public class Card00146 : Card
 
         public override void SetItemToApply()
         {
-            ItemsToApply.Add(new PowerBuff(this, 10 * Controller.Field.Filter(unit => unit.HasUnitNameOf("安娜") && unit != Owner).Count);
+            ItemsToApply.Add(new PowerBuff(this, 10 * Controller.Field.Filter(unit => unit.HasUnitNameOf("安娜") && unit != Owner).Count));
         }
     }
 
@@ -79,7 +79,7 @@ public class Card00146 : Card
     /// スキル3
     /// </summary>
     public Sk3 sk3;
-    public class Sk3 : ToFill
+    public class Sk3 : AllowOverFourInDeck
     {
         public Sk3() : base()
         {
@@ -89,8 +89,6 @@ public class Card00146 : Card
             TypeSymbols.Add(SkillTypeSymbol.Special);
             Keyword = SkillKeyword.Null;
         }
-
-        //TODO
     }
 
     /// <summary>
@@ -110,14 +108,15 @@ public class Card00146 : Card
 
         public override bool CanTarget(Card card)
         {
-            return card == Owner
-                && card.Controller.Support.SupportedBy("安娜");
+            return card == Owner;
         }
 
         public override void SetItemToApply()
         {
-            //TODO
-            ItemsToApply.Add(new SuccessToSupport(this));
+            ItemsToApply.Add(new CanBeSupportedBy(this)
+            {
+                UnitName = "安娜";
+            });
         }
     }
 }

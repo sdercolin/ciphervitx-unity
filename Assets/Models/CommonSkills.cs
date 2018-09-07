@@ -236,3 +236,20 @@ public class Annas : PermanentSkill
         ItemsToApply.Add(new AllowSameNameDeployment(this));
     }
 }
+
+
+/// <summary>
+/// 卡组中允许加入5张以上
+/// </summary>
+public class AllowOverFourInDeck : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return false;
+    }
+
+    public override void SetItemToApply()
+    {
+        return;
+    }
+}
