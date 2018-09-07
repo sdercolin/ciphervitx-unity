@@ -69,7 +69,7 @@ public abstract class User
     }
 
     #region 动作
-    public bool SetDeck(string filename, bool usePresetHero)
+    public async Task<bool> SetDeck(string filename, bool usePresetHero)
     {
         int heroIndex = -1;
         string[] lines = File.ReadAllLines(filename);
@@ -141,6 +141,10 @@ public abstract class User
             foreach (var card in cardlistTemp)
             {
                 Deck.ImportCard(card);
+            }
+            if (Hero == null)
+            {
+                await Request.ChooseOne(Deck.Filter(card => card.DeployCost == 1), this, Request.RequestFlags.Null, "请选择作为主人公的卡。");
             }
             return true;
         }
