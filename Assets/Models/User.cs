@@ -973,5 +973,4 @@ public class Rival : User
     public override User Opponent => Game.Player;
 
     public bool Synchronized = false;
-    public bool DeckLoaded = false;
 }
