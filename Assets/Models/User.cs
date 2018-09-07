@@ -609,7 +609,7 @@ public abstract class User
             }
             else
             {
-                toFrontFieldList.Add(await Request.AskIfDeployToFrontField(card));
+                toFrontFieldList.Add(await Request.AskIfDeployToFrontField(card, this));
             }
             if (actionedDict.ContainsKey(card))
             {
