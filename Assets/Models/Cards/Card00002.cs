@@ -80,7 +80,7 @@ public class Card00002 : Card
     /// 『手槍』【起】[翻面1]ターン終了まで、このユニットに射程１-２が追加される。
     /// </summary>
     public Sk2 sk2;
-    public class Sk2 : ActionSkill
+    public class Sk2 : ReverseBondToAddRange1to2
     {
         public Sk2() : base()
         {
@@ -89,22 +89,6 @@ public class Card00002 : Card
             Description = "『投枪』【起】[翻面1]直到回合结束为止，这名单位追加射程1-2。";
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CheckConditions()
-        {
-            return true;
-        }
-
-        public override Cost DefineCost()
-        {
-            return Cost.ReverseBond(this, 1);
-        }
-
-        public override Task Do()
-        {
-            Controller.AttachItem(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds), Owner);
-            return Task.CompletedTask;
         }
     }
 }
