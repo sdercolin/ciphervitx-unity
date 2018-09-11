@@ -16,13 +16,16 @@ public static class Game
         AvoidFlag = false;
         CCBonusList = new List<Card>();
         InductionSetList = new List<List<Induction>>();
+        PlayFirstTurn = false;
         Request.ClearNextResults(); // for testing
+        LosingProcessDisabled = false; // for testing
     }
 
     public static Player Player;
     public static Rival Rival;
 
     //回合信息
+    public static bool PlayFirstTurn;
     public static User TurnPlayer;
     public static User NotTurnPlayer => TurnPlayer.Opponent;
     public static int TurnCount;
@@ -38,6 +41,9 @@ public static class Game
     //自动处理检查时点相关
     public static List<Card> CCBonusList; //存放触发了CC Bonus的卡
     public static List<List<Induction>> InductionSetList;//存放处于诱发状态的能力组
+
+    //测试用
+    public static bool LosingProcessDisabled;
 
     public static List<Card> AllCards => ListUtils.Combine(Player.AllCards, Rival.AllCards);
 
@@ -107,7 +113,7 @@ public static class Game
     /// 广播消息
     /// </summary>
     /// <param name="message">消息</param>
-    public static void Broadcast(Message message)
+    private static void Broadcast(Message message)
     {
         Debug.Log("Broadcasting message: " + Environment.NewLine
             + StringUtils.CreateFromAny(message) + Environment.NewLine);
@@ -124,7 +130,7 @@ public static class Game
     /// <param name="message">表示该操作的消息</param>
     /// <param name="substitute">拒绝该操作时表示作为代替的动作的消息</param>
     /// <returns>如允许，则返回True</returns>
-    public static bool BroadcastTry(Message message, ref Message substitute)
+    private static bool BroadcastTry(Message message, ref Message substitute)
     {
         //Debug.Log("BroadcastTrying message: " + Environment.NewLine
         //    + StringUtils.CreateFromAny(message) + Environment.NewLine);
@@ -145,6 +151,15 @@ public static class Game
     /// <returns>该操作被拒绝时，作为代替的动作的消息</returns>
     public static Message TryDoMessage(Message message)
     {
+        if (message is MultipleMessage)
+        {
+            Message newMessage = new EmptyMessage();
+            foreach (var singleMessage in ((MultipleMessage)message).Elements)
+            {
+                newMessage += TryDoMessage(singleMessage);
+            }
+            return newMessage;
+        }
         Message substitute = new EmptyMessage();
         while (!BroadcastTry(message, ref substitute))
         {
@@ -162,6 +177,15 @@ public static class Game
     /// <returns>该操作被拒绝时，作为代替的动作的消息</returns>
     public static Message TryMessage(Message message)
     {
+        if (message is MultipleMessage)
+        {
+            Message newMessage = new EmptyMessage();
+            foreach (var singleMessage in ((MultipleMessage)message).Elements)
+            {
+                newMessage += TryMessage(singleMessage);
+            }
+            return newMessage;
+        }
         Message substitute = new EmptyMessage();
         while (!BroadcastTry(message, ref substitute))
         {
@@ -176,14 +200,111 @@ public static class Game
     /// <param name="message">表示该操作的消息</param>
     public static void DoMessage(Message message)
     {
+        if (message is MultipleMessage)
+        {
+            foreach (var singleMessage in ((MultipleMessage)message).Elements)
+            {
+                DoMessage(singleMessage);
+            }
+            return;
+        }
         message.Do();
         Broadcast(message);
     }
 
-    public static void Start(bool ifFirstPlay)
+    public static void SendUserInformation()
     {
-        //Called by UI
-        if (ifFirstPlay)
+        DoMessage(new UserInformationMessage()
+        {
+            UserGuid = Player.Guid,
+            AreaGuids = Player.AllAreas.ConvertAll(area => area.Guid)
+        });
+    }
+
+    public static async Task PrepareDeck()
+    {
+        //Called by UI (Check Game.Rival.Synchronized first)
+        string deckFileName;
+        bool usePresetHero;
+        do
+        {
+            deckFileName = ""; //TO DO: obtained from UI
+            usePresetHero = true; //TO DO: obtained from UI
+        }
+        while (!await Player.SetDeck(deckFileName, usePresetHero));
+    }
+
+    public static async Task PrepareGame()
+    {
+        //Called by UI of HostPlayer(Check Game.Player.DeckLoaded and Game.Rival.DeckLoaded first)
+        Player.SetHeroUnit();
+        Rival.SetHeroUnit();
+        Player.ShuffleDeck(null);
+        Rival.ShuffleDeck(null);
+        await DecidePlayingOrder();
+        Player.SetFirstHand();
+        Rival.SetFirstHand();
+        var changeHandAnswers = await Task.WhenAll(Request.AskIfChangeFirstHand(Player), Request.AskIfChangeFirstHand(Rival));
+        if (changeHandAnswers[0])
+        {
+            Player.PutBackFirstHand();
+            Player.ShuffleDeck(null);
+            Player.SetFirstHand();
+        }
+        if (changeHandAnswers[1])
+        {
+            Rival.PutBackFirstHand();
+            Rival.ShuffleDeck(null);
+            Rival.SetFirstHand();
+        }
+        Player.SetFirstOrbs();
+        Rival.SetFirstOrbs();
+        DoMessage(new GameStartMessage());
+    }
+
+    public static async Task DecidePlayingOrder()
+    {
+        bool decided = false;
+        do
+        {
+            var choices = await Task.WhenAll(Request.ChooseRPS(Player), Request.ChooseRPS(Rival));
+            User winner = null;
+            if (choices[0] != choices[1])
+            {
+                decided = true;
+                switch (choices[0] - choices[1])
+                {
+                    // 石头：0，剪刀：1，布：2
+                    case 1:
+                        winner = Rival;
+                        break;
+                    case 2:
+                        winner = Player;
+                        break;
+                    case -1:
+                        winner = Player;
+                        break;
+                    case -2:
+                        winner = Rival;
+                        break;
+                }
+            }
+            DoMessage(new ConfirmRPSMessage()
+            {
+                ResultDict = new Dictionary<User, int>()
+                {
+                     { Player, choices[0] },
+                     { Rival, choices[1] }
+                },
+                Winner = winner
+            });
+        } while (!decided);
+    }
+
+    public static void Start()
+    {
+        //Called by Message when everything prepared
+        if (PlayFirstTurn)
         {
             TurnPlayer = Player;
             StartTurn();
@@ -445,7 +566,9 @@ public static class Game
         {
             var sameNameProcessMessage = new SendToRetreatSameNameProcessMessage()
             {
-                Targets = cardsToSendToRetreat
+                Targets = cardsToSendToRetreat,
+                Reason = null,
+                AsCost = false
             };
             TryDoMessage(sameNameProcessMessage);
             return true;
@@ -505,7 +628,8 @@ public static class Game
                     {
                         TryDoMessage(new ObtainOrbDestructionProcessMessage()
                         {
-                            Target = await Request.ChooseOne(user.Orb.Cards, user)
+                            Target = await Request.ChooseOne(user.Orb.Cards, user),
+                            Reason = user.Hero
                         });
                         processed = true;
                     }
@@ -515,7 +639,9 @@ public static class Game
             {
                 TryDoMessage(new SendToRetreatDestructionProcessMessage()
                 {
-                    Targets = cardsToSendToRetreat
+                    Targets = cardsToSendToRetreat,
+                    Reason = null,
+                    AsCost = false
                 });
                 processed = true;
             }
@@ -526,6 +652,10 @@ public static class Game
     //敗北処理
     private static void DoLosingProcess()
     {
+        if (LosingProcessDisabled)
+        {
+            return;
+        }
         List<User> losingUsers = new List<User>();
         foreach (var user in AllUsers)
         {
@@ -567,7 +697,9 @@ public static class Game
         {
             TryDoMessage(new SendToRetreatPositionProcessMessage()
             {
-                Targets = cardsToSendToRetreat
+                Targets = cardsToSendToRetreat,
+                Reason = null,
+                AsCost = false
             });
             return true;
         }
@@ -663,9 +795,13 @@ public static class Game
         ///
     }
 
-    private static void Over(List<User> losingUsers)
+    public static void Over(List<User> losingUsers, Skill reason = null)
     {
-        //TO DO: Game Over
+        TryDoMessage(new GameOverMessage()
+        {
+            LosingUsers = losingUsers,
+            Reason = reason
+        });
     }
 }
 

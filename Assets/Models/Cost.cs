@@ -15,6 +15,8 @@ public abstract class Cost
     /// </summary>
     public Skill Reason;
 
+    protected Card Owner => Reason.Owner;
+
     /// <summary>
     /// 可以被该费用选择的卡
     /// </summary>
@@ -89,13 +91,13 @@ public abstract class Cost
     }
 
     /// <summary>
-    /// 横置
+    /// 横置自己
     /// </summary>
     /// <param name="reason">使用该费用的能力</param>
     /// <returns></returns>
-    public static Cost Action(Skill reason)
+    public static Cost ActionSelf(Skill reason)
     {
-        return new ActionCost(reason);
+        return new ActionSelfCost(reason);
     }
 
     /// <summary>
@@ -110,20 +112,30 @@ public abstract class Cost
         return new ActionOthersCost(reason, number, condition);
     }
 
+    public static Cost ActionUnits(Skill reason, int number, Predicate<Card> condition = null)
+    {
+        return new ActionUnitsCost(reason, number, condition);
+    }
+
     public static Cost DiscardHand(Skill reason, int number, Predicate<Card> condition = null)
     {
         return new DiscardHandCost(reason, number, condition);
     }
     #endregion
 
-    public static Cost Destroy(Skill reason)
+    public static Cost DestroySelf(Skill reason)
     {
-        return new DestroyCost(reason);
+        return new DestroySelfCost(reason);
     }
 
     public static Cost DestroyOthers(Skill reason, int number, Predicate<Card> condition = null)
     {
         return new DestroyOthersCost(reason, number, condition);
+    }
+
+    public static Cost DestroyUnits(Skill reason, int number, Predicate<Card> condition = null)
+    {
+        return new DestroyUnitsCost(reason, number, condition);
     }
 }
 
@@ -203,17 +215,17 @@ public class ReverseBondCost : Cost
     }
 }
 
-public class ActionCost : Cost
+public class ActionSelfCost : Cost
 {
-    public ActionCost(Skill reason) : base(reason) { }
+    public ActionSelfCost(Skill reason) : base(reason) { }
 
     public override bool Check()
     {
-        return !Reason.Owner.IsHorizontal;
+        return !Owner.IsHorizontal;
     }
     public override Task Pay()
     {
-        Reason.Controller.SetActioned(new List<Card> { Reason.Owner }, Reason);
+        Reason.Controller.SetActioned(new List<Card> { Owner }, Reason);
         return Task.CompletedTask;
     }
 }
@@ -224,6 +236,44 @@ public class ActionOthersCost : Cost
     public Predicate<Card> Condition;
 
     public ActionOthersCost(Skill reason, int number, Predicate<Card> condition = null) : base(reason)
+    {
+        Number = number;
+        if (condition == null)
+        {
+            Condition = card => true;
+        }
+        else
+        {
+            Condition = condition;
+        }
+    }
+
+    public override bool Check()
+    {
+        Choices = Reason.Controller.Field.Filter(card => !card.IsHorizontal && Condition(card) && card != Owner);
+        if (Choices.Count >= Number)
+        {
+            return true;
+        }
+        else
+        {
+            Choices.Clear();
+            return false;
+        }
+    }
+
+    public async override Task Pay()
+    {
+        await Reason.Controller.ChooseSetActioned(Choices, Number, Number, Reason);
+    }
+}
+
+public class ActionUnitsCost : Cost
+{
+    public int Number;
+    public Predicate<Card> Condition;
+
+    public ActionUnitsCost(Skill reason, int number, Predicate<Card> condition = null) : base(reason)
     {
         Number = number;
         if (condition == null)
@@ -293,17 +343,17 @@ public class DiscardHandCost : Cost
         await Reason.Controller.ChooseDiscardHand(Choices, Number, Number, true, Reason);
     }
 }
-public class DestroyCost : Cost
+public class DestroySelfCost : Cost
 {
-    public DestroyCost(Skill reason) : base(reason) { }
+    public DestroySelfCost(Skill reason) : base(reason) { }
 
     public override bool Check()
     {
-        return Reason.Owner.CheckDestroyByCost(Reason);
+        return Owner.CheckDestroyByCost(Reason);
     }
     public override Task Pay()
     {
-        Reason.Controller.Destroy(Reason.Owner, Reason, true);
+        Reason.Controller.Destroy(Owner, Reason, true);
         return Task.CompletedTask;
     }
 }
@@ -314,6 +364,44 @@ public class DestroyOthersCost : Cost
     public Predicate<Card> Condition;
 
     public DestroyOthersCost(Skill reason, int number, Predicate<Card> condition = null) : base(reason)
+    {
+        Number = number;
+        if (condition == null)
+        {
+            Condition = card => true;
+        }
+        else
+        {
+            Condition = condition;
+        }
+    }
+
+    public override bool Check()
+    {
+        Choices = Reason.Controller.Field.Filter(card => card.CheckDestroyByCost(Reason) && Condition(card) && card != Owner);
+        if (Choices.Count >= Number)
+        {
+            return true;
+        }
+        else
+        {
+            Choices.Clear();
+            return false;
+        }
+    }
+
+    public async override Task Pay()
+    {
+        await Reason.Controller.ChooseDestroy(Choices, Number, Number, Reason, true);
+    }
+}
+
+public class DestroyUnitsCost : Cost
+{
+    public int Number;
+    public Predicate<Card> Condition;
+
+    public DestroyUnitsCost(Skill reason, int number, Predicate<Card> condition = null) : base(reason)
     {
         Number = number;
         if (condition == null)

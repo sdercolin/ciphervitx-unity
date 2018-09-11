@@ -82,6 +82,10 @@ public abstract class Buff : IAttachable
 
     public void Read(Message message)
     {
+        if (Owner == null)
+        {
+            return;
+        }
         if (OnlyAvailableWhenFrontShown)
         {
             if (!Owner.FrontShown)

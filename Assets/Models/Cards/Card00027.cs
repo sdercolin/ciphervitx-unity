@@ -50,7 +50,7 @@ public class Card00027 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.Action(this) + Cost.DiscardHand(this, 1);
+            return Cost.ActionSelf(this) + Cost.DiscardHand(this, 1);
         }
 
         public override Task Do()

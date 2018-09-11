@@ -10,9 +10,10 @@ public class Card00002Test
 {
 
     [Test]
-    public void SkillTest()
+    public void Skill2Test()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;
@@ -27,8 +28,8 @@ public class Card00002Test
 
         Assert.IsTrue(thisCard.GetAttackableUnits().SequenceEqual(new List<Card>() { hisUnit1 }));
 
-        Request.SetNextResult(new List<Card>() { bondCard });
-        player.UseActionSkill(thisCard.GetUsableActionSkills()[0]);
+        Request.SetNextResult(new List<Card>() { bondCard }); //设定要翻的费
+        Game.DoActionSkill(thisCard.GetUsableActionSkills()[0]);
         Assert.IsTrue(thisCard.GetAttackableUnits().SequenceEqual(new List<Card>() { hisUnit1, hisUnit2 }));
     }
 }

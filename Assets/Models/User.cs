@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.IO;
 
 /// <summary>
 /// 玩家类
@@ -42,30 +43,12 @@ public abstract class User
     public abstract User Opponent { get; }
     public Card Hero => AllCards.Find(card => card.IsHero);
 
-    /// <summary>
-    /// 待处理的转职奖励计数
-    /// </summary>
-    public int CCBonusInducedCount = 0;
-
-    /// <summary>
-    /// 败北标志
-    /// </summary>
-    public bool LoseFlag = false;
+    public bool DeckLoaded = false;
 
     /// <summary>
     /// 本回合中已经出击（升级）过的费用数
     /// </summary>
     public int DeployAndCCCostCount = 0;
-
-    /// <summary>
-    /// 行动阶段结束标志
-    /// </summary>
-    public bool ActionPhaseEnded = false;
-
-    /// <summary>
-    /// 附加能力列表
-    /// </summary>
-    public List<SubSkill> SubSkillList = new List<SubSkill>();
 
     public List<Card> AllCards
     {
@@ -88,6 +71,132 @@ public abstract class User
     }
 
     #region 动作
+    public async Task<bool> SetDeck(string filename, bool usePresetHero)
+    {
+        int heroIndex = -1;
+        string[] lines = File.ReadAllLines(filename);
+        string errorText = String.Empty;
+        List<Card> cardlistTemp = new List<Card>();
+        Dictionary<string, int> SameNameCountDictionary = new Dictionary<string, int>();
+
+        foreach (string serial in lines)
+        {
+            int serialInt;
+            bool success = false;
+            if (int.TryParse(serial.Trim('*', '+'), out serialInt))
+            {
+                Card newcard = CardFactory.CreateCard(serialInt, this);
+                if (newcard != null)
+                {
+                    cardlistTemp.Add(newcard);
+                    if (newcard.SkillList.FindAll(skill => skill is AllowOverFourInDeck).Count == 0)
+                    {
+                        if (SameNameCountDictionary.ContainsKey(newcard.CardName))
+                        {
+                            SameNameCountDictionary[newcard.CardName]++;
+                        }
+                        else
+                        {
+                            SameNameCountDictionary.Add(newcard.CardName, 1);
+                        }
+                    }
+                    success = true;
+                }
+                if (serial.Contains("*") && heroIndex == -1)
+                {
+                    heroIndex = cardlistTemp.IndexOf(newcard);
+                }
+            }
+            if (!success)
+            {
+                errorText += "> 未找到卡片：" + serial + Environment.NewLine;
+            }
+        }
+
+        if (cardlistTemp.Count < 50)
+        {
+            errorText += "> 卡组不足50张。" + Environment.NewLine;
+        }
+
+        foreach (var cardname in SameNameCountDictionary.Keys)
+        {
+            if (SameNameCountDictionary[cardname] > 4)
+            {
+                errorText += "> 卡片「" + cardname + "」超过卡组可容纳数量。" + Environment.NewLine;
+            }
+        }
+
+        if (usePresetHero && heroIndex >= 0)
+        {
+            Card hero = cardlistTemp[heroIndex];
+            if (hero.DeployCost != 1)
+            {
+                errorText += "> 预设的主人公「" + hero.CardName + "」的出击费用不为1。" + Environment.NewLine;
+            }
+            else
+            {
+                hero.IsHero = true;
+            }
+        }
+        if (errorText == String.Empty)
+        {
+            if (cardlistTemp.FindAll(card => card.IsHero).Count == 0)
+            {
+                (await Request.ChooseOne(cardlistTemp.FindAll(card => card.DeployCost == 1), this, Request.RequestFlags.Null, "请选择作为主人公的卡。"))
+                    .IsHero = true;
+            }
+            Dictionary<string, int> cardDict = new Dictionary<string, int>();
+            foreach (var card in cardlistTemp)
+            {
+                cardDict.Add(card.Guid, int.Parse(card.Serial.TrimStart('0')));
+            }
+            Game.DoMessage(new SetDeckMessage()
+            {
+                User = this,
+                CardDict = cardDict,
+                HeroGuid = cardlistTemp.Find(card => card.IsHero).Guid
+            });
+            return true;
+        }
+        else
+        {
+            //提示错误
+            return false;
+        }
+    }
+
+    public void SetHeroUnit()
+    {
+        Game.DoMessage(new SetHeroUnitMessage()
+        {
+            User = this
+        });
+    }
+
+    public void SetFirstHand()
+    {
+        Game.DoMessage(new SetFirstHandMessage()
+        {
+            User = this
+        });
+    }
+
+    public void PutBackFirstHand()
+    {
+        Game.DoMessage(new PutBackFirstHandMessage()
+        {
+            User = this
+        });
+    }
+
+    public void SetFirstOrbs()
+    {
+        Game.DoMessage(new SetFirstOrbsMessage()
+        {
+            User = this
+        });
+    }
+
     public void Move(Card target, Skill reason)
     {
         if (target != null)
@@ -110,19 +219,19 @@ public abstract class User
 
     public void Move(List<Card> targets, Skill reason)
     {
-        Game.TryDoMessage(new MoveMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            Reason = reason
-        });
+            Game.TryDoMessage(new MoveMessage()
+            {
+                Targets = targets,
+                Reason = reason
+            });
+        }
     }
 
     public async Task ChooseMove(List<Card> targets, int min, int max, Skill reason = null)
     {
-        if (targets.Count > 0)
-        {
-            Move(await Request.Choose(targets, min, max, this), reason);
-        }
+        Move(await Request.Choose(targets, min, max, this), reason);
     }
 
     public void ReverseBond(Card target, Skill reason, bool asCost = true)
@@ -154,27 +263,31 @@ public abstract class User
 
     public async Task ChooseReverseBond(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
     {
-        if (targets.Count > 0)
-        {
-            ReverseBond(await Request.Choose(targets, min, max, this), reason, asCost);
-        }
+        ReverseBond(await Request.Choose(targets, min, max, this), reason, asCost);
     }
+
 
     public void Attack(Card unit, Card target)
     {
-        Game.TryDoMessage(new AttackMessage()
+        if (unit != null && target != null)
         {
-            AttackingUnit = unit,
-            DefendingUnit = target
-        });
+            Game.TryDoMessage(new AttackMessage()
+            {
+                AttackingUnit = unit,
+                DefendingUnit = target
+            });
+        }
     }
 
     public void SetSupportCard()
     {
-        Game.TryDoMessage(new SetSupportMessage()
+        if (Deck.Count > 0)
         {
-            User = this
-        });
+            Game.TryDoMessage(new SetSupportMessage()
+            {
+                User = this
+            });
+        }
     }
 
     public void ConfirmSupportCard()
@@ -195,7 +308,9 @@ public abstract class User
         {
             Game.TryDoMessage(new RemoveSupportMessage()
             {
-                Card = Support.SupportCard
+                Targets = new List<Card>() { Support.SupportCard },
+                Reason = null,
+                AsCost = false
             });
         }
     }
@@ -284,10 +399,7 @@ public abstract class User
 
     public async Task ChooseSetToBond(List<Card> targets, int min, int max, bool frontShown = true, Skill reason = null)
     {
-        if (targets.Count > 0)
-        {
-            SetToBond(await Request.Choose(GetPossibleCardsToSetToBond(targets, frontShown, reason), min, max, this), frontShown, reason);
-        }
+        SetToBond(await Request.Choose(GetPossibleCardsToSetToBond(targets, frontShown, reason), min, max, this), frontShown, reason);
     }
 
     public void DiscardHand(Card target, bool asCost, Skill reason = null)
@@ -314,10 +426,7 @@ public abstract class User
 
     public async Task ChooseDiscardHand(List<Card> targets, int min, int max, bool asCost, Skill reason = null)
     {
-        if (targets.Count > 0)
-        {
-            DiscardHand(await Request.Choose(targets, min, max, this), asCost, reason);
-        }
+        DiscardHand(await Request.Choose(targets, min, max, this), asCost, reason);
     }
 
     public void AddToOrb(Card target, Skill reason = null)
@@ -334,20 +443,17 @@ public abstract class User
 
     public async Task ChooseAddToOrb(List<Card> targets, bool optional, Skill reason = null)
     {
-        if (targets.Count > 0)
+        if (optional)
         {
-            if (optional)
+            var result = await Request.ChooseUpToOne(targets, this);
+            if (result != null)
             {
-                var result = await Request.ChooseUpTo(targets, 1, this);
-                if (result.Count > 0)
-                {
-                    AddToOrb(result[0], reason);
-                }
+                AddToOrb(result, reason);
             }
-            else
-            {
-                AddToOrb(await Request.ChooseOne(targets, this), reason);
-            }
+        }
+        else
+        {
+            AddToOrb(await Request.ChooseOne(targets, this), reason);
         }
     }
 
@@ -383,6 +489,26 @@ public abstract class User
 
     public void AttachItem(IAttachable item, Card target)
     {
+        if (item == null || target == null)
+        {
+            return;
+        }
+        var powerBuff = item as PowerBuff;
+        if (powerBuff != null)
+        {
+            if (powerBuff.Value == 0)
+            {
+                return;
+            }
+        }
+        var supportBuff = item as SupportBuff;
+        if (supportBuff != null)
+        {
+            if (supportBuff.Value == 0)
+            {
+                return;
+            }
+        }
         Game.TryDoMessage(new AttachItemMessage()
         {
             Item = item,
@@ -392,11 +518,14 @@ public abstract class User
 
     public void GrantSkill(IAttachable item, Card target)
     {
-        Game.TryDoMessage(new GrantSkillMessage()
+        if (item != null && target != null)
         {
-            Item = item,
-            Target = target
-        });
+            Game.TryDoMessage(new GrantSkillMessage()
+            {
+                Item = item,
+                Target = target
+            });
+        }
     }
 
     public List<Card> GetDeployableHands(bool actioned = false, Skill reason = null)
@@ -404,58 +533,128 @@ public abstract class User
         return Hand.Filter(card => card.CheckDeployment(actioned, reason));
     }
 
-    public List<Card> GetDeployableCards(List<Card> targets, ref List<bool> toFrontField, ref List<bool> actioned, Skill reason = null)
+    public List<Card> GetDeployableCards(List<Card> targets, ref Dictionary<Card, bool> toFrontFieldDict, ref Dictionary<Card, bool> actionedDict, Skill reason = null)
     {
-        List<Card> targets_new = new List<Card>();
-        List<bool> toFrontField_new = new List<bool>();
-        List<bool> actioned_new = new List<bool>();
+        var targets_new = ListUtils.Clone(targets);
         foreach (var card in targets)
         {
-            int index = targets.IndexOf(card);
-            Area area;
-            if (toFrontField[index])
+            Area area = null;
+            if (toFrontFieldDict.ContainsKey(card))
             {
-                area = card.Controller.FrontField;
+                if (toFrontFieldDict[card])
+                {
+                    area = card.Controller.FrontField;
+                }
+                else
+                {
+                    area = card.Controller.BackField;
+                }
+            }
+            bool actioned = actionedDict.ContainsKey(card) ? actionedDict[card] : false;
+            bool canDeploy;
+            if (area == null)
+            {
+                canDeploy = card.CheckDeployment(card.Controller.FrontField, actioned, reason)
+                    && card.CheckDeployment(card.Controller.BackField, actioned, reason);
             }
             else
             {
-                area = card.Controller.BackField;
+                canDeploy = card.CheckDeployment(area, actioned, reason);
             }
-            if (card.CheckDeployment(area, actioned[index], reason))
+            if (!canDeploy)
             {
-                targets_new.Add(card);
-                toFrontField_new.Add(toFrontField[index]);
-                actioned_new.Add(actioned[index]);
+                targets_new.Remove(card);
+                toFrontFieldDict.Remove(card);
+                actionedDict.Remove(card);
             }
         }
-        toFrontField = toFrontField_new;
-        actioned = actioned_new;
         return targets_new;
     }
 
+    /// <summary>
+    /// 执行出击动作
+    /// </summary>
     public void Deploy(Card target, bool toFrontField, bool actioned = false, Skill reason = null)
     {
         Deploy(new List<Card>() { target }, new List<bool> { toFrontField }, new List<bool> { actioned }, reason);
     }
 
-    public void Deploy(List<Card> targets, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
-    {
-        Game.TryDoMessage(new DeployMessage()
-        {
-            Targets = targets,
-            ToFrontField = toFrontField,
-            Actioned = actioned,
-            Reason = reason
-        });
-    }
-
-    public async Task ChooseDeploy(List<Card> targets, int min, int max, List<bool> toFrontField, List<bool> actioned, Skill reason = null)
+    /// <summary>
+    /// 执行出击动作
+    /// </summary>
+    public void Deploy(List<Card> targets, List<bool> toFrontFieldList, List<bool> actionedList, Skill reason = null)
     {
         if (targets.Count > 0)
         {
-            var chosen = await Request.Choose(GetDeployableCards(targets, ref toFrontField, ref actioned, reason), min, max, this);
-            Deploy(chosen, ListUtils.UpdateParallel(chosen, targets, toFrontField), ListUtils.UpdateParallel(chosen, targets, actioned));
+            Game.TryDoMessage(new DeployMessage()
+            {
+                Targets = targets,
+                ToFrontFieldList = toFrontFieldList,
+                ActionedList = actionedList,
+                Reason = reason
+            });
         }
+    }
+
+    /// <summary>
+    /// 出击（询问出击位置）
+    /// </summary>
+    public async Task DeployChooseArea(Card target, Dictionary<Card, bool> actionedDict = null, Skill reason = null)
+    {
+        await ChooseDeploy(new List<Card>() { target }, 1, 1, null, actionedDict, reason);
+    }
+
+    /// <summary>
+    /// 出击（询问出击位置）
+    /// </summary>
+    public async Task DeployChooseArea(List<Card> targets, Dictionary<Card, bool> actionedDict = null, Skill reason = null)
+    {
+        await ChooseDeploy(targets, targets.Count, targets.Count, null, actionedDict, reason);
+    }
+
+    /// <summary>
+    /// 选择出击
+    /// </summary>
+    /// <param name="choices">选择项</param>
+    /// <param name="min">最少选择数量</param>
+    /// <param name="max">最多选择数量</param>
+    /// <param name="toFrontFieldDict">对选择项的出击位置的规定</param>
+    /// <param name="actionedDict">对选择项的出击后的行动状态的规定</param>
+    /// <param name="reason">引发本次出击的能力</param>
+    /// <returns></returns>
+    public async Task ChooseDeploy(List<Card> choices, int min, int max, Dictionary<Card, bool> toFrontFieldDict = null, Dictionary<Card, bool> actionedDict = null, Skill reason = null)
+    {
+        if (toFrontFieldDict == null)
+        {
+            toFrontFieldDict = new Dictionary<Card, bool>();
+        }
+        if (actionedDict == null)
+        {
+            actionedDict = new Dictionary<Card, bool>();
+        }
+        List<Card> chosen = await Request.Choose(GetDeployableCards(choices, ref toFrontFieldDict, ref actionedDict, reason), min, max, this);
+        var toFrontFieldList = new List<bool>();
+        var actionedList = new List<bool>();
+        foreach (var card in chosen)
+        {
+            if (toFrontFieldDict.ContainsKey(card))
+            {
+                toFrontFieldList.Add(toFrontFieldDict[card]);
+            }
+            else
+            {
+                toFrontFieldList.Add(await Request.AskIfDeployToFrontField(card, this));
+            }
+            if (actionedDict.ContainsKey(card))
+            {
+                actionedList.Add(actionedDict[card]);
+            }
+            else
+            {
+                actionedList.Add(false);
+            }
+        }
+        Deploy(chosen, toFrontFieldList, actionedList, reason);
     }
 
     public List<Card> GetLevelUpableHands(Skill reason = null)
@@ -479,12 +678,15 @@ public abstract class User
         {
             baseUnit = await Request.ChooseOne(baseUnits, this);
         }
-        Game.TryDoMessage(new LevelUpMessage()
+        if (target != null && baseUnit != null)
         {
-            Target = target,
-            BaseUnit = baseUnit,
-            Reason = reason
-        });
+            Game.TryDoMessage(new LevelUpMessage()
+            {
+                Target = target,
+                BaseUnit = baseUnit,
+                Reason = reason
+            });
+        }
     }
 
     public List<Card> GetPossibleCardsToUseActionSkill()
@@ -533,22 +735,17 @@ public abstract class User
             if (Game.AttackingUnit.CheckCriticalAttack())
             {
                 List<Card> costs = Game.AttackingUnit.GetCostsForCriticalAttack();
-                Card cost;
-                if (costs.Count > 1)
+                Card cost = await Request.ChooseUpToOne(costs, this);
+                if (cost != null)
                 {
-                    cost = await Request.ChooseOne(costs, this);
+                    Game.TryDoMessage(new CriticalAttackMessage()
+                    {
+                        AttackingUnit = Game.AttackingUnit,
+                        DefendingUnit = Game.DefendingUnit,
+                        Cost = cost
+                    });
+                    return Game.CriticalFlag;
                 }
-                else
-                {
-                    cost = costs[0];
-                }
-                Game.TryDoMessage(new CriticalAttackMessage()
-                {
-                    AttackingUnit = Game.AttackingUnit,
-                    DefendingUnit = Game.DefendingUnit,
-                    Cost = cost
-                });
-                return Game.CriticalFlag;
             }
         }
         return false;
@@ -561,22 +758,17 @@ public abstract class User
             if (Game.DefendingUnit.CheckAvoid())
             {
                 List<Card> costs = Game.DefendingUnit.GetCostsForAvoid();
-                Card cost;
-                if (costs.Count > 1)
+                Card cost = await Request.ChooseUpToOne(costs, this);
+                if (cost != null)
                 {
-                    cost = await Request.ChooseOne(costs, this);
+                    Game.TryDoMessage(new AvoidMessage()
+                    {
+                        AttackingUnit = Game.AttackingUnit,
+                        DefendingUnit = Game.DefendingUnit,
+                        Cost = cost
+                    });
+                    return Game.AvoidFlag;
                 }
-                else
-                {
-                    cost = costs[0];
-                }
-                Game.TryDoMessage(new AvoidMessage()
-                {
-                    AttackingUnit = Game.AttackingUnit,
-                    DefendingUnit = Game.DefendingUnit,
-                    Cost = cost
-                });
-                return Game.AvoidFlag;
             }
         }
         return false;
@@ -602,20 +794,20 @@ public abstract class User
 
     public void SetActioned(List<Card> targets, Skill reason, bool asCost = true)
     {
-        Game.TryDoMessage(new SetActionedMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            Reason = reason,
-            AsCost = asCost
-        });
+            Game.TryDoMessage(new SetActionedMessage()
+            {
+                Targets = targets,
+                Reason = reason,
+                AsCost = asCost
+            });
+        }
     }
 
     public async Task ChooseSetActioned(List<Card> targets, int min, int max, Skill reason, bool asCost = true)
     {
-        if (targets.Count > 0)
-        {
-            SetActioned(await Request.Choose(targets, min, max, this), reason, asCost);
-        }
+        SetActioned(await Request.Choose(targets, min, max, this), reason, asCost);
     }
 
     public void Destroy(Card target, Skill reason, bool asCost)
@@ -628,40 +820,40 @@ public abstract class User
 
     public void Destroy(List<Card> targets, Skill reason, bool asCost)
     {
-        Game.TryDoMessage(new DestroyMessage()
+        if (targets.Count > 0)
         {
-            DestroyedUnits = targets,
-            Count = 1,
-            ReasonTag = asCost ? DestructionReasonTag.BySkillCost : DestructionReasonTag.BySkill,
-            Reason = reason,
-            AttackingUnit = null
-        });
+            Game.TryDoMessage(new DestroyMessage()
+            {
+                DestroyedUnits = targets,
+                Count = 1,
+                ReasonTag = asCost ? DestructionReasonTag.BySkillCost : DestructionReasonTag.BySkill,
+                Reason = reason,
+                AttackingUnit = null
+            });
+        }
     }
 
     public async Task ChooseDestroy(List<Card> targets, int min, int max, Skill reason, bool asCost)
     {
-        if (targets.Count > 0)
-        {
-            Destroy(await Request.Choose(targets, min, max, this), reason, asCost);
-        }
+        Destroy(await Request.Choose(targets, min, max, this), reason, asCost);
     }
 
     public void AddToHand(List<Card> targets, Skill reason, bool show = true)
     {
-        Game.TryDoMessage(new AddToHandMessage()
-        {
-            Targets = targets,
-            Reason = reason,
-            Show = show
-        });
-    }
-
-    public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason, bool show = true)
-    {
         if (targets.Count > 0)
         {
-            AddToHand(await Request.Choose(targets, min, max, this), reason, show);
+            Game.TryDoMessage(new AddToHandMessage()
+            {
+                Targets = targets,
+                Reason = reason,
+                Show = show
+            });
         }
+    }
+
+    public async Task ChooseAddToHand(List<Card> targets, int min, int max, Skill reason, bool show = true, Request.RequestFlags flags = Request.RequestFlags.Null)
+    {
+        AddToHand(await Request.Choose(targets, min, max, this, flags), reason, show);
     }
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
@@ -723,22 +915,40 @@ public abstract class User
 
     public void SendToRetreat(List<Card> targets, Skill reason, bool asCost = false)
     {
-        Game.TryDoMessage(new SendToRetreatMessage()
+        if (targets.Count > 0)
         {
-            Targets = targets,
-            Reason = reason,
-            AsCost = asCost
-        });
+            Game.TryDoMessage(new SendToRetreatMessage()
+            {
+                Targets = targets,
+                Reason = reason,
+                AsCost = asCost
+            });
+        }
     }
 
     public void ChangeDefendingUnit(Card toUnit, Skill reason)
     {
-        Game.TryDoMessage(new ChangeDefendingUnitMessage()
+        if (toUnit != null)
         {
-            FromUnit = Game.DefendingUnit,
-            ToUnit = toUnit,
-            Reason = reason
-        });
+            Game.TryDoMessage(new ChangeDefendingUnitMessage()
+            {
+                FromUnit = Game.DefendingUnit,
+                ToUnit = toUnit,
+                Reason = reason
+            });
+        }
+    }
+
+    public async Task ChooseSetToDeckTop(List<Card> targets, int min, int max, Skill reason, Request.RequestFlags flags = Request.RequestFlags.Null)
+    {
+        if (targets.Count > 0)
+        {
+            Game.TryDoMessage(new SetToDeckTopMessage()
+            {
+                Targets = await Request.Choose(targets, min, max, this, flags),
+                Reason = reason
+            });
+        }
     }
     #endregion
 }
@@ -761,4 +971,6 @@ public class Rival : User
     public Rival() : base() { }
 
     public override User Opponent => Game.Player;
+
+    public bool Synchronized = false;
 }

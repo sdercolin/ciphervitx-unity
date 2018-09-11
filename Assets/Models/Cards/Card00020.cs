@@ -34,7 +34,7 @@ public class Card00020 : Card
     /// 『ライブ』【起】[横置，翻面2]自分の退避エリアから『レナ』以外のカードを１枚選び、手札に加える。
     /// </summary>
     public Sk1 sk1;
-    public class Sk1 : ActionSkill
+    public class Sk1 : Heal
     {
         public Sk1() : base()
         {
@@ -43,21 +43,7 @@ public class Card00020 : Card
             Description = "『回复之杖』【起】[横置，翻面2]从自己的退避区中选择1张「蕾娜」以外的卡，将其加入手牌。";
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CheckConditions()
-        {
-            return true;
-        }
-
-        public override Cost DefineCost()
-        {
-            return Cost.Action(this) + Cost.ReverseBond(this, 2);
-        }
-
-        public override async Task Do()
-        {
-            await Controller.ChooseAddToHand(Controller.Retreat.Filter(unit => !unit.HasUnitNameOf("蕾娜")), 1, 1, this);
+            ExceptName = "蕾娜";
         }
     }
 

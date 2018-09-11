@@ -71,7 +71,7 @@ public class Card00002 : Card
         public override async Task Do(Induction induction)
         {
             var choices = Controller.Field.Cards;
-            await Controller.ChooseMove(choices, 0, choices.Count);
+            await Controller.ChooseMove(choices, 0, choices.Count, this);
         }
     }
 

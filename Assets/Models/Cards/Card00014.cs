@@ -34,7 +34,7 @@ public class Card00014 : Card
     /// 『鋼の弓』【起】〖1回合1次〗[翻面1]ターン終了まで、このユニットの戦闘力は＋１０される。
     /// </summary>
     public Sk1 sk1;
-    public class Sk1 : ActionSkill
+    public class Sk1 : ReverseBondToAdd10
     {
         public Sk1() : base()
         {
@@ -45,22 +45,6 @@ public class Card00014 : Card
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
         }
-
-        public override bool CheckConditions()
-        {
-            return true;
-        }
-
-        public override Cost DefineCost()
-        {
-            return Cost.ReverseBond(this, 1);
-        }
-
-        public override Task Do()
-        {
-            Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
-            return Task.CompletedTask;
-        }
     }
 
     /// <summary>
@@ -68,7 +52,7 @@ public class Card00014 : Card
     /// 『飛行特効』【常】このユニットが<飛行>を攻撃している場合、このユニットの戦闘力は＋３０される。
     /// </summary>
     public Sk2 sk2;
-    public class Sk2 : PermanentSkill
+    public class Sk2 : Wingslayer
     {
         public Sk2() : base()
         {
@@ -77,18 +61,6 @@ public class Card00014 : Card
             Description = "『飞行特效』【常】这名单位攻击<飞行>属性单位的期间，这名单位的战斗力+30。";
             TypeSymbols.Add(SkillTypeSymbol.Permanent);
             Keyword = SkillKeyword.Null;
-        }
-
-        public override bool CanTarget(Card card)
-        {
-            return card == Owner
-                && Game.AttackingUnit == card
-                && Game.DefendingUnit.HasType(TypeEnum.Flight);
-        }
-
-        public override void SetItemToApply()
-        {
-            ItemsToApply.Add(new PowerBuff(this, 30));
         }
     }
 

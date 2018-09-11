@@ -13,6 +13,7 @@ public class Card00010Test
     public void SkillTest()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         var player1 = Game.Player;
         var player2 = Game.Rival;
         var card1 = CardFactory.CreateCard(10, player1);
@@ -25,7 +26,7 @@ public class Card00010Test
         player2.BackField.AddCard(card4);
 
 
-        card1.Read(new EmptyMessage());
+        Game.TryDoMessage(new EmptyMessage());
 
         Assert.IsFalse(card4.GetAttackableUnits().Contains(card1));
         Assert.IsFalse(card4.GetAttackableUnits().Contains(card3));
