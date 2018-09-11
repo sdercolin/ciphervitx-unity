@@ -1,26 +1,27 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 /// <summary>
-/// (S01) S01-002 戦場を翔ける王女 シーダ
+/// (P01) P01-009 恋心を秘めた騎士 ティアモ
 /// </summary>
-public class Card00002 : Card
+public class Card00155 : Card
 {
-    public Card00002(User controller) : base(controller)
+    public Card00155(User controller) : base(controller)
     {
-        Serial = "00002";
-        Pack = "S01";
-        CardNum = "S01-002";
-        Title = "翱翔战场的王女";
-        UnitName = "希达";
-        power = 50;
+        Serial = "00155";
+        Pack = "P01";
+        CardNum = "P01-009";
+        Title = "暗藏恋心的骑士";
+        UnitName = "缇雅莫";
+        power = 40;
         support = 30;
-        deployCost = 3;
-        classChangeCost = 2;
-        symbols.Add(SymbolEnum.Red);
+        deployCost = 2;
+        classChangeCost = 0;
+        symbols.Add(SymbolEnum.Blue);
         genders.Add(GenderEnum.Female);
         weapons.Add(WeaponEnum.Lance);
         types.Add(TypeEnum.Flight);
-        types.Add(TypeEnum.Dragon);
+        types.Add(TypeEnum.Beast);
         ranges.Add(RangeEnum.One);
         sk1 = new Sk1();
         Attach(sk1);
@@ -30,7 +31,7 @@ public class Card00002 : Card
 
     /// <summary>
     /// スキル1
-    /// 『飛竜の翼』【自】出撃コストが２以下の味方が出撃するたび、味方を好きな数だけ選び、移動させてもよい。
+    /// 『リフレッシュ』【自】お互いのターン開始時、このユニットと同じエリアに味方が他に１体もいない場合、ターン終了まで、このユニットの戦闘力は＋１０される。
     /// </summary>
     public Sk1 sk1;
     public class Sk1 : AutoSkill
@@ -38,27 +39,24 @@ public class Card00002 : Card
         public Sk1() : base()
         {
             Number = 1;
-            Name = "飞龙之翼";
-            Description = "『飞龙之翼』【自】每次出击费用2以下的我方单位出击时，你可以选择任意名我方单位，将其移动。";
-            Optional = true;
+            Name = "振奋";
+            Description = "『振奋』【自】双方的回合开始时，这名单位所在区域上没有其他我方单位的场合，直到回合结束为止，这名单位的战斗力+10。";
+            Optional = false;
             TypeSymbols.Add(SkillTypeSymbol.Auto);
             Keyword = SkillKeyword.Null;
         }
 
         public override bool CheckConditions(Induction induction)
         {
-            return true;
+            return Owner.BelongedRegion.TrueForAllCard(unit => unit == Owner);
         }
 
         public override Induction CheckInduceConditions(Message message)
         {
-            var deployMessage = message as DeployMessage;
-            if (deployMessage != null)
+            var startTurnMessage = message as StartTurnMessage;
+            if (startTurnMessage != null)
             {
-                if (deployMessage.TrueForAny(deployMessage.Targets, card => card.Controller == Controller && card.DeployCost <= 2))
-                {
-                    return new Induction();
-                }
+                return new Induction();
             }
             return null;
         }
@@ -68,10 +66,10 @@ public class Card00002 : Card
             return Cost.Null;
         }
 
-        public override async Task Do(Induction induction)
+        public override Task Do(Induction induction)
         {
-            var choices = Controller.Field.Cards;
-            await Controller.ChooseMove(choices, 0, choices.Count, this);
+            Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
+            return Task.CompletedTask;
         }
     }
 

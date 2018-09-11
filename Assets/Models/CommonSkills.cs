@@ -184,6 +184,28 @@ public class ReverseBondToAdd20 : ActionSkill
 }
 
 /// <summary>
+///【起】[翻面1]ターン終了まで、このユニットに射程１-２が追加される。
+/// </summary>
+public class ReverseBondToAddRange1to2 : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.ReverseBond(this, 1);
+    }
+
+    public override Task Do()
+    {
+        Controller.AttachItem(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds), Owner);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
 /// 『天空を翔ける者』【起】〖1回合1次〗このユニットを移動させる。このスキルはこのユニットが未行動でなければ使用できない。
 /// </summary>
 public class AngelicFlight : ActionSkill
