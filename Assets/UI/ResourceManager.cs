@@ -12,7 +12,7 @@ public class ResourceManager
         Sprite ret;
         if (!s_Sprites.TryGetValue(index, out ret))
         {
-            ret = Resources.Load(index, typeof(Sprite)) as Sprite;
+            ret = Resources.Load("Card/" + index, typeof(Sprite)) as Sprite;
             s_Sprites.Add(index, ret);
         }
         return ret;

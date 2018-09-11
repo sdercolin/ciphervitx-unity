@@ -106,7 +106,16 @@ public class CardListItem : UIBehaviour,
 
     public void SetImage(string index)
     {
-        m_Img.sprite = ResourceManager.GetSprite(index);
+        //m_Img.sprite = ResourceManager.GetSprite(index);
+        Sprite s = ResourceManager.GetSprite(index);
+        if (s == null)
+        {
+            UILogger.LogError("can not find sprite: " + index);
+        }
+        else
+        {
+            m_Img.sprite = s;
+        }
     }
 
     public void TurnFront(Sprite front = null)

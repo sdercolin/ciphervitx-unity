@@ -30,7 +30,7 @@ public class SinglePlayerField : UIBehaviour
         m_FrontArea = GetComponentInChildByName<CardListH>("Front");
         m_BackArea = GetComponentInChildByName<CardListH>("Back");
         m_OrbArea = GetComponentInChildByName<CardListV>("Orb");
-        m_HandArea = GetComponentInChildByName<CardListH>("Hand");
+        //m_HandArea = GetComponentInChildByName<CardListH>("Hand");
         m_RetreatArea = GetComponentInChildByName<SingleCardPicture>("Retreat");
         m_DeckArea = GetComponentInChildByName<SingleCardPictureWithNum>("Deck");
     }
