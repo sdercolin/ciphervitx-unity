@@ -19,7 +19,7 @@ public class CardListV : CardListBase {
         //the height of list area
         float height = ((RectTransform)transform).rect.height;
         //the height of card
-        float cardHeight = m_Prototype.height;
+        float cardHeight = m_Prototype.Height;
 
         float interval;
         if ((cardHeight + (count - 1) * m_Interval) <= height)

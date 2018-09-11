@@ -22,8 +22,19 @@ public class CardListItem : UIBehaviour,
         }
     }
 
-    public float width { get { return ((RectTransform)transform).rect.width; } }
-    public float height { get { return ((RectTransform)transform).rect.height; } }
+    public float Width { get { return ((RectTransform)transform).rect.width; } }
+    public float Height { get { return ((RectTransform)transform).rect.height; } }
+
+    private Card m_Card;
+    public Card Card
+    {
+        get { return m_Card; }
+        set
+        {
+            m_Card = value;
+            SetImage(value.Serial);
+        }
+    }
 
     private bool m_IsInited = false;
     public void Init()
@@ -91,6 +102,11 @@ public class CardListItem : UIBehaviour,
         }
         m_Img.sprite = ResourceManager.CardBack;
         m_Backed = true;
+    }
+
+    public void SetImage(string index)
+    {
+        m_Img.sprite = ResourceManager.GetSprite(index);
     }
 
     public void TurnFront(Sprite front = null)

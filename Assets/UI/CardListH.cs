@@ -21,7 +21,7 @@ public class CardListH : CardListBase {
         //the width of list area
         float width = ((RectTransform)transform).rect.width;
         //the width of card
-        float cardWidth = m_Prototype.width;
+        float cardWidth = m_Prototype.Width;
 
         if ( (count * cardWidth + (count - 1) * m_Interval) <= width)
         {

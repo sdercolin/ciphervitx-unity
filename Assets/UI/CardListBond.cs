@@ -22,7 +22,7 @@ public class CardListBond : CardListBase
         //the width of list area
         float width = ((RectTransform)transform).rect.width;
         //the width of card
-        float cardHeight = m_Prototype.height;
+        float cardHeight = m_Prototype.Height;
 
         float interval;
         if ((cardHeight + (count - 1) * m_Interval) <= width)

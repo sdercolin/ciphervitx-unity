@@ -99,6 +99,45 @@ public abstract class CardListBase : UIBehaviour {
             CardListItem item = m_ListItems[index];
             m_ListItems.RemoveAt(index);
             Destroy(item.gameObject);
+            Arrange();
         }
+    }
+
+    public void RemoveItem(CardListItem listItem)
+    {
+        if (listItem.m_List != this)
+        {
+            return;
+        }
+
+        RemoveItemByIndex(m_ListItems.IndexOf(listItem));
+    }
+
+    public void Shuffle()
+    {
+        int n = m_ListItems.Count;
+        for (int i = 0; i < n - 1; i++)
+        {
+            int randomIdx = Random.Range(i, n);
+            if (randomIdx != i)
+            {
+                CardListItem tmp = m_ListItems[randomIdx];
+                m_ListItems[randomIdx] = m_ListItems[i];
+                m_ListItems[i] = tmp;
+            }
+        }
+        Arrange();
+    }
+
+    public CardListItem SearchCard(Card card)
+    {
+        foreach (CardListItem listItem in m_ListItems)
+        {
+            if (listItem.Card == card)
+            {
+                return listItem;
+            }
+        }
+        return null;
     }
 }
