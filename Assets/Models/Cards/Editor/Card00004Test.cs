@@ -12,6 +12,7 @@ public class Card00004Test
     public void SkillTest()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         var player = Game.Player;
         var card = CardFactory.CreateCard(4, player);
         var card1 = CardFactory.CreateCard(6, player);
@@ -23,20 +24,18 @@ public class Card00004Test
         player.Hand.AddCard(card3);
 
         Assert.IsTrue(card.Power == 60);
-
-        player.Deploy(card1, true);
-        Request.SetNextResult(new List<Induction>() { Game.InductionSetList[0][0] });
-        Game.DoAutoCheckTiming();
+        
+        Request.SetNextResult();  //默认选择第一个Induction
+        Game.DoDeployment(card1, true);
         Assert.IsTrue(card1.Power == 50);
         Assert.IsTrue(card.Power == 70);
-
-        player.Deploy(card2, true);
-        Request.SetNextResult(new List<Induction>() { Game.InductionSetList[0][0] });
-        Game.DoAutoCheckTiming();
+        
+        Request.SetNextResult(); //默认选择第一个Induction
+        Game.DoDeployment(card2, true);
         Assert.IsTrue(card2.Power == 40);
         Assert.IsTrue(card.Power == 80);
-
-        player.Deploy(card3, true);
-        Assert.IsTrue(Game.InductionSetList.Count == 0);
+        
+        Game.DoDeployment(card3, true);
+        Assert.IsTrue(card.Power == 80);
     }
 }

@@ -49,7 +49,7 @@ public class WingedDeliverer : ActionSkill
 
     public override Cost DefineCost()
     {
-        return Cost.Action(this);
+        return Cost.ActionSelf(this);
     }
 
     public override async Task Do()
@@ -93,7 +93,7 @@ public class Unlock : ActionSkill
 
     public override Cost DefineCost()
     {
-        return Cost.Action(this);
+        return Cost.ActionSelf(this);
     }
 
     public override async Task Do()
@@ -111,7 +111,167 @@ public class Unlock : ActionSkill
                     Controller.DrawCard(1, this);
                 }
             }
-
         }
+    }
+}
+
+/// <summary>
+/// 『ライブ』【起】[横置，翻面2]自分の退避エリアから『……』以外のカードを１枚選び、手札に加える。
+/// 需指定除……以外的单位名
+/// </summary>
+public class Heal : ActionSkill
+{
+    public string ExceptName { get; protected set; }
+
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.ActionSelf(this) + Cost.ReverseBond(this, 2);
+    }
+
+    public override async Task Do()
+    {
+        await Controller.ChooseAddToHand(Controller.Retreat.Filter(unit => !unit.HasUnitNameOf(ExceptName)), 1, 1, this);
+    }
+}
+
+/// <summary>
+///【起】〖1回合1次〗[翻面1]ターン終了まで、このユニットの戦闘力は＋１０される。
+/// </summary>
+public class ReverseBondToAdd10 : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.ReverseBond(this, 1);
+    }
+
+    public override Task Do()
+    {
+        Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+///【起】〖1回合1次〗[翻面1]ターン終了まで、このユニットの戦闘力は＋２０される。
+/// </summary>
+public class ReverseBondToAdd20 : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.ReverseBond(this, 1);
+    }
+
+    public override Task Do()
+    {
+        Controller.AttachItem(new PowerBuff(this, 20, LastingTypeEnum.UntilTurnEnds), Owner);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+///【起】[翻面1]ターン終了まで、このユニットに射程１-２が追加される。
+/// </summary>
+public class ReverseBondToAddRange1to2 : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return true;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.ReverseBond(this, 1);
+    }
+
+    public override Task Do()
+    {
+        Controller.AttachItem(new RangeBuff(this, true, RangeEnum.OnetoTwo, LastingTypeEnum.UntilTurnEnds), Owner);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+/// 『天空を翔ける者』【起】〖1回合1次〗このユニットを移動させる。このスキルはこのユニットが未行動でなければ使用できない。
+/// </summary>
+public class AngelicFlight : ActionSkill
+{
+    public override bool CheckConditions()
+    {
+        return !Owner.IsHorizontal;
+    }
+
+    public override Cost DefineCost()
+    {
+        return Cost.Null;
+    }
+
+    public override Task Do()
+    {
+        Controller.Move(Owner, this);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+/// 【常】相手の手札が４枚以下の場合、このユニットの戦闘力は＋１０される。
+/// </summary>
+public class Hand4OrLessAdd10 : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return card == Owner && Opponent.Hand.Count <= 4;
+    }
+
+    public override void SetItemToApply()
+    {
+        ItemsToApply.Add(new PowerBuff(this, 10));
+    }
+}
+
+/// <summary>
+/// 【特】このカードは味方に『アンナ』がいても出撃させることができ、『アンナ』が２体以上味方にいてもよい。【特】このカードと同じカード名のカードをデッキに５枚以上入れてもよい。【常】『アンナ』のカードはこのユニットの支援に成功する。
+/// </summary>
+public class Annas : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return card == Owner;
+    }
+
+    public override void SetItemToApply()
+    {
+        ItemsToApply.Add(new AllowSameNameDeployment(this));
+    }
+}
+
+
+/// <summary>
+/// 卡组中允许加入5张以上
+/// </summary>
+public class AllowOverFourInDeck : PermanentSkill
+{
+    public override bool CanTarget(Card card)
+    {
+        return false;
+    }
+
+    public override void SetItemToApply()
+    {
+        return;
     }
 }

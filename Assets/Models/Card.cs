@@ -51,6 +51,11 @@ public abstract class Card
     public string UnitName { get; protected set; }
 
     /// <summary>
+    /// 卡名
+    /// </summary>
+    public string CardName => Title + " " + UnitName;
+
+    /// <summary>
     /// 当前具备的全部单位名
     /// </summary>
     public List<string> AllUnitNames
@@ -431,6 +436,11 @@ public abstract class Card
     public bool IsClassChangedInThisTurn;
 
     /// <summary>
+    /// 在本回合中是否已攻击
+    /// </summary>
+    public bool HasAttackedInThisTurn;
+
+    /// <summary>
     /// 卡是否横置
     /// </summary>
     public bool IsHorizontal = false;
@@ -633,13 +643,13 @@ public abstract class Card
     /// <returns></returns>
     public bool CheckSetToBond(bool frontShown = true, Skill reason = null)
     {
-        Message substitute = new EmptyMessage();
-        return Game.BroadcastTry(new ToBondMessage()
+        var message = Game.TryMessage(new ToBondMessage()
         {
             Targets = new List<Card>() { this },
             Reason = reason,
             TargetFrontShown = frontShown
-        }, ref substitute);
+        }) as ToBondMessage;
+        return message != null && message.Targets.Contains(this);
     }
 
     /// <summary>
@@ -649,12 +659,12 @@ public abstract class Card
     /// <returns></returns>
     public bool CheckReverseBond(Skill reason = null)
     {
-        Message substitute = new EmptyMessage();
-        return Game.BroadcastTry(new ReverseBondMessage()
+        var message = Game.TryMessage(new ReverseBondMessage()
         {
             Targets = new List<Card>() { this },
             Reason = reason
-        }, ref substitute);
+        }) as ReverseBondMessage;
+        return message != null && message.Targets.Contains(this);
     }
 
     /// <summary>
@@ -715,14 +725,14 @@ public abstract class Card
             return false;
         }
 
-        Message substitute = new EmptyMessage();
-        return Game.BroadcastTry(new DeployMessage()
+        var message = Game.TryMessage(new DeployMessage()
         {
             Targets = new List<Card>() { this },
-            Actioned = new List<bool>() { actioned },
-            ToFrontField = new List<bool>() { toFrontField },
+            ActionedList = new List<bool>() { actioned },
+            ToFrontFieldList = new List<bool>() { toFrontField },
             Reason = reason
-        }, ref substitute);
+        }) as DeployMessage;
+        return message != null && message.Targets.Contains(this);
     }
 
     public bool CheckLevelUp(Skill reason = null)
@@ -732,7 +742,7 @@ public abstract class Card
 
     public List<Card> GetLevelUpableUnits(Skill reason = null)
     {
-        var targets = Controller.Field.Filter(unit =>
+        var baseUnits = Controller.Field.Filter(unit =>
         {
             if (unit.HasSameUnitNameWith(this))
             {
@@ -750,20 +760,20 @@ public abstract class Card
             }
             return false;
         });
-        foreach (var unit in ListUtils.Clone(targets))
+        foreach (var unit in ListUtils.Clone(baseUnits))
         {
-            Message substitute = new EmptyMessage();
-            if (!Game.BroadcastTry(new LevelUpMessage()
+            var message = Game.TryMessage(new LevelUpMessage()
             {
                 Target = this,
                 BaseUnit = unit,
                 Reason = reason
-            }, ref substitute))
+            }) as LevelUpMessage;
+            if (message == null || message.BaseUnit != unit)
             {
-                targets.Remove(unit);
+                baseUnits.Remove(unit);
             }
         }
-        return targets;
+        return baseUnits;
     }
 
     public bool CheckMoving(Skill reason = null)
@@ -772,12 +782,12 @@ public abstract class Card
         {
             return false;
         }
-        Message substitute = new EmptyMessage();
-        return Game.BroadcastTry(new MoveMessage()
+        var message = Game.TryMessage(new MoveMessage()
         {
             Targets = new List<Card>() { this },
             Reason = reason
-        }, ref substitute);
+        }) as MoveMessage;
+        return message != null && message.Targets.Contains(this);
     }
 
     public bool CheckUsingActionSkill()
@@ -858,12 +868,12 @@ public abstract class Card
         }
         foreach (var unit in ListUtils.Clone(targets))
         {
-            Message substitute = new EmptyMessage();
-            if (!Game.BroadcastTry(new AttackMessage()
+            var message = Game.TryMessage(new AttackMessage()
             {
                 AttackingUnit = this,
                 DefendingUnit = unit
-            }, ref substitute))
+            }) as AttackMessage;
+            if (message == null || message.DefendingUnit != unit)
             {
                 targets.Remove(unit);
             }
@@ -906,13 +916,13 @@ public abstract class Card
         var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
         foreach (var card in ListUtils.Clone(targets))
         {
-            Message substitute = new EmptyMessage();
-            if (!Game.BroadcastTry(new CriticalAttackMessage()
+            var message = Game.TryMessage(new CriticalAttackMessage()
             {
                 AttackingUnit = this,
                 DefendingUnit = Game.DefendingUnit,
                 Cost = card
-            }, ref substitute))
+            }) as CriticalAttackMessage;
+            if (message == null || message.Cost != card)
             {
                 targets.Remove(card);
             }
@@ -930,13 +940,13 @@ public abstract class Card
         var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
         foreach (var card in ListUtils.Clone(targets))
         {
-            Message substitute = new EmptyMessage();
-            if (!Game.BroadcastTry(new AvoidMessage()
+            var message = Game.TryMessage(new AvoidMessage()
             {
                 AttackingUnit = Game.AttackingUnit,
                 DefendingUnit = this,
                 Cost = card
-            }, ref substitute))
+            }) as AvoidMessage;
+            if (message == null || message.Cost != card)
             {
                 targets.Remove(card);
             }
@@ -946,15 +956,15 @@ public abstract class Card
 
     public bool CheckDestroyByCost(Skill reason)
     {
-        Message substitute = new EmptyMessage();
-        return Game.BroadcastTry(new DestroyMessage()
+        var message = Game.TryMessage(new DestroyMessage()
         {
             DestroyedUnits = new List<Card>() { this },
             Count = 1,
             ReasonTag = DestructionReasonTag.BySkillCost,
             Reason = reason,
             AttackingUnit = null
-        }, ref substitute);
+        }) as DestroyMessage;
+        return message != null && message.DestroyedUnits.Contains(this);
     }
 
     /// <summary>
@@ -968,6 +978,8 @@ public abstract class Card
         Visible = true;
         IsLevelUpedInThisTurn = false;
         IsClassChangedInThisTurn = false;
+        DestroyedCount = 0;
+        DestructionReasonTag = DestructionReasonTag.Null;
         foreach (var item in BuffList)
         {
             item.Detach();

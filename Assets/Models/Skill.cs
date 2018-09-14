@@ -117,6 +117,19 @@ public abstract class ActionSkill : Skill
     /// <returns>若可以发动，返回true</returns>
     public bool Check()
     {
+        foreach (var card in Controller.AllCards)
+        {
+            foreach (var item in card.SubSkillList)
+            {
+                if (item is IUserForbidActionSkill)
+                {
+                    if (((IUserForbidActionSkill)item).ForbiddenSkillName == Name)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
         if (!Available)
         {
             return false;
@@ -145,7 +158,6 @@ public abstract class ActionSkill : Skill
         }
         Cost = DefineCost();
         return Cost.Check();
-
     }
 
     /// <summary>
@@ -389,6 +401,7 @@ public abstract class PermanentSkill : Skill
         }
         if (Keyword == SkillKeyword.CCS && (!Owner.IsClassChanged))
         {
+            DetachAll();
             return;
         }
         foreach (Card card in Game.AllCards)
@@ -397,7 +410,11 @@ public abstract class PermanentSkill : Skill
             {
                 ItemsToApply.Clear();
                 SetItemToApply();
-                Attach(card, ItemsToApply);
+                CleanItemsToApply();
+                if (ItemsToApply.Count > 0)
+                {
+                    Attach(card, ItemsToApply);
+                }
             }
             else if (!CanTarget(card) && Targets.Contains(card))
             {
@@ -407,6 +424,7 @@ public abstract class PermanentSkill : Skill
             {
                 ItemsToApply.Clear();
                 SetItemToApply();
+                CleanItemsToApply();
                 if (CheckItemUpdated(card))
                 {
                     Detach(card);
@@ -435,6 +453,30 @@ public abstract class PermanentSkill : Skill
     public override bool Try(Message message, ref Message substitute)
     {
         return base.Try(message, ref substitute);
+    }
+
+    private void CleanItemsToApply()
+    {
+        ItemsToApply.RemoveAll(item =>
+        {
+            var powerBuff = item as PowerBuff;
+            if (powerBuff != null)
+            {
+                if (powerBuff.Value == 0)
+                {
+                    return true;
+                }
+            }
+            var supportBuff = item as SupportBuff;
+            if (supportBuff != null)
+            {
+                if (supportBuff.Value == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     /// <summary>

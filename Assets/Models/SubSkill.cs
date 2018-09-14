@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 /// <summary>
@@ -76,6 +77,10 @@ public abstract class SubSkill : Skill
 
     public override void Read(Message message)
     {
+        if (Owner == null)
+        {
+            return;
+        }
         if (OnlyAvailableWhenFrontShown)
         {
             if (!Owner.FrontShown)
@@ -101,7 +106,7 @@ public abstract class SubSkill : Skill
         {
             dynamic fieldThis = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(subSkillItem);
-            if(fieldThis!=field)
+            if (fieldThis != field)
             {
                 return false;
             }
@@ -147,11 +152,11 @@ public class DisableSkill : SubSkill
     public override void Attached()
     {
         base.Attached();
-        Owner.SkillList.FindAll(skill => skill.Name == TargetName).ForEach( skill =>
-        {
-            skill.Available = false;
-            targets.Add(skill);
-        });
+        Owner.SkillList.FindAll(skill => skill.Name == TargetName).ForEach(skill =>
+       {
+           skill.Available = false;
+           targets.Add(skill);
+       });
     }
 
     protected override void Detaching()
@@ -199,7 +204,7 @@ public class CanNotObtainSkill : SubSkill
         {
             var grantSkillMessage = message as GrantSkillMessage;
             var skillPrototype = ((ObtainSkill)grantSkillMessage.Item).TargetPrototype;
-            if (skillPrototype.Name==TargetName)
+            if (skillPrototype.Name == TargetName)
             {
                 substitute = new EmptyMessage();
                 return false;
@@ -389,15 +394,72 @@ public class WillNotBeAttackedFromBackField : SubSkill
 public class DestroyTwoOrbs : SubSkill
 {
     public DestroyTwoOrbs(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
-    public override void Read(Message message)
+
+    public override bool Try(Message message, ref Message substitute)
     {
         var destroyMessage = message as DestroyMessage;
         if (destroyMessage != null)
         {
-            if (destroyMessage.AttackingUnit == Owner)
+            if (destroyMessage.AttackingUnit == Owner
+                && destroyMessage.DestroyedUnits.SequenceEqual(new List<Card>() { Opponent.Hero })
+                && destroyMessage.ReasonTag == DestructionReasonTag.ByBattle
+                && destroyMessage.Count != 2)
             {
-                destroyMessage.Count = 2;
+                substitute = destroyMessage.Clone();
+                ((DestroyMessage)substitute).Count = 2;
+                return false;
             }
         }
+        return true;
+    }
+}
+
+/// <summary>
+/// 不能出击
+/// </summary>
+public class CanNotDeploy : SubSkill
+{
+    public CanNotDeploy(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+    public override bool Try(Message message, ref Message substitute)
+    {
+        var deployMessage = message as DeployMessage;
+        if (deployMessage != null)
+        {
+            if (deployMessage.Targets.Contains(Owner))
+            {
+                substitute = deployMessage.Clone();
+                ((DeployMessage)substitute).RemoveTarget(Owner);
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+/// <summary>
+/// 同名卡支援成功
+/// </summary>
+public class CanBeSupportedBy : SubSkill
+{
+    public CanBeSupportedBy(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
+
+    public string UnitName { get { return field1; } set { field1 = value; } }
+
+    public override bool Try(Message message, ref Message substitute)
+    {
+        var confirmSupportMessage = message as ConfirmSupportMessage;
+        if (confirmSupportMessage != null)
+        {
+            if (confirmSupportMessage.Unit == Owner
+                && confirmSupportMessage.SupportCard.HasUnitNameOf(UnitName)
+                && confirmSupportMessage.IsSuccessful == false)
+            {
+                substitute = confirmSupportMessage.Clone();
+                ((ConfirmSupportMessage)substitute).IsSuccessful = true;
+                return false;
+            }
+        }
+        return true;
     }
 }

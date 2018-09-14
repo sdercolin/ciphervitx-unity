@@ -10,6 +10,7 @@ public class GameTest
     public void StartTurnTest()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var card1 = CardFactory.CreateCard(1, Game.Player);
         Game.Player.FrontField.AddCard(card1);
@@ -32,6 +33,7 @@ public class GameTest
         Assert.IsTrue(Game.Player.Hand.Count == 0);
 
         Game.TurnCount = 2;
+        Request.SetNextResult(new List<Card>() { });
         Game.StartTurn();
         Assert.IsTrue(Game.Player.Hand.Count == 1);
     }
@@ -40,6 +42,7 @@ public class GameTest
     public void BattleTest1()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -65,13 +68,11 @@ public class GameTest
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(card1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 2);
 
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(hero1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 1);
     }
 
@@ -80,6 +81,7 @@ public class GameTest
     public void BattleTest2()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -105,13 +107,11 @@ public class GameTest
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(card1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 2);
 
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(hero1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 1);
     }
 
@@ -119,6 +119,7 @@ public class GameTest
     public void BattleTest3()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -144,13 +145,11 @@ public class GameTest
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(card1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 2);
 
         Request.SetNextResult(false);
         Request.SetNextResult(false);
         Game.DoBattle(hero1, card2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Field.Count == 1);
     }
 
@@ -158,6 +157,7 @@ public class GameTest
     public void BattleTest4()
     {
         Game.Initialize();
+        Game.LosingProcessDisabled = true;
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -178,7 +178,6 @@ public class GameTest
         Request.SetNextResult(false);
         Request.SetNextResult(new List<Card>() { orb1 });
         Game.DoBattle(hero1, hero2);
-        Game.DoAutoCheckTiming();
         Assert.IsTrue(rival.Orb.Count == 0);
         Assert.IsTrue(rival.Hand.Count == 1);
     }
