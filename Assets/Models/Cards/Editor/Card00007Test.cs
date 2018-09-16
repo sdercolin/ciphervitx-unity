@@ -22,7 +22,6 @@ public class Card00007Test
 
         player.FrontField.AddCard(xida);
         player.FrontField.AddCard(costCard);
-        player.FrontField.AddCard(costCard);
 
         Request.SetNextResult(new List<Card>() { costCard });
         Request.SetNextResult(new List<Card>() { targetCard });
