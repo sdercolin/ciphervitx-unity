@@ -23,8 +23,8 @@ public class Card00030Test
 
         var luqina = CardFactory.CreateCard(30, player);
         player.FrontField.AddCard(luqina);
-        var kuluomu = CardFactory.CreateCard(29, player); 
-        player.FrontField.AddCard(kuluomu);
+        var kuluomu = CardFactory.CreateCard(29, player);
+        player.Hand.AddCard(kuluomu);
 
         var bond = CardFactory.CreateCard(29, player);
         player.Bond.AddCard(bond);
@@ -36,7 +36,7 @@ public class Card00030Test
         count = luqina.GetUsableActionSkills().Count;
         Assert.IsTrue(count == 1);
 
-        Request.SetNextResult(bond);
+        Request.SetNextResult(new List<Card>() { bond }); // Request.SetNextResult(); 也可
         Game.DoActionSkill(luqina.GetUsableActionSkills()[0]);
 
         Assert.IsTrue(luqina.Power == 60);
