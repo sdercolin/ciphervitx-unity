@@ -7,6 +7,7 @@ public static class Game
 {
     public static void Initialize()
     {
+        Strings.Load(""); // default language
         Player = new Player();
         Rival = new Rival();
         TurnCount = 0;
