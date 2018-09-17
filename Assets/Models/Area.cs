@@ -36,7 +36,7 @@ public abstract class Area
     /// <returns>是否包含某张卡</returns>
     public bool Contains(Card card)
     {
-        return list.Contains(card);
+        return Cards.Contains(card);
     }
 
     public int Count => Cards.Count;
@@ -142,7 +142,7 @@ public abstract class Area
     public List<Card> SearchCard(string UnitName)
     {
         List<Card> result = new List<Card>();
-        list.ForEach(card =>
+        Cards.ForEach(card =>
         {
             if (card.HasUnitNameOf(UnitName))
             {
