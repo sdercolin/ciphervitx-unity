@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-    <string key="load_deck_card_not_found" value="未找到卡片：{0}">
-    <string key="load_deck_total_not_enough" value="卡组不足50张。">
-    <string key="load_deck_same_card_over_limit" value="卡片「{0}」超过卡组可容纳数量。">
-    <string key="load_deck_hero_preset_illegal" value="预设的主人公「{0}」的出击费用不为1。">
-    <string key="load_deck_request_choose_hero" value="请选择作为主人公的卡。">
-    <string key="card_text_unitname_レナ" value="蕾娜">
-    <string key="card_text_unitname_ジュリアン" value="朱利安">
+    <string key="load_deck_card_not_found" value="未找到卡片：{0}"/>
+    <string key="load_deck_total_not_enough" value="卡组不足50张。"/>
+    <string key="load_deck_same_card_over_limit" value="卡片「{0}」超过卡组可容纳数量。"/>
+    <string key="load_deck_hero_preset_illegal" value="预设的主人公「{0}」的出击费用不为1。"/>
+    <string key="load_deck_request_choose_hero" value="请选择作为主人公的卡。"/>
+    <string key="card_text_unitname_レナ" value="蕾娜"/>
+    <string key="card_text_unitname_ジュリアン" value="朱利安"/>
 </root>
