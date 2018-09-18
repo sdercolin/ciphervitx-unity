@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEditor;
 using UnityEngine.TestTools;
 using NUnit.Framework;
@@ -13,8 +13,8 @@ public class Card00040Test
     public void SkillTest()
     {
         /// <summary>
-        /// ¥¹¥­¥ë1
-        /// ¡ºÂ}¶Ü¡»¡¼×ªÖ°¼¼¡½¡¾³£¡¿<¹­>¤«<Ä§·¨>¤«<¸oÊ¯>¤ÎááĞl¤Î”³¤Ï¹¥“Ä¤Ç¤­¤Ê¤¤¡££¨¤Ï¤³¤Î¥æ¥Ë¥Ã¥È¤¬¥¯¥é¥¹¥Á¥§¥ó¥¸¤·¤Æ¤¤¤Ê¤±¤ì¤ĞÓĞ„¿¤Ë¤Ê¤é¤Ê¤¤£©
+        /// ã‚¹ã‚­ãƒ«1
+        /// ã€è–ç›¾ã€ã€–è½¬èŒæŠ€ã€—ã€å¸¸ã€‘<å¼“>ã‹<é­”æ³•>ã‹<ç«œçŸ³>ã®å¾Œè¡›ã®æ•µã¯æ”»æ’ƒã§ããªã„ã€‚ï¼ˆã¯ã“ã®ãƒ¦ãƒ‹ãƒƒãƒˆãŒã‚¯ãƒ©ã‚¹ãƒã‚§ãƒ³ã‚¸ã—ã¦ã„ãªã‘ã‚Œã°æœ‰åŠ¹ã«ãªã‚‰ãªã„ï¼‰
         /// </summary>
         Game.Initialize();
         Game.LosingProcessDisabled = true;
@@ -24,11 +24,11 @@ public class Card00040Test
 
         var card1 = CardFactory.CreateCard(40, player);
         player.FrontField.AddCard(card1);
-        var card2 = CardFactory.CreateCard(13, rival);//¹­
+        var card2 = CardFactory.CreateCard(13, rival);//å¼“
         rival.BackField.AddCard(card2);
-        var card3 = CardFactory.CreateCard(21, rival);//Ä§·¨
+        var card3 = CardFactory.CreateCard(21, rival);//é­”æ³•
         rival.BackField.AddCard(card3);
-        var card4 = CardFactory.CreateCard(157, rival);//¸oÊ¯
+        var card4 = CardFactory.CreateCard(157, rival);//ç«œçŸ³
         rival.BackField.AddCard(card4);
 
 
