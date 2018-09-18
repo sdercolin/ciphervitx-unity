@@ -43,7 +43,7 @@ public class Card00020 : Card
             Description = "『回复之杖』【起】[横置，翻面2]从自己的退避区中选择1张「蕾娜」以外的卡，将其加入手牌。";
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-            ExceptName = "蕾娜";
+            ExceptName = Strings.Get("card_text_unitname_レナ");
         }
     }
 
@@ -67,7 +67,7 @@ public class Card00020 : Card
         {
             return card.Controller == Controller
                 && card.IsOnField
-                && card.HasUnitNameOf("朱利安");
+                && card.HasUnitNameOf(Strings.Get("card_text_unitname_ジュリアン"));
         }
 
         public override void SetItemToApply()
