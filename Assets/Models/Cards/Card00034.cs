@@ -41,7 +41,7 @@ public class Card00034 : Card
             Description = "『回复之杖』【起】[横置，翻面2]从自己的退避区中选择1张「莉兹」以外的卡，将其加入手牌。";
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-            ExceptName = "莉兹";
+            ExceptName = Strings.Get("card_text_unitname_リズ");
         }
     }
 

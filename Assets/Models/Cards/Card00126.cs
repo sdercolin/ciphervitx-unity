@@ -51,7 +51,7 @@ public class Card00126 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.ReverseBond(this, 3) + Cost.DiscardHand(this, 1, card => card.HasUnitNameOf("萨莉雅"));
+            return Cost.ReverseBond(this, 3) + Cost.DiscardHand(this, 1, card => card.HasUnitNameOf(Strings.Get("card_text_unitname_サーリャ")));
         }
 
         public override async Task Do()

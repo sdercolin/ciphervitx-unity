@@ -83,7 +83,7 @@ public class Card00094 : Card
 
         public override bool CanTarget(Card card)
         {
-            return card.Controller == Controller && (card.HasUnitNameOf("马尔斯") || card.HasUnitNameOf("玛利克"));
+            return card.Controller == Controller && (card.HasUnitNameOf(Strings.Get("card_text_unitname_マルス")) || card.HasUnitNameOf(Strings.Get("card_text_unitname_マリク")));
         }
 
         public override void SetItemToApply()
@@ -91,11 +91,11 @@ public class Card00094 : Card
             ItemsToApply.Add(new PowerBuff(this, 10));
         }
     }
-    
+
     public class UserForbidAumStaff : SubSkill, IUserForbidActionSkill
     {
         public UserForbidAumStaff(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
-        public string ForbiddenSkillName => "复活之杖";
+        public string ForbiddenSkillName => Strings.Get("card_text_skillname_オーム");
     }
 }

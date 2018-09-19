@@ -44,7 +44,7 @@ public class Card00045 : Card
             Description = "『回复之杖』【起】[横置，翻面2]从自己的退避区中选择1张「玛丽亚贝尔」以外的卡，将其加入手牌。";
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-            ExceptName = "玛丽亚贝尔";
+            ExceptName = Strings.Get("card_text_unitname_マリアベル");
         }
     }
 
@@ -69,7 +69,7 @@ public class Card00045 : Card
             return Game.TurnPlayer == Controller
                 && card.Controller == Controller
                 && card.IsOnField
-                && card.HasUnitNameOf("莉兹");
+                && card.HasUnitNameOf(Strings.Get("card_text_unitname_リズ"));
         }
 
         public override void SetItemToApply()

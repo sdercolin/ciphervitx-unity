@@ -68,7 +68,7 @@ public class Card00071 : Card
 
         public override async Task Do(Induction induction)
         {
-            await Controller.ChooseAddToHand(Controller.Retreat.Filter(card => card.DeployCost == 1 && !card.HasUnitNameOf("蕾娜")), 0, 1, this);
+            await Controller.ChooseAddToHand(Controller.Retreat.Filter(card => card.DeployCost == 1 && !card.HasUnitNameOf(Strings.Get("card_text_unitname_レナ"))), 0, 1, this);
         }
     }
 }

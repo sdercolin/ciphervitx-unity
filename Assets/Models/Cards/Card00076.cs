@@ -81,11 +81,11 @@ public class Card00076 : Card
         {
             ItemsToApply.Add(new DisableSkill(this)
             {
-                TargetName = "飞行特效"
+                TargetName = Strings.Get("card_text_skillname_飛行特効")
             });
             ItemsToApply.Add(new CanNotObtainSkill(this)
             {
-                TargetName = "飞行特效"
+                TargetName = Strings.Get("card_text_skillname_飛行特効")
             });
         }
     }

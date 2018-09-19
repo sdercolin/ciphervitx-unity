@@ -48,7 +48,7 @@ public class Card00142 : Card
             return card == Owner
                 && Game.TurnPlayer == Controller
                 && Controller.Hand.Count > Opponent.Hand.Count
-                && Controller.Field.Filter(unit => unit.HasUnitNameOf("萨莉雅")).Count > 0;
+                && Controller.Field.Filter(unit => unit.HasUnitNameOf(Strings.Get("card_text_unitname_サーリャ"))).Count > 0;
         }
 
         public override void SetItemToApply()

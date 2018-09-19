@@ -53,7 +53,7 @@ public class Card00078 : Card
 
         public override async Task Do()
         {
-            await Controller.ChooseAddToHand(Controller.Retreat.Filter(unit => !unit.HasUnitNameOf("玛莉娅")), 0, 2, this, true, Request.RequestFlags.DoNotAllowSameName);
+            await Controller.ChooseAddToHand(Controller.Retreat.Filter(unit => !unit.HasUnitNameOf(Strings.Get("card_text_unitname_マリア"))), 0, 2, this, true, Request.RequestFlags.DoNotAllowSameName);
         }
     }
 }

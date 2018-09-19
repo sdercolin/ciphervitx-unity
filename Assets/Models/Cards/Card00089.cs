@@ -57,7 +57,7 @@ public class Card00089 : Card
 
         public override async Task Do()
         {
-            await Controller.ChooseDeploy(Controller.Deck.Filter(card => card.DeployCost <= 2 && (card.HasUnitNameOf("帕奥拉") || card.HasUnitNameOf("卡秋雅"))), 0, 1, null, null, this);
+            await Controller.ChooseDeploy(Controller.Deck.Filter(card => card.DeployCost <= 2 && (card.HasUnitNameOf(Strings.Get("card_text_unitname_パオラ")) || card.HasUnitNameOf(Strings.Get("card_text_unitname_カチュア")))), 0, 1, null, null, this);
         }
     }
 
