@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <config key="user_id" value="Player" />
+  <config key="apply_default_choices" value="true" />
+</root>

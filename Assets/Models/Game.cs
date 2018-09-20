@@ -7,6 +7,7 @@ public static class Game
 {
     public static void Initialize()
     {
+        Config.Load();
         Strings.Load(""); // default language
         Player = new Player();
         Rival = new Rival();
