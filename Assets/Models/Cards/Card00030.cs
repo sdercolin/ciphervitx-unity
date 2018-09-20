@@ -44,7 +44,7 @@ public class Card00030 : Card
 
         public override bool CheckConditions()
         {
-            return Controller.Field.SearchCard("库洛姆").Count > 0;
+            return Controller.Field.SearchCard(Strings.Get("card_text_unitname_クロム")).Count > 0;
         }
 
         public override Cost DefineCost()
@@ -55,7 +55,7 @@ public class Card00030 : Card
         public override Task Do()
         {
             Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), Owner);
-            var targets = Owner.Controller.Field.SearchCard("库洛姆");
+            var targets = Owner.Controller.Field.SearchCard(Strings.Get("card_text_unitname_クロム"));
             targets.ForEach(unit =>
             {
                 Controller.AttachItem(new PowerBuff(this, 10, LastingTypeEnum.UntilTurnEnds), unit);

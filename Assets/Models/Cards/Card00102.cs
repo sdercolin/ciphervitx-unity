@@ -52,7 +52,7 @@ public class Card00102 : Card
 
         public override void SetItemToApply()
         {
-            ItemsToApply.Add(new UnitNameBuff(this, true, "马尔斯"));
+            ItemsToApply.Add(new UnitNameBuff(this, true, Strings.Get("card_text_unitname_マルス")));
         }
     }
 

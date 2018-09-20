@@ -1,10 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-    <string key="load_deck_card_not_found" value="未找到卡片：{0}"/>
-    <string key="load_deck_total_not_enough" value="卡组不足50张。"/>
-    <string key="load_deck_same_card_over_limit" value="卡片「{0}」超过卡组可容纳数量。"/>
-    <string key="load_deck_hero_preset_illegal" value="预设的主人公「{0}」的出击费用不为1。"/>
-    <string key="load_deck_request_choose_hero" value="请选择作为主人公的卡。"/>
-    <string key="card_text_unitname_レナ" value="蕾娜"/>
-    <string key="card_text_unitname_ジュリアン" value="朱利安"/>
+  <string key="load_deck_card_not_found" value="未找到卡片：{0}"/>
+  <string key="load_deck_total_not_enough" value="卡组不足50张。"/>
+  <string key="load_deck_same_card_over_limit" value="卡片「{0}」超过卡组可容纳数量。"/>
+  <string key="load_deck_hero_preset_illegal" value="预设的主人公「{0}」的出击费用不为1。"/>
+  <string key="load_deck_request_choose_hero" value="请选择作为主人公的卡。"/>
+
+  <string key="card_text_unitname_レナ" value="蕾娜"/>
+  <string key="card_text_unitname_ジュリアン" value="朱利安"/>
+  <string key="card_text_unitname_アベル" value="阿贝尔"/>
+  <string key="card_text_unitname_カイン" value="卡因"/>
+  <string key="card_text_unitname_サジ" value="萨基"/>
+  <string key="card_text_unitname_マジ" value="玛基"/>
+  <string key="card_text_unitname_クロム" value="库洛姆"/>
+  <string key="card_text_unitname_リズ" value="莉兹"/>
+  <string key="card_text_unitname_ソール" value="索尔"/>
+  <string key="card_text_unitname_ソワレ" value="索瓦蕾"/>
+  <string key="card_text_unitname_マリアベル" value="玛丽亚贝尔"/>
+  <string key="card_text_unitname_マルス" value="马尔斯"/>
+  <string key="card_text_unitname_シーダ" value="希达"/>
+  <string key="card_text_unitname_ナバール" value="那巴尔"/>
+  <string key="card_text_unitname_オグマ" value="奥古玛"/>
+  <string key="card_text_unitname_マリア" value="玛莉娅"/>
+  <string key="card_text_unitname_ミネルバ" value="密涅瓦"/>
+  <string key="card_text_unitname_ミシェイル" value="米歇尔"/>
+  <string key="card_text_unitname_アストリア" value="阿斯特利亚"/>
+  <string key="card_text_unitname_カチュア" value="卡秋雅"/>
+  <string key="card_text_unitname_エスト" value="爱丝特"/>
+  <string key="card_text_unitname_パオラ" value="帕奥拉"/>
+  <string key="card_text_unitname_ミディア" value="米迪娅"/>
+  <string key="card_text_unitname_マリク" value="玛利克"/>
+  <string key="card_text_unitname_ルキナ" value="露琪娜"/>
+  <string key="card_text_unitname_サーリャ" value="萨莉雅"/>
+  <string key="card_text_unitname_ルフレ（女）" value="路弗雷（女）"/>
+  <string key="card_text_unitname_セルジュ" value="塞尔吉"/>
+  <string key="card_text_unitname_ウード" value="伍德"/>
+  <string key="card_text_unitname_ティアモ" value="缇雅莫"/>
+  <string key="card_text_unitname_アンナ" value="安娜"/>
+  
+  <string key="card_text_skillname_飛行特効" value="飞行特效"/>
+  <string key="card_text_skillname_オーム" value="复活之杖"/>
 </root>

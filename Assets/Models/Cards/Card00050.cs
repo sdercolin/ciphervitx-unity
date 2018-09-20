@@ -74,7 +74,7 @@ public class Card00050 : Card
 
         public override async Task Do(Induction induction)
         {
-            await Controller.ChooseAddToHand(Controller.Deck.Filter(unit => !unit.HasUnitNameOf("希达") && unit.HasSymbol(SymbolEnum.Red)), 0, 1, this);
+            await Controller.ChooseAddToHand(Controller.Deck.Filter(unit => !unit.HasUnitNameOf(Strings.Get("card_text_unitname_シーダ")) && unit.HasSymbol(SymbolEnum.Red)), 0, 1, this);
             Controller.ShuffleDeck(this);
         }
     }
