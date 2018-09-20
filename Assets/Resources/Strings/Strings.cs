@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 public static class Strings
 {
     public static string CurrentLanguage = "";
-    const string path = @"Assets/Models/Resources/Strings/Strings{0}.xml";
+    const string path = @"Assets/Resources/Strings/Strings{0}.xml";
     private static readonly Dictionary<string, string> stringsDict = new Dictionary<string, string>();
 
     public static void Load(string language)
