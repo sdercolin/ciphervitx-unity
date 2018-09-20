@@ -117,6 +117,13 @@ public static class Request
         }
         else
         {
+            if (targetUser is Player && Config.GetValue("apply_default_choices") == "true")
+            {
+                if (min == choices.Count)
+                {
+                    return choices;
+                }
+            }
             // TO DO
             return null;
         }
@@ -191,7 +198,7 @@ public static class Request
 
     public static async Task<bool> AskIfSendToRetreat(Card target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        return await AskIfSendToRetreat(new List<Card>() { target }, targetUser,flags);
+        return await AskIfSendToRetreat(new List<Card>() { target }, targetUser, flags);
     }
 
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -227,7 +234,7 @@ public static class Request
             return true;
         }
     }
-    
+
     public static async Task<int> ChooseRPS(User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         // TO DO:
