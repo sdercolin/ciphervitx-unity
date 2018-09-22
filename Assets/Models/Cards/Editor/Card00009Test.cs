@@ -16,7 +16,7 @@ public class Card00009Test
         /// 『赤と緑の絆』【常】このユニットが『アベル』に支援されている場合、このユニットの戦闘力は＋３０される。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

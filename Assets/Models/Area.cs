@@ -98,8 +98,8 @@ public abstract class Area
     /// <param name="card">要移除的卡</param>
     public void RemoveCard(Card card)
     {
-        ProcessCardOut(card, card.BelongedRegion);
         list.Remove(card);
+        ProcessCardOut(card, card.BelongedRegion);
     }
 
     /// <summary>
@@ -200,10 +200,13 @@ public class Deck : Area
 
     public override void ProcessCardOut(Card card, Area toArea)
     {
-        if (list.Count == 0)
+        if (!Game.DeckReplenishProcessDisabled)
         {
-            Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
-            Controller.ShuffleDeck(null);
+            if (list.Count == 0)
+            {
+                Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
+                Controller.ShuffleDeck(null);
+            }
         }
     }
 }

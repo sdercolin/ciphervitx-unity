@@ -16,7 +16,7 @@ public class Card00036Test
         /// 『弓の達人』〖转职技〗【常】他の<弓>の味方１体につき、このユニットの戦闘力は＋１０される。（はこのユニットがクラスチェンジしていなければ有効にならない）
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
 

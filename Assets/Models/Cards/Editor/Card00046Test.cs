@@ -16,7 +16,7 @@ public class Card00046Test
         /// 『天空の運び手』【起】[横置]他の味方を１体選び、移動させる。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
         int count = 0;

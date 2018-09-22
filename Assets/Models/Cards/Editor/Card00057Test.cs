@@ -16,7 +16,7 @@ public class Card00057Test
         /// 『鉄壁の盾』【自】[翻面1]他の味方が攻撃された時、コストを支払うなら、このユニットはその味方の代わりに攻撃される。このスキルはこのユニットが前衛でなければ発動しない。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = rival;

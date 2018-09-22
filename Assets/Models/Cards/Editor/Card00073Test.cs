@@ -16,7 +16,7 @@ public class Card00073Test
         /// 『鍵開け』【起】[横置]相手のデッキの１番上のカードを公開させる。そのカードの出撃コストが３以上の場合、あなたは翻面1してもよい。そうしたなら、カードを１枚引く。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;
@@ -48,7 +48,7 @@ public class Card00073Test
         /// 『財宝奪取』【起】[翻面1]相手のデッキの１番上のカードを退避エリアに置かせる。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

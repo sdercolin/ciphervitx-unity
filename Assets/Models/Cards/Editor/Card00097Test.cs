@@ -16,7 +16,7 @@ public class Card00097Test
         /// 『聖王の威光』【起】[翻面3，自分の手札から『クロム』を１枚退避エリアに置く]敵を好きな数だけ選び、移動させる。ターン終了まで、すべての味方の戦闘力は＋３０される。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = rival;

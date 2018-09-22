@@ -16,7 +16,7 @@ public class Card00027Test
         /// 『魔道研究』【起】[横置，自分の手札を１枚退避エリアに置く]カードを１枚引く。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
 

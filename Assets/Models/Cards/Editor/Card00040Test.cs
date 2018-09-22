@@ -17,7 +17,7 @@ public class Card00040Test
         /// 『聖盾』〖转职技〗【常】<弓>か<魔法>か<竜石>の後衛の敵は攻撃できない。（はこのユニットがクラスチェンジしていなければ有効にならない）
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = rival;

@@ -16,7 +16,7 @@ public class Card00044Test
         /// 『女は近づくな』【常】<女>のカードはこのユニットの支援に失敗する。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

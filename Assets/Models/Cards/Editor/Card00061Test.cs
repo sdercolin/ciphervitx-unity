@@ -16,7 +16,7 @@ public class Card00061Test
         /// 『きずぐすり』【自】[横置，このユニットを撃破する]他の味方が攻撃された時、コストを支払うなら、戦闘終了まで、その防御ユニットの戦闘力は＋２０される。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = rival;

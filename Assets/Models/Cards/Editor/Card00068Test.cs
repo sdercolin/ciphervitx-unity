@@ -16,7 +16,7 @@ public class Card00068Test
         /// 『二刀流』【自】[翻面1]このユニットの攻撃で敵を撃破した時、コストを支払うなら、主人公以外で出撃コストが２以下の敵を１体選び、撃破する。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

@@ -16,7 +16,7 @@ public class Card00076Test
         /// 『アイオテの盾』【常】すべての敵は『飛行特効』を失い、新たに得ることもできない。（【常】はこのカードがユニットとして戦場にいる間だけ有効になる）
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = rival;

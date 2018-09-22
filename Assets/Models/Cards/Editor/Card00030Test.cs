@@ -16,7 +16,7 @@ public class Card00030Test
         /// 『聖なる血脈』【起】〖1回合1次〗[翻面1]ターン終了まで、このユニットと味方の『クロム』の戦闘力は＋１０される。このスキルは味方に『クロム』がいなければ使用できない。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
 

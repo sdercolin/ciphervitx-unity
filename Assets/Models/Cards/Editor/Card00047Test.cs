@@ -16,7 +16,7 @@ public class Card00047Test
         /// 『英雄の凱歌』【起】[翻面3，自分の手札から『マルス』を１枚退避エリアに置く]次の相手のターン終了まで、すべての味方の戦闘力は＋３０される。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
 

@@ -16,7 +16,7 @@ public class Card00029Test
         /// 『聖痕の輝き』【常】クラスチェンジしている他の味方１体につき、このユニットの戦闘力は＋１０される。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
 

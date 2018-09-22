@@ -45,7 +45,13 @@ public static class Game
     public static List<List<Induction>> InductionSetList;//存放处于诱发状态的能力组
 
     //测试用
+    public static void SetTestMode()
+    {
+        LosingProcessDisabled = true;
+        DeckReplenishProcessDisabled = true;
+    }
     public static bool LosingProcessDisabled;
+    public static bool DeckReplenishProcessDisabled;
 
     public static List<Card> AllCards => ListUtils.Combine(Player.AllCards, Rival.AllCards);
 

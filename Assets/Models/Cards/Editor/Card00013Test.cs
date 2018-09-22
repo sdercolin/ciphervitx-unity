@@ -17,7 +17,7 @@ public class Card00013Test
         /// 『牽制射撃』【自】出撃コストが２以下の味方が出撃するたび、<飛行>の敵を１体選び、移動させてもよい。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

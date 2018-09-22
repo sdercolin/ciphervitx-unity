@@ -16,7 +16,7 @@ public class Card00031Test
         /// 『神軍師の采配』【自】他の味方がクラスチェンジするたび、敵を１体選び、移動させてもよい。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;
@@ -72,7 +72,7 @@ public class Card00031Test
         /// 『これも、策のうちです』〖转职技〗【起】[翻面3]自分のオーブの数が相手より少ない場合、デッキの１番上のカードをオーブに追加する。（はこのユニットがクラスチェンジしていなければ使用できない）
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

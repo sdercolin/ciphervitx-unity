@@ -16,7 +16,7 @@ public class Card00033Test
         /// 『闘う修道女』〖转职技〗【自】このユニットの攻撃で敵を撃破した時、自分の退避エリアから『リズ』以外で出撃コストが３以下のカードを１枚選び、手札に加える。（はこのユニットがクラスチェンジしていなければ発動しない）
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

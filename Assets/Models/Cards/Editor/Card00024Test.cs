@@ -16,7 +16,7 @@ public class Card00024Test
         /// 『クロム自警団』【自】〖1回合1次〗他の味方がクラスチェンジした時、ターン終了まで、その味方の戦闘力は＋２０され、その味方が攻撃で破壊するオーブは２つになる。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;
@@ -65,7 +65,7 @@ public class Card00024Test
         /// 『封剣 ファルシオン』【常】このユニットが<竜>を攻撃している場合、このユニットの戦闘力は＋２０される。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

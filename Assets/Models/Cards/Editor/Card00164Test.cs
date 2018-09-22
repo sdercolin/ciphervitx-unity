@@ -21,7 +21,7 @@ public class Card00164Test
         /// </summary>
         /// 
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = rival;
