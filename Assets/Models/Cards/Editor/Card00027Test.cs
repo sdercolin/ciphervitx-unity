@@ -18,7 +18,6 @@ public class Card00027Test
         Game.Initialize();
         Game.LosingProcessDisabled = true;
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
 
         var milieer = CardFactory.CreateCard(27, player);

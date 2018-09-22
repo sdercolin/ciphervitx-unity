@@ -56,7 +56,7 @@ public static class Request
     {
         dynamic nextResult = NextResults.Dequeue();
         bool isDefault = nextResult == null;
-        bool isIndex = NextResultsAreIndexes.Dequeue();
+        NextResultsAreIndexes.Dequeue();
         if (isDefault)
         {
             return false;

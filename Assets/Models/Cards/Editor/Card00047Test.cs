@@ -18,7 +18,6 @@ public class Card00047Test
         Game.Initialize();
         Game.LosingProcessDisabled = true;
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
 
         // 己方配置

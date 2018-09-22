@@ -18,7 +18,6 @@ public class Card00029Test
         Game.Initialize();
         Game.LosingProcessDisabled = true;
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
 
         var kuluomu = CardFactory.CreateCard(29, player);

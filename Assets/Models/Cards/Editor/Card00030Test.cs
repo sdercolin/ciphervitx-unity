@@ -18,7 +18,6 @@ public class Card00030Test
         Game.Initialize();
         Game.LosingProcessDisabled = true;
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
 
         var luqina = CardFactory.CreateCard(30, player);
