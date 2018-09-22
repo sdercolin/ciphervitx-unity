@@ -203,7 +203,7 @@ public static class Request
 
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        Debug.Log("Requesting AskIfReverseBond: " + Environment.NewLine
+        Debug.Log("Requesting AskIfSendToRetreat: " + Environment.NewLine
             + "targets = " + StringUtils.CreateFromAny(targets));
         if (NextResults.Count > 0)
         {
