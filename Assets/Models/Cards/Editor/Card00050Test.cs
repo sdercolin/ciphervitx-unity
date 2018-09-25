@@ -24,7 +24,6 @@ public class Card00050Test
         var card = CardFactory.CreateCard(50, player);//60         
         var support1 = CardFactory.CreateCard(1, player);//20支援
         var support2 = CardFactory.CreateCard(1, player);
-        var bond = CardFactory.CreateCard(1, player);
 
         player.FrontField.AddCard(card);
         player.Deck.AddCard(support1);
@@ -58,7 +57,6 @@ public class Card00050Test
         Game.Initialize();
         Game.LosingProcessDisabled = true;
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
 
         var card1 = CardFactory.CreateCard(50, player);
