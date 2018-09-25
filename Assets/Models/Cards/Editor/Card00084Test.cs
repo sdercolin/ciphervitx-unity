@@ -18,7 +18,7 @@ public class Card00084Test
         Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
-        Game.TurnPlayer = rival;
+        Game.TurnPlayer = player;
 
         // 己方配置
         var dajie = CardFactory.CreateCard(84, player);
@@ -65,7 +65,7 @@ public class Card00084Test
         Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
-        Game.TurnPlayer = rival;
+        Game.TurnPlayer = player;
 
         // 己方配置
         var dajie = CardFactory.CreateCard(84, player);//50攻击
@@ -79,7 +79,7 @@ public class Card00084Test
         hisHero.IsHero = true;
         var hisOrb = CardFactory.CreateCard(6, rival);
         rival.Orb.AddCard(hisOrb);
-        var hisSupport = CardFactory.CreateCard(22, rival);//20支援
+        var hisSupport = CardFactory.CreateCard(3, rival);//20支援
         rival.Deck.AddCard(hisSupport);
 
         Request.SetNextResult();
@@ -88,6 +88,6 @@ public class Card00084Test
         Request.SetNextResult(); //拿一个宝玉
         Game.DoBattle(dajie, hisHero);
 
-        Assert.IsTrue(rival.Orb.Count == 0);//NG 未击破
+        Assert.IsTrue(rival.Orb.Count == 0);
     }
 }

@@ -23,7 +23,7 @@ public class Card00119Test
         Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
-        Game.TurnPlayer = rival;
+        Game.TurnPlayer = player;
 
         // 己方配置
         var gaiya_1C = CardFactory.CreateCard(119, player);
@@ -69,7 +69,7 @@ public class Card00119Test
         Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
-        Game.TurnPlayer = rival;
+        Game.TurnPlayer = player;
 
         // 己方配置
         var gaiya = CardFactory.CreateCard(119, player);
@@ -115,7 +115,7 @@ public class Card00119Test
         Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
-        Game.TurnPlayer = rival;
+        Game.TurnPlayer = player;
 
         // 己方配置
         var gaiya = CardFactory.CreateCard(119, player);

@@ -24,7 +24,7 @@ public class Card00164Test
         Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
-        Game.TurnPlayer = rival;
+        Game.TurnPlayer = player;
 
         // 己方配置
         var caizang = CardFactory.CreateCard(164, player); //战斗力50

@@ -19,7 +19,7 @@ public class Card00097Test
         Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
-        Game.TurnPlayer = rival;
+        Game.TurnPlayer = player;
 
         // 己方配置
         var kuluomu = CardFactory.CreateCard(97, player);
