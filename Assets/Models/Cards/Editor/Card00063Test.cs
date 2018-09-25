@@ -27,7 +27,7 @@ public class Card00063Test
         player.FrontField.AddCard(card);
         player.Deck.AddCard(support1);
 
-        var rivalcard = CardFactory.CreateCard(2, rival);//70
+        var rivalcard = CardFactory.CreateCard(3, rival);//70
         var rivalSupport1 = CardFactory.CreateCard(1, rival);//20支援
 
         rival.FrontField.AddCard(rivalcard);
