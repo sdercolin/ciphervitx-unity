@@ -117,8 +117,9 @@ public static class Request
         }
         else
         {
+            return await UIMainController.GetUIMainController().RequestChoose<T>(choices, min, max, description);
             // TO DO
-            return null;
+            //return null;
         }
     }
 
@@ -134,8 +135,9 @@ public static class Request
         }
         else
         {
+            return await UIMainController.GetUIMainController().RequestChooseBool(StringUtils.CreateFromAny(target));
             // TO DO
-            return false;
+            //return false;
         }
     }
 
@@ -152,8 +154,9 @@ public static class Request
         }
         else
         {
+            return await UIMainController.GetUIMainController().RequestChooseBool(StringUtils.CreateFromAny(reason));
             // TO DO
-            return false;
+            //return false;
         }
     }
 
@@ -168,8 +171,9 @@ public static class Request
         }
         else
         {
+            return await UIMainController.GetUIMainController().RequestChooseBool("Critical Attack");
             // TO DO
-            return false;
+            //return false;
         }
     }
 
@@ -184,8 +188,9 @@ public static class Request
         }
         else
         {
+            return await UIMainController.GetUIMainController().RequestChooseBool("Avoid");
             // TO DO
-            return false;
+            //return false;
         }
     }
 
@@ -206,8 +211,9 @@ public static class Request
         }
         else
         {
+            return await UIMainController.GetUIMainController().RequestChooseBool(StringUtils.CreateFromAny(targets));
             // TO DO
-            return false;
+            //return false;
         }
     }
 
@@ -223,8 +229,9 @@ public static class Request
         }
         else
         {
+            return await UIMainController.GetUIMainController().RequestChooseBool(StringUtils.CreateFromAny(target));
             // TO DO
-            return true;
+            //return true;
         }
     }
     
@@ -232,13 +239,21 @@ public static class Request
     {
         // TO DO:
         // 石头：0，剪刀：1，布：2
-        return 0;
+        //return 0;
+        List<int> rps = new List<int>()
+        {
+            0,
+            1,
+            2
+        };
+        return (await UIMainController.GetUIMainController().RequestChoose<int>(rps, 1, 1, "Rogue Paladin or Shaman"))[0];
     }
 
     public static async Task<bool> AskIfChangeFirstHand(User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         // TO DO
-        return false;
+        //return false;
+        return await UIMainController.GetUIMainController().RequestChooseBool("Mulligan");
     }
 
     [Flags]

@@ -93,6 +93,7 @@ public class CardListItem : UIBehaviour,
     {
         if (m_Backed)
         {
+            UILogger.LogError("try to turn a card to back, but it is already in back. card: " + StringUtils.CreateFromAny(m_Card));
             return;
         }
 
@@ -122,6 +123,7 @@ public class CardListItem : UIBehaviour,
     {
         if (!m_Backed)
         {
+            UILogger.LogError("try to turn a card to front, but it is already in front. card: " + StringUtils.CreateFromAny(m_Card));
             return;
         }
 
@@ -142,4 +144,9 @@ public class CardListItem : UIBehaviour,
         TurnFront(ResourceManager.GetSprite(index));
     }
     #endregion
+
+    public void RemoveSelf()
+    {
+        m_List.RemoveItem(this);
+    }
 }

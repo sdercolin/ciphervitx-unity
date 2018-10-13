@@ -47,11 +47,15 @@ public class SinglePlayerField : UIBehaviour
     //CardListItem上绑定Card对象，需要操作时跳过区域，查询可用的操作
     //如果绑定Card对象，那么不需要用SetFront(string)等方法来设置Image，只需要ShowFront(bool)，Card中已经有足够的信息
 
-    public void DeployCardToBattleField(Card card, bool toFront)
+    public void DeployCardToBattleField(Card card, bool toFront, bool actioned = false)
     {
         CardListH list = toFront ? m_FrontArea : m_BackArea;
         CardListItem listItem = list.AddListItem();
         listItem.Card = card;
+        if (actioned)
+        {
+            listItem.Tap();
+        }
     }
 
     private CardListItem SearchCardInBattleField(Card card)
@@ -118,5 +122,42 @@ public class SinglePlayerField : UIBehaviour
         {
             UILogger.LogError("can not find card when move card, " + card.ToString());
         }
+    }
+
+    public void RemoveCardFromBattleField(Card card)
+    {
+        CardListItem listItem = SearchCardInBattleField(card);
+        if (listItem != null)
+        {
+            listItem.RemoveSelf();
+        }
+        else
+        {
+            UILogger.LogError("can not find card when remove card, " + card.ToString());
+        }
+    }
+
+    public void SetDeckSize(int size)
+    {
+        m_DeckArea.SetText(size.ToString());
+    }
+
+    public void ReverseBond(Card card)
+    {
+        CardListItem listItem = m_BondArea.SearchCard(card);
+        if (listItem != null)
+        {
+            listItem.TurnBack();
+        }
+        else
+        {
+            UILogger.LogError("can not find card when reverse bond, " + card.ToString());
+        }
+    }
+
+    public void AddBond(Card card)
+    {
+        CardListItem listItem = m_BondArea.AddListItem();
+        listItem.Card = card;
     }
 }

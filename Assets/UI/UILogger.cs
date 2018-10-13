@@ -15,4 +15,12 @@ public class UILogger
             Debug.LogError(content);
         }
     }
+
+    public static void LogYellow(string content)
+    {
+        if (enabled)
+        {
+            Debug.Log("<color=#FFFF00>" + content + "</color>");
+        }
+    }
 }
