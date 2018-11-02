@@ -709,7 +709,7 @@ public abstract class Card
             }
         }
 
-        if (!HasSubSkill(typeof(CanDeployWithoutBond)))
+        if (!HasSubSkill(typeof(CanDeployWithoutBond)) && reason == null)
         {
             foreach (var symbol in symbols)
             {

@@ -555,7 +555,7 @@ public abstract class User
             if (area == null)
             {
                 canDeploy = card.CheckDeployment(card.Controller.FrontField, actioned, reason)
-                    && card.CheckDeployment(card.Controller.BackField, actioned, reason);
+                     || card.CheckDeployment(card.Controller.BackField, actioned, reason);
             }
             else
             {
