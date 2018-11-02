@@ -43,7 +43,7 @@ public class Card00079 : Card
             Description = "『回复之杖』【起】[横置，翻面2]从自己的退避区中选择1张「玛莉娅」以外的卡，将其加入手牌。";
             TypeSymbols.Add(SkillTypeSymbol.Action);
             Keyword = SkillKeyword.Null;
-            ExceptName = "玛莉娅";
+            ExceptName = Strings.Get("card_text_unitname_マリア");
         }
     }
 
@@ -67,7 +67,7 @@ public class Card00079 : Card
         {
             return card.Controller == Controller
                 && card.IsOnField
-                && (card.HasUnitNameOf("密涅瓦") || card.HasUnitNameOf("米歇尔"));
+                && (card.HasUnitNameOf(Strings.Get("card_text_unitname_ミネルバ")) || card.HasUnitNameOf(Strings.Get("card_text_unitname_ミシェイル")));
         }
 
         public override void SetItemToApply()

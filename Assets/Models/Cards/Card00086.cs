@@ -66,7 +66,7 @@ public class Card00086 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.ActionOthers(this, 1, card => card.HasUnitNameOf("帕奥拉")) + Cost.ActionOthers(this, 1, card => card.HasUnitNameOf("爱丝特"));
+            return Cost.ActionOthers(this, 1, card => card.HasUnitNameOf(Strings.Get("card_text_unitname_パオラ"))) + Cost.ActionOthers(this, 1, card => card.HasUnitNameOf(Strings.Get("card_text_unitname_エスト")));
         }
 
         public override Task Do(Induction induction)
@@ -97,7 +97,7 @@ public class Card00086 : Card
         {
             return card == Owner
                 && Game.BattlingUnits.Contains(card)
-                && (card.Controller.Support.SupportedBy("帕奥拉") || card.Controller.Support.SupportedBy("爱丝特"));
+                && (card.Controller.Support.SupportedBy(Strings.Get("card_text_unitname_パオラ")) || card.Controller.Support.SupportedBy(Strings.Get("card_text_unitname_エスト")));
         }
 
         public override void SetItemToApply()

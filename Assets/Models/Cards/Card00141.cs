@@ -46,7 +46,7 @@ public class Card00141 : Card
         public override bool CanTarget(Card card)
         {
             return card == Owner
-                && Controller.Field.Filter(unit => unit.HasUnitNameOf("缇雅莫")).Count > 0;
+                && Controller.Field.Filter(unit => unit.HasUnitNameOf(Strings.Get("card_text_unitname_ティアモ"))).Count > 0;
         }
 
         public override void SetItemToApply()

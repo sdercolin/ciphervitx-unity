@@ -93,7 +93,7 @@ public class Card00010 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.ActionOthers(this, 1, card => card.HasUnitNameOf("卡因"));
+            return Cost.ActionOthers(this, 1, card => card.HasUnitNameOf(Strings.Get("card_text_unitname_カイン")));
         }
 
         public override Task Do(Induction induction)

@@ -13,7 +13,7 @@ public class Card00007Test
     public void SkillTest()
     {
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
         var xida = CardFactory.CreateCard(7, player);
@@ -21,7 +21,6 @@ public class Card00007Test
         var targetCard = CardFactory.CreateCard(3, player);
 
         player.FrontField.AddCard(xida);
-        player.FrontField.AddCard(costCard);
         player.FrontField.AddCard(costCard);
 
         Request.SetNextResult(new List<Card>() { costCard });

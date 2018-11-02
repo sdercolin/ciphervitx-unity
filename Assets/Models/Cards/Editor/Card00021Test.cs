@@ -20,7 +20,7 @@ public class Card00021Test
         /// 『風の超魔法』【自】このユニットの攻撃で敵を撃破した時、このユニットがこのターンに『エクスカリバー』を使用しているなら、カードを１枚引く。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

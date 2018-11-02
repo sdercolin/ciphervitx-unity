@@ -52,7 +52,7 @@ public class Card00159 : Card
             var deployMessage = message as DeployMessage;
             if (deployMessage != null)
             {
-                if (deployMessage.TrueForAny(deployMessage.Targets, card => card == Owner))
+                if (deployMessage.Targets.Contains(Owner))
                 {
                     return new Induction();
                 }

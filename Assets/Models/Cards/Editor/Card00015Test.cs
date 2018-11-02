@@ -16,7 +16,7 @@ public class Card00015Test
         /// 『傭兵隊長』【常】自分のターン中、出撃コストが２以下の味方が他に２体以上いる場合、このユニットの戦闘力は＋２０される。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
         // 1C奥古马

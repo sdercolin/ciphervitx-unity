@@ -109,20 +109,20 @@ public abstract class User
             }
             if (!success)
             {
-                errorText += "> 未找到卡片：" + serial + Environment.NewLine;
+                errorText += "> " + Strings.Get("load_deck_card_not_found", serial) + Environment.NewLine;
             }
         }
 
         if (cardlistTemp.Count < 50)
         {
-            errorText += "> 卡组不足50张。" + Environment.NewLine;
+            errorText += "> " + Strings.Get("load_deck_total_not_enough") + Environment.NewLine;
         }
 
         foreach (var cardname in SameNameCountDictionary.Keys)
         {
             if (SameNameCountDictionary[cardname] > 4)
             {
-                errorText += "> 卡片「" + cardname + "」超过卡组可容纳数量。" + Environment.NewLine;
+                errorText += "> " + Strings.Get("load_deck_same_card_over_limit", cardname) + Environment.NewLine;
             }
         }
 
@@ -131,7 +131,7 @@ public abstract class User
             Card hero = cardlistTemp[heroIndex];
             if (hero.DeployCost != 1)
             {
-                errorText += "> 预设的主人公「" + hero.CardName + "」的出击费用不为1。" + Environment.NewLine;
+                errorText += "> " + Strings.Get("load_deck_hero_preset_illegal", hero.CardName) + Environment.NewLine;
             }
             else
             {
@@ -142,7 +142,7 @@ public abstract class User
         {
             if (cardlistTemp.FindAll(card => card.IsHero).Count == 0)
             {
-                (await Request.ChooseOne(cardlistTemp.FindAll(card => card.DeployCost == 1), this, Request.RequestFlags.Null, "请选择作为主人公的卡。"))
+                (await Request.ChooseOne(cardlistTemp.FindAll(card => card.DeployCost == 1), this, Request.RequestFlags.Null, Strings.Get("load_deck_request_choose_hero")))
                     .IsHero = true;
             }
             Dictionary<string, int> cardDict = new Dictionary<string, int>();
@@ -555,7 +555,7 @@ public abstract class User
             if (area == null)
             {
                 canDeploy = card.CheckDeployment(card.Controller.FrontField, actioned, reason)
-                    && card.CheckDeployment(card.Controller.BackField, actioned, reason);
+                     || card.CheckDeployment(card.Controller.BackField, actioned, reason);
             }
             else
             {

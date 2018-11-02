@@ -43,7 +43,7 @@ public class Card00069 : Card
 
         public override bool CanTarget(Card card)
         {
-            return !(card.HasUnitNameOf("希达") || card.HasUnitNameOf("奥古玛"))
+            return !(card.HasUnitNameOf(Strings.Get("card_text_unitname_シーダ")) || card.HasUnitNameOf(Strings.Get("card_text_unitname_オグマ")))
                 && Game.BattlingUnits.Contains(Owner)
                 && card.BelongedRegion == Controller.Support;
         }

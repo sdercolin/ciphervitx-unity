@@ -45,11 +45,11 @@ public class Card00136 : Card
 
         public override bool CanTarget(Card card)
         {
-            return (card == Owner || card.HasUnitNameOf("塞尔吉"))
+            return (card == Owner || card.HasUnitNameOf(Strings.Get("card_text_unitname_セルジュ")))
                 && Game.TurnPlayer == Controller
                 && card.IsOnField
                 && card.Controller == Controller
-                && Controller.Field.Filter(unit => unit.HasUnitNameOf("塞尔吉")).Count > 0;
+                && Controller.Field.Filter(unit => unit.HasUnitNameOf(Strings.Get("card_text_unitname_セルジュ"))).Count > 0;
         }
 
         public override void SetItemToApply()
