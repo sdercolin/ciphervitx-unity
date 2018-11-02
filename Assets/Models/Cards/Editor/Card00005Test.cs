@@ -13,7 +13,7 @@ public class Card00005Test
     public void Skill1Test1()
     {
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         var rival = Game.Rival;
         Game.TurnPlayer = player;

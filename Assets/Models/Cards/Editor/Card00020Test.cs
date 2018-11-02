@@ -17,7 +17,7 @@ public class Card00020Test
         /// </summary>
         /// 
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
 
@@ -75,6 +75,7 @@ public class Card00020Test
         /// </summary>
         /// 
         Game.Initialize();
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
 

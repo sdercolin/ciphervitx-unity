@@ -56,7 +56,7 @@ public static class Request
     {
         dynamic nextResult = NextResults.Dequeue();
         bool isDefault = nextResult == null;
-        bool isIndex = NextResultsAreIndexes.Dequeue();
+        NextResultsAreIndexes.Dequeue();
         if (isDefault)
         {
             return false;
@@ -107,7 +107,7 @@ public static class Request
             + "choices = " + ListUtils.ToString(choices) + Environment.NewLine
             + "min = " + min + Environment.NewLine
             + "max = " + max);
-        max = Math.Max(max, choices.Count);
+        max = Math.Min(max, choices.Count);
         min = Math.Min(min, max);
         if (NextResults.Count > 0)
         {
@@ -117,6 +117,13 @@ public static class Request
         }
         else
         {
+            if (targetUser is Player && Config.GetValue("apply_default_choices") == "true")
+            {
+                if (min == choices.Count)
+                {
+                    return choices;
+                }
+            }
             // TO DO
             return null;
         }
@@ -191,12 +198,12 @@ public static class Request
 
     public static async Task<bool> AskIfSendToRetreat(Card target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        return await AskIfSendToRetreat(new List<Card>() { target }, targetUser,flags);
+        return await AskIfSendToRetreat(new List<Card>() { target }, targetUser, flags);
     }
 
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        Debug.Log("Requesting AskIfReverseBond: " + Environment.NewLine
+        Debug.Log("Requesting AskIfSendToRetreat: " + Environment.NewLine
             + "targets = " + StringUtils.CreateFromAny(targets));
         if (NextResults.Count > 0)
         {
@@ -227,7 +234,7 @@ public static class Request
             return true;
         }
     }
-    
+
     public static async Task<int> ChooseRPS(User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         // TO DO:

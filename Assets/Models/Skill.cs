@@ -377,7 +377,10 @@ public abstract class PermanentSkill : Skill
         Targets.Remove(target);
         foreach (var item in ItemsApplied[target])
         {
-            item.Detach();
+            if (item.Owner != null)
+            {
+                item.Detach();
+            }
         }
         ItemsApplied.Remove(target);
     }

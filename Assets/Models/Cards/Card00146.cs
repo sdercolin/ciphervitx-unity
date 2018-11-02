@@ -54,7 +54,7 @@ public class Card00146 : Card
 
         public override void SetItemToApply()
         {
-            ItemsToApply.Add(new PowerBuff(this, 10 * Controller.Field.Filter(unit => unit.HasUnitNameOf("安娜") && unit != Owner).Count));
+            ItemsToApply.Add(new PowerBuff(this, 10 * Controller.Field.Filter(unit => unit.HasUnitNameOf(Strings.Get("card_text_unitname_アンナ")) && unit != Owner).Count));
         }
     }
 
@@ -115,7 +115,7 @@ public class Card00146 : Card
         {
             ItemsToApply.Add(new CanBeSupportedBy(this)
             {
-                UnitName = "安娜"
+                UnitName = Strings.Get("card_text_unitname_アンナ")
             });
         }
     }

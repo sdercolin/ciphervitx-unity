@@ -44,7 +44,7 @@ public class Card00134 : Card
 
         public override bool CheckConditions(Induction induction)
         {
-            return Controller.Orb.Count < Opponent.Orb.Count && Controller.Field.Filter(unit => unit.HasUnitNameOf("路弗雷（女）")).Count > 0;
+            return Controller.Orb.Count < Opponent.Orb.Count && Controller.Field.Filter(unit => unit.HasUnitNameOf(Strings.Get("card_text_unitname_ルフレ（女）"))).Count > 0;
         }
 
         public override Induction CheckInduceConditions(Message message)

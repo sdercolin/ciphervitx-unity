@@ -16,7 +16,7 @@ public class Card00019Test
         /// 『無頼の剣』【常】自分のターン中、このユニットと自分の主人公の他に味方が１体もいない場合、このユニットの戦闘力は＋２０される。
         /// </summary>
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         var player = Game.Player;
         Game.TurnPlayer = player;
 

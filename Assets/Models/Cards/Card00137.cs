@@ -50,7 +50,7 @@ public class Card00137 : Card
 
         public override Cost DefineCost()
         {
-            return Cost.DiscardHand(this, 1, card => card.HasUnitNameOf("伍德"));
+            return Cost.DiscardHand(this, 1, card => card.HasUnitNameOf(Strings.Get("card_text_unitname_ウード")));
         }
 
         public override Task Do()

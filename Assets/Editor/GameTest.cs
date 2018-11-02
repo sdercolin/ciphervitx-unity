@@ -10,7 +10,7 @@ public class GameTest
     public void StartTurnTest()
     {
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         Game.TurnPlayer = Game.Player;
         var card1 = CardFactory.CreateCard(1, Game.Player);
         Game.Player.FrontField.AddCard(card1);
@@ -42,7 +42,7 @@ public class GameTest
     public void BattleTest1()
     {
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -81,7 +81,7 @@ public class GameTest
     public void BattleTest2()
     {
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -119,7 +119,7 @@ public class GameTest
     public void BattleTest3()
     {
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -157,7 +157,7 @@ public class GameTest
     public void BattleTest4()
     {
         Game.Initialize();
-        Game.LosingProcessDisabled = true;
+        Game.SetTestMode();
         Game.TurnPlayer = Game.Player;
         var player = Game.Player;
         var rival = Game.Rival;
@@ -180,5 +180,36 @@ public class GameTest
         Game.DoBattle(hero1, hero2);
         Assert.IsTrue(rival.Orb.Count == 0);
         Assert.IsTrue(rival.Hand.Count == 1);
+    }
+    
+    [Test]
+    public void DeckReplenishTest()
+    {
+        Game.Initialize();
+        Game.SetTestMode();
+        Game.DeckReplenishProcessDisabled = false;
+        Game.TurnPlayer = Game.Player;
+        var player = Game.Player;
+        var rival = Game.Rival;
+        var hero1 = CardFactory.CreateCard(6, player);
+        hero1.IsHero = true;
+        var support1 = CardFactory.CreateCard(2, player);
+        var retreat = CardFactory.CreateCard(3, player);
+        player.FrontField.AddCard(hero1);
+        player.Deck.AddCard(support1);
+        player.Retreat.AddCard(retreat);
+        var hero2 = CardFactory.CreateCard(6, rival);
+        hero2.IsHero = true;
+        var orb1 = CardFactory.CreateCard(9, rival);
+        var support2 = CardFactory.CreateCard(2, rival);
+        rival.FrontField.AddCard(hero2);
+        rival.Orb.AddCard(orb1);
+        rival.Deck.AddCard(support2);
+        Request.SetNextResult(false);
+        Request.SetNextResult(false);
+        Request.SetNextResult(new List<Card>() { orb1 });
+        Game.DoBattle(hero1, hero2);
+
+        Assert.IsTrue(player.Deck.Contains(retreat));
     }
 }

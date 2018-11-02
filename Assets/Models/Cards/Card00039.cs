@@ -48,7 +48,7 @@ public class Card00039 : Card
         {
             return card == Owner
                 && Game.BattlingUnits.Contains(card)
-                && card.Controller.Support.SupportedBy("索尔");
+                && card.Controller.Support.SupportedBy(Strings.Get("card_text_unitname_ソール"));
         }
 
         public override void SetItemToApply()

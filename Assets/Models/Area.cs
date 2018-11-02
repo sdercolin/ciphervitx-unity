@@ -36,7 +36,7 @@ public abstract class Area
     /// <returns>是否包含某张卡</returns>
     public bool Contains(Card card)
     {
-        return list.Contains(card);
+        return Cards.Contains(card);
     }
 
     public int Count => Cards.Count;
@@ -98,8 +98,8 @@ public abstract class Area
     /// <param name="card">要移除的卡</param>
     public void RemoveCard(Card card)
     {
-        ProcessCardOut(card, card.BelongedRegion);
         list.Remove(card);
+        ProcessCardOut(card, card.BelongedRegion);
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ public abstract class Area
     public List<Card> SearchCard(string UnitName)
     {
         List<Card> result = new List<Card>();
-        list.ForEach(card =>
+        Cards.ForEach(card =>
         {
             if (card.HasUnitNameOf(UnitName))
             {
@@ -200,10 +200,13 @@ public class Deck : Area
 
     public override void ProcessCardOut(Card card, Area toArea)
     {
-        if (list.Count == 0)
+        if (!Game.DeckReplenishProcessDisabled)
         {
-            Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
-            Controller.ShuffleDeck(null);
+            if (list.Count == 0)
+            {
+                Controller.Retreat.ForEachCard(retreatCard => retreatCard.MoveTo(this));
+                Controller.ShuffleDeck(null);
+            }
         }
     }
 }
