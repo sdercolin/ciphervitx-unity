@@ -38,7 +38,7 @@ public class Card00100Test
         Request.SetNextResult(); //翻面
         Request.SetNextResult();//选择丢弃
         Request.SetNextResult();//放回卡组
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(player.Hand.Count == 1);
         Assert.IsTrue(player.Deck.Count == 2);
@@ -81,14 +81,14 @@ public class Card00100Test
         player.Deck.AddCard(deck4);
         player.Deck.AddCard(deck5);
 
-        Game.DoLevelUp(hand1, true);//转职
+        Game.DoLevelUp(hand1, true).Wait();//转职
         Assert.IsTrue(player.Hand.Count == 2);
         Assert.IsTrue(player.Deck.Count == 4);
 
         Request.SetNextResult(); //翻面
         Request.SetNextResult();//选择丢弃
         Request.SetNextResult();//放回卡组
-        Game.DoActionSkill(hand1.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(hand1.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(player.Hand.Count == 2);
         Assert.IsTrue(player.Deck.Count == 3);

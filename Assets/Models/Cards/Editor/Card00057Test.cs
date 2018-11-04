@@ -43,7 +43,7 @@ public class Card00057Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
 
-        Game.DoBattle(card3, card2);
+        Game.DoBattle(card3, card2).Wait();
         Assert.IsFalse(card1.IsOnField);//击破杜卡
         Assert.IsTrue(card2.IsOnField);//希达没死
 
@@ -61,7 +61,7 @@ public class Card00057Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
 
-        Game.DoBattle(card3, card2);
+        Game.DoBattle(card3, card2).Wait();
         Assert.IsFalse(card2.IsOnField);//击破希达
         Assert.IsTrue(card4.IsOnField);//杜卡没死
     }

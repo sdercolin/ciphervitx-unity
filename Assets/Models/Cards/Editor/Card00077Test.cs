@@ -30,10 +30,10 @@ public class Card00077Test
         player.Hand.AddCard(card1);
         player.Hand.AddCard(card2);
 
-        Game.DoDeployment(card1, true);
+        Game.DoDeployment(card1, true).Wait();
         Assert.IsTrue(card.Power == 30); //什么都没发生
 
-        Game.DoDeployment(card2, true);
+        Game.DoDeployment(card2, true).Wait();
         Assert.IsTrue(card.Power == 40);//+10
     }
 }

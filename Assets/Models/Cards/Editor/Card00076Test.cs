@@ -37,7 +37,7 @@ public class Card00076Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
 
-        Game.DoBattle(card2, card1);
+        Game.DoBattle(card2, card1).Wait();
         Assert.IsTrue(card1.IsOnField);//没有被击破
 
         //测试不能获得飞行特效
@@ -53,13 +53,13 @@ public class Card00076Test
         rival.Bond.AddCard(rivalbond);
         rival.Deck.AddCard(rivalSupport2);
 
-        Game.DoActionSkill(card3.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card3.GetUsableActionSkills()[0]).Wait();
 
         Request.SetNextResult(); //翻面1
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
 
-        Game.DoBattle(card3, card1);
+        Game.DoBattle(card3, card1).Wait();
         Assert.IsTrue(card1.IsOnField);
     }
 }

@@ -26,16 +26,16 @@ public class Card00004Test
         Assert.IsTrue(card.Power == 60);
         
         Request.SetNextResult();  //默认选择第一个Induction
-        Game.DoDeployment(card1, true);
+        Game.DoDeployment(card1, true).Wait();
         Assert.IsTrue(card1.Power == 50);
         Assert.IsTrue(card.Power == 70);
         
         Request.SetNextResult(); //默认选择第一个Induction
-        Game.DoDeployment(card2, true);
+        Game.DoDeployment(card2, true).Wait();
         Assert.IsTrue(card2.Power == 40);
         Assert.IsTrue(card.Power == 80);
         
-        Game.DoDeployment(card3, true);
+        Game.DoDeployment(card3, true).Wait();
         Assert.IsTrue(card.Power == 80);
     }
 }

@@ -40,7 +40,7 @@ public class Card00061Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
 
-        Game.DoBattle(card3, card2);
+        Game.DoBattle(card3, card2).Wait();
         Assert.IsFalse(card1.IsOnField);//击破里弗
         Assert.IsTrue(card2.IsOnField);//希达没死
     }

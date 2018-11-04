@@ -34,14 +34,14 @@ public class Card00071Test
         player.Retreat.AddCard(retreat);
         player.Bond.AddCard(bond);
 
-        Game.DoDeployment(myHighCostUnit, true);
+        Game.DoDeployment(myHighCostUnit, true).Wait();
         Assert.IsTrue(player.Retreat.Count == 1); //什么都没发生
 
         Request.SetNextResult();//选择Induction
         Request.SetNextResult(true);//选择使用
         Request.SetNextResult();//翻面1
         Request.SetNextResult();//选择
-        Game.DoDeployment(myLowCostUnit, true);
+        Game.DoDeployment(myLowCostUnit, true).Wait();
         Assert.IsTrue(player.Retreat.Count == 0);
     }
 }

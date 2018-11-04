@@ -34,7 +34,7 @@ public class Card00006Test
 
         Request.SetNextResult();//选择横置
         Request.SetNextResult();//选择移动
-        Game.DoActionSkill(card1.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card1.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(rival.BackField.Count==1);
     }

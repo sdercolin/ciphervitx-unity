@@ -44,7 +44,7 @@ public class Card00021Test
 
         // 翻面
         Request.SetNextResult(new List<Card>() { bond });
-        Game.DoActionSkill(malike.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(malike.GetUsableActionSkills()[0]).Wait();
 
         // 攻击
         Request.SetNextResult(false); //不必杀
@@ -52,7 +52,7 @@ public class Card00021Test
         Request.SetNextResult(); //拿走一个宝玉
         Request.SetNextResult(); //默认选择第一个Induction
         Request.SetNextResult(true);// draw one card
-        Game.DoBattle(malike, xida);
+        Game.DoBattle(malike, xida).Wait();
         Assert.IsTrue(rival.Orb.Count == 0); //应该被击破了
 
         Assert.IsTrue(player.Hand.Count == 1);//draw one card

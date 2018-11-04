@@ -43,7 +43,7 @@ public class Card00005Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(true); //回避
         Request.SetNextResult(new List<Card>() { rivalHand }); //选择回避丢弃的手牌
-        Game.DoBattle(card, rivalUnit);
+        Game.DoBattle(card, rivalUnit).Wait();
         Assert.IsTrue(rival.Orb.Count == 1); //应该没有击破
     }
 
@@ -78,12 +78,12 @@ public class Card00005Test
         rival.Orb.AddCard(rivalOrb);
 
         Request.SetNextResult(new List<Card>() { bond1, bond2, bond3 }); //设定要翻的费
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]); //发动
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait(); //发动
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(true); //回避，但是应该不需要选择，因为不能回避
         Request.SetNextResult(); //拿走一个宝玉
-        Game.DoBattle(card, rivalUnit);
+        Game.DoBattle(card, rivalUnit).Wait();
         Assert.IsTrue(rival.Orb.Count == 0); //应该被击破了
     }
 

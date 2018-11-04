@@ -38,7 +38,7 @@ public class Card00093Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
 
-        Game.DoBattle(unit, rivalCard);
+        Game.DoBattle(unit, rivalCard).Wait();
 
         Assert.IsTrue(player.Bond.Count == 1);
         Assert.IsTrue(player.Hand.Count == 0);

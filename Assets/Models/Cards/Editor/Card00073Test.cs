@@ -36,7 +36,7 @@ public class Card00073Test
         Request.SetNextResult(true);//选择翻面
         Request.SetNextResult();//翻面1
 
-        Game.DoActionSkill(card1.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card1.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(support1.BelongedRegion == player.Hand);//抽进手牌 
     }
 
@@ -65,7 +65,7 @@ public class Card00073Test
 
         Request.SetNextResult();//翻面1
 
-        Game.DoActionSkill(card1.GetUsableActionSkills()[1]);
+        Game.DoActionSkill(card1.GetUsableActionSkills()[1]).Wait();
         Assert.IsTrue(rivalSupport1.BelongedRegion == rival.Retreat);//送进退避区 
     }
 }

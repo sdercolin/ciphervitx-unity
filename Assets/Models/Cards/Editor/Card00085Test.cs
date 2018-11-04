@@ -37,7 +37,7 @@ public class Card00085Test
         Request.SetNextResult(); //翻面
         Request.SetNextResult(); //选择出击
         Request.SetNextResult(true); //选择前场
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(player.Deck.Filter(card0 => card0.DeployCost <= 2 && (card0.HasUnitNameOf(Strings.Get("card_text_unitname_カチュア")) || card0.HasUnitNameOf(Strings.Get("card_text_unitname_エスト")))).Count == 1);
         Assert.IsTrue(player.FrontField.Count == 2);

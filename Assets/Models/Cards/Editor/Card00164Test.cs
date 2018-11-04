@@ -45,13 +45,13 @@ public class Card00164Test
         rival.Deck.AddCard(rivalTop);
 
         Request.SetNextResult(); //设置横置的单位
-        Game.DoActionSkill(caizang.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(caizang.GetUsableActionSkills()[0]).Wait();
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
         Request.SetNextResult(); //选择诱发
         Request.SetNextResult(true); //选择丢弃
-        Game.DoBattle(caizang, rivalUnit);
+        Game.DoBattle(caizang, rivalUnit).Wait();
 
         Assert.IsTrue(rival.Retreat.Contains(rivalTop));
     }

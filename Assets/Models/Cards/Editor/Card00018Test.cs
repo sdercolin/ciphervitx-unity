@@ -55,7 +55,7 @@ public class Card00018Test
         Request.SetNextResult(false); //不回避
         Request.SetNextResult(); //拿一个宝玉
         Request.SetNextResult(); //拿一个宝玉
-        Game.DoBattle(card, card4);
+        Game.DoBattle(card, card4).Wait();
         
         Assert.IsTrue(rival.Orb.Count == 0);
     }

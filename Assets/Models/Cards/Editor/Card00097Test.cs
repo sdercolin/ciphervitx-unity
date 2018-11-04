@@ -54,7 +54,7 @@ public class Card00097Test
         Request.SetNextResult(new List<Card>() { bond1, bond2, bond3 }); //设定要翻的费
         Request.SetNextResult();//丢同名
         Request.SetNextResult(new List<Card>() { hisUint2, hisUint3 });
-        Game.DoActionSkill(kuluomu.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(kuluomu.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(kuluomu.Power == 100);
         Assert.IsTrue(myUnit1.Power == 80);

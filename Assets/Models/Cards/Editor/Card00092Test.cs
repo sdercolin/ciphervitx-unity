@@ -39,7 +39,7 @@ public class Card00092Test
         //支援失败
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Game.DoBattle(tiki, rivalCard);
+        Game.DoBattle(tiki, rivalCard).Wait();
 
         Assert.IsTrue(player.Bond.Count == 0);
 
@@ -48,7 +48,7 @@ public class Card00092Test
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Game.DoBattle(tiki, rivalCard);
+        Game.DoBattle(tiki, rivalCard).Wait();
 
         Assert.IsTrue(player.Bond.Count == 1);
     }

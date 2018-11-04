@@ -31,7 +31,7 @@ public class Card00019Test
         Game.TryDoMessage(new EmptyMessage());
         Assert.IsTrue(card.Power == 60);
 
-        Game.DoDeployment(card2, true);
+        Game.DoDeployment(card2, true).Wait();
         Assert.IsTrue(card.Power == 40);
 
         card.IsHero = false;

@@ -50,17 +50,17 @@ public class Card00062Test
         rival.Orb.AddCard(rivalOrb2);
 
         Request.SetNextResult();//横置
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);//起
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();//起
         Request.SetNextResult();//横置
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);//起
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();//起
         Request.SetNextResult();//横置
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);//起
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();//起
         Request.SetNextResult(); //选择被诱发的Skill
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
         Request.SetNextResult(); //拿一个宝玉
         Request.SetNextResult(); //拿一个宝玉
-        Game.DoBattle(card, card4);
+        Game.DoBattle(card, card4).Wait();
         
         Assert.IsTrue(rival.Orb.Count == 0);
     }

@@ -38,20 +38,20 @@ public class Card00013Test
         rival.BackField.AddCard(hisUnit2);
         rival.FrontField.AddCard(hisUint3);
 
-        Game.DoDeployment(myUnit3, true); //什么都没发生
+        Game.DoDeployment(myUnit3, true).Wait(); //什么都没发生
 
         // 移动前场的希达至后场
         Request.SetNextResult(); //默认选择第一个Induction
         Request.SetNextResult(true); //选择使用
         Request.SetNextResult(new List<Card>() { hisUnit1 }); //选择对象
-        Game.DoDeployment(myUnit1, true);
+        Game.DoDeployment(myUnit1, true).Wait();
         Assert.IsTrue(rival.BackField.Contains(hisUnit1));
 
         // 移动后场的斯米亚到前场
         Request.SetNextResult(); //默认选择第一个Induction
         Request.SetNextResult(true); //选择使用
         Request.SetNextResult(new List<Card>() { hisUnit2 }); //选择对象
-        Game.DoDeployment(myUnit2, true);
+        Game.DoDeployment(myUnit2, true).Wait();
         Assert.IsTrue(rival.FrontField.Contains(hisUnit2));
     }
 }

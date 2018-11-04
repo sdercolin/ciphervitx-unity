@@ -28,7 +28,7 @@ public class Card00027Test
         player.Deck.AddCard(card2);
 
         Request.SetNextResult();
-        Game.DoActionSkill(milieer.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(milieer.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(player.Hand.Contains(card2));
         Assert.IsTrue(player.Retreat.Contains(card1));

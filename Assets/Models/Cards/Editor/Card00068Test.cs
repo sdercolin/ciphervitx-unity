@@ -44,7 +44,7 @@ public class Card00068Test
         Request.SetNextResult();//翻面1
         Request.SetNextResult();//选择击破
 
-        Game.DoBattle(card1, card2);
+        Game.DoBattle(card1, card2).Wait();
         Assert.IsFalse(card2.IsOnField);//击破杰刚
         Assert.IsFalse(card3.IsOnField);//效果击破马尔斯
     }

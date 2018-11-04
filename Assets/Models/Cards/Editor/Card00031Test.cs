@@ -57,7 +57,7 @@ public class Card00031Test
         Request.SetNextResult(true);
         Request.SetNextResult(new List<Card>() { hisUint1 }); 
         // case2 end
-        Game.DoLevelUp(adv_myUnit, true);
+        Game.DoLevelUp(adv_myUnit, true).Wait();
 
         Assert.IsTrue(rival.BackField.Cards.Count == 0);
         // ==========================================
@@ -100,7 +100,7 @@ public class Card00031Test
         Assert.IsTrue(count == 0);
 
         // Class Change
-        Game.DoLevelUp(adv_lufulei, true);
+        Game.DoLevelUp(adv_lufulei, true).Start();
         Assert.IsTrue(player.Hand.Contains(bonus));
 
         // case1 begin 
@@ -129,7 +129,7 @@ public class Card00031Test
         Assert.IsTrue(count == 1);
 
         Request.SetNextResult(new List<Card>() { bond1, bond2, bond3 }); //设定要翻的费
-        Game.DoActionSkill(adv_lufulei.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(adv_lufulei.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(player.Orb.Contains(card));
         // ===========================================

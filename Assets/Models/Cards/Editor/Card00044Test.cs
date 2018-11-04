@@ -35,7 +35,7 @@ public class Card00044Test
         
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Game.DoBattle(card, card1);
+        Game.DoBattle(card, card1).Wait();
         Assert.IsTrue(card1.IsOnField);
 
         var support2 = CardFactory.CreateCard(1, player);//20支援马尔斯
@@ -45,7 +45,7 @@ public class Card00044Test
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Game.DoBattle(card, card1);
+        Game.DoBattle(card, card1).Wait();
         Assert.IsFalse(card1.IsOnField);
     }
 }

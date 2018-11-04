@@ -42,12 +42,12 @@ public class Card00114Test
         var rivalSupport = CardFactory.CreateCard(4, rival);//10支援
         rival.Deck.AddCard(rivalSupport);
 
-        Game.DoLevelUp(hand, true);
+        Game.DoLevelUp(hand, true).Wait();
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
 
-        Game.DoBattle(unit, rivalCard);
+        Game.DoBattle(unit, rivalCard).Wait();
 
         Assert.IsTrue(rivalCard.BelongedRegion == rival.Retreat);
     }

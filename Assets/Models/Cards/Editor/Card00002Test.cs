@@ -29,7 +29,7 @@ public class Card00002Test
         Assert.IsTrue(thisCard.GetAttackableUnits().SequenceEqual(new List<Card>() { hisUnit1 }));
 
         Request.SetNextResult(new List<Card>() { bondCard }); //设定要翻的费
-        Game.DoActionSkill(thisCard.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(thisCard.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(thisCard.GetAttackableUnits().SequenceEqual(new List<Card>() { hisUnit1, hisUnit2 }));
     }
 }

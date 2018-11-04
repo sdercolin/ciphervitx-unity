@@ -44,7 +44,7 @@ public class Card00024Test
         rival.Orb.AddCard(orb2);
 
         Request.SetNextResult();
-        Game.DoLevelUp(maersi_adv, true);
+        Game.DoLevelUp(maersi_adv, true).Wait();
         Assert.IsTrue(player.Hand.Contains(bonus));
         Assert.IsTrue(maersi_adv.Power == 90); // +20
 
@@ -53,7 +53,7 @@ public class Card00024Test
         Request.SetNextResult(false); //不回避
         Request.SetNextResult(); //拿走一个宝玉
         Request.SetNextResult(); //拿走一个宝玉
-        Game.DoBattle(maersi_adv, enemy);
+        Game.DoBattle(maersi_adv, enemy).Wait();
         Assert.IsTrue(rival.Orb.Count == 0); //应该被击破了
     }
 
@@ -87,7 +87,7 @@ public class Card00024Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
         Request.SetNextResult(); //拿走一个宝玉
-        Game.DoBattle(kuluomu, zhiqi);
+        Game.DoBattle(kuluomu, zhiqi).Wait();
         Assert.IsTrue(rival.Orb.Count == 0); //应该被击破了
     }
 

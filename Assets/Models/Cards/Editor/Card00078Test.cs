@@ -65,7 +65,7 @@ public class Card00078Test
         Assert.IsTrue(count == 1);
         Request.SetNextResult();
         Request.SetNextResult();
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(player.Hand.Count == 0);
 
         // 1墓地
@@ -73,7 +73,7 @@ public class Card00078Test
         player.Retreat.AddCard(retreat2);
         Request.SetNextResult();
         Request.SetNextResult();
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(player.Hand.Count == 1);
         Assert.IsTrue(player.Hand.Contains(retreat2));
 
@@ -83,7 +83,7 @@ public class Card00078Test
         player.Retreat.AddCard(retreat4);
         Request.SetNextResult();
         Request.SetNextResult();
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(player.Hand.Count == 3);
         Assert.IsTrue(player.Hand.Contains(retreat3));
         Assert.IsTrue(player.Hand.Contains(retreat4));

@@ -34,7 +34,7 @@ public class Card00009Test
         Request.SetNextResult(false);//不必杀
         Request.SetNextResult(false);//不回避
 
-        Game.DoBattle(kayin, enemy);
+        Game.DoBattle(kayin, enemy).Wait();
         Assert.IsTrue(rival.Retreat.Contains(enemy));
     }
 }

@@ -31,12 +31,12 @@ public class Card00030Test
         int count = luqina.GetUsableActionSkills().Count;
         Assert.IsTrue(count == 0);
 
-        Game.DoDeployment(kuluomu, true);
+        Game.DoDeployment(kuluomu, true).Wait();
         count = luqina.GetUsableActionSkills().Count;
         Assert.IsTrue(count == 1);
 
         Request.SetNextResult(new List<Card>() { bond }); // Request.SetNextResult(); 也可
-        Game.DoActionSkill(luqina.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(luqina.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(luqina.Power == 60);
         Assert.IsTrue(kuluomu.Power == 50);

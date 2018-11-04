@@ -37,7 +37,7 @@ public class Card00123Test
         Request.SetNextResult(false); //不回避
         Request.SetNextResult(); //选择Induction
 
-        Game.DoBattle(rivalCard, card);
+        Game.DoBattle(rivalCard, card).Wait();
 
         Assert.IsTrue(card.BelongedRegion == player.Bond);
     }

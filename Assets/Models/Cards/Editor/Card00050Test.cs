@@ -42,7 +42,7 @@ public class Card00050Test
         Request.SetNextResult(true); //选择使用
         Request.SetNextResult();//翻面
         Request.SetNextResult();//选择
-        Game.DoBattle(card, card1);
+        Game.DoBattle(card, card1).Wait();
 
         Assert.IsTrue(player.Hand.Count == 1);
     }
@@ -65,7 +65,7 @@ public class Card00050Test
         player.FrontField.AddCard(card1);
         player.FrontField.AddCard(card2);
 
-        Game.DoActionSkill(card1.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card1.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(card1.BelongedRegion == player.BackField);
     }

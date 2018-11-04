@@ -34,7 +34,7 @@ public class Card00036Test
 
         Assert.IsTrue(weiaoer.Power == 50);
 
-        Game.DoLevelUp(adv_weiaoer, true);
+        Game.DoLevelUp(adv_weiaoer, true).Wait();
         Assert.IsTrue(adv_weiaoer.Power == 70);
     }
 }

@@ -45,7 +45,7 @@ public class Card00128Test
         Request.SetNextResult(); //对手选择丢弃
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Game.DoBattle(unit, rivalCard);
+        Game.DoBattle(unit, rivalCard).Wait();
 
         Assert.IsTrue(rival.Hand.Count == 4);
     }

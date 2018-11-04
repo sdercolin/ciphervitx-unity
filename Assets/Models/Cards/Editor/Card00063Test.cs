@@ -35,7 +35,7 @@ public class Card00063Test
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Game.DoBattle(card, rivalcard);
+        Game.DoBattle(card, rivalcard).Wait();
         
         Assert.IsTrue(rivalcard.IsOnField);
 
@@ -47,7 +47,7 @@ public class Card00063Test
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Game.DoBattle(card, rivalcard);
+        Game.DoBattle(card, rivalcard).Wait();
 
         Assert.IsFalse(rivalcard.IsOnField);
     }

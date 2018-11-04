@@ -36,7 +36,7 @@ public class Card00094Test
         Request.SetNextResult();//翻面1
         Request.SetNextResult();//选择出击
         Request.SetNextResult(true);//选择前场
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(player.FrontField.Count == 2);
 
         card.IsHorizontal = false;

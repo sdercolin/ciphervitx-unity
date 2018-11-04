@@ -50,7 +50,7 @@ public class Card00126Test
         Request.SetNextResult();//翻面3
         Request.SetNextResult();//丢萨莉亚
         Request.SetNextResult();//对手丢2
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(rival.Hand.Count == 1);
         Assert.IsTrue(card.Power == 60);
@@ -88,12 +88,12 @@ public class Card00126Test
         rival.Hand.AddCard(rivalhand2);
         rival.Hand.AddCard(rivalhand3);
 
-        Game.DoLevelUp(hand1, true);
+        Game.DoLevelUp(hand1, true).Wait();
 
         Request.SetNextResult();//翻面3
         Request.SetNextResult();//丢萨莉亚
         Request.SetNextResult();//对手丢2
-        Game.DoActionSkill(hand1.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(hand1.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(rival.Hand.Count == 0);
         Assert.IsTrue(hand1.Power == 80);

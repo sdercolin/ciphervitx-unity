@@ -52,7 +52,7 @@ public class Card00020Test
         Assert.IsTrue(count == 1);
         Request.SetNextResult(new List<Card>() { bond1, bond2 });
         Request.SetNextResult(new List<Card>() { });
-        Game.DoActionSkill(leina1.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(leina1.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(player.Hand.Count == 0);
 
         // 正常发
@@ -61,7 +61,7 @@ public class Card00020Test
         Assert.IsTrue(player.Hand.Count == 0);
         Request.SetNextResult(new List<Card>() { bond3, bond4 });
         Request.SetNextResult(new List<Card>() { maersi });
-        Game.DoActionSkill(leina1.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(leina1.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(player.Hand.Count == 1);
         Assert.IsTrue(player.Hand.Contains(maersi));
     }
@@ -87,7 +87,7 @@ public class Card00020Test
 
         Assert.IsTrue(zhulian.Power == 50);
 
-        Game.DoDeployment(leina, true);
+        Game.DoDeployment(leina, true).Wait();
 
         Assert.IsTrue(zhulian.Power == 60);
 

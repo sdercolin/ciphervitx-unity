@@ -39,7 +39,7 @@ public class Card00083Test
         Request.SetNextResult();//横置
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
-        Game.DoBattle(card, rivalUnit);
+        Game.DoBattle(card, rivalUnit).Wait();
         Assert.IsFalse(rivalUnit.IsOnField); //击破
     }
 

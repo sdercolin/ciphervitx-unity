@@ -37,7 +37,7 @@ public class Card00046Test
         Assert.IsTrue(count == 1);
 
         Request.SetNextResult();
-        Game.DoActionSkill(myUnit.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(myUnit.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(player.BackField.Contains(myUnit2));
 
     }

@@ -38,7 +38,7 @@ public class Card00040Test
 
         var card5 = CardFactory.CreateCard(40, player);
         player.Hand.AddCard(card5);
-        Game.DoLevelUp(card5, true);
+        Game.DoLevelUp(card5, true).Wait();
 
         Assert.IsFalse(card2.CheckAttack());
         Assert.IsFalse(card3.CheckAttack());

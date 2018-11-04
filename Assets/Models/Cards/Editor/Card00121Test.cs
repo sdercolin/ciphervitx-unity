@@ -37,7 +37,7 @@ public class Card00121Test
         Request.SetNextResult(false); //不回避
         Request.SetNextResult(); //选择Induction
 
-        Game.DoBattle(card, rivalCard);
+        Game.DoBattle(card, rivalCard).Wait();
 
         Assert.IsTrue(card.IsHorizontal == false);
     }
@@ -68,9 +68,9 @@ public class Card00121Test
         var deck = CardFactory.CreateCard(2, player);
         player.Deck.AddCard(deck);
 
-        Game.DoLevelUp(hand, true);
+        Game.DoLevelUp(hand, true).Wait();
         Request.SetNextResult(); //翻面1
-        Game.DoActionSkill(hand.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(hand.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(hand.HasRange(RangeEnum.OnetoTwo));
         Assert.IsTrue(unit.HasRange(RangeEnum.OnetoTwo));

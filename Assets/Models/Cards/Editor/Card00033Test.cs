@@ -47,7 +47,7 @@ public class Card00033Test
         var orb = CardFactory.CreateCard(33, rival);
         rival.Orb.AddCard(orb);
 
-        Game.DoLevelUp(adv_lizi, true);
+        Game.DoLevelUp(adv_lizi, true).Wait();
         Assert.IsTrue(player.Hand.Contains(bonus));
 
         Request.SetNextResult(false); //不必杀
@@ -55,7 +55,7 @@ public class Card00033Test
         Request.SetNextResult(); //拿走一个宝玉
         Request.SetNextResult();//触发技能
         Request.SetNextResult();//拿第一个
-        Game.DoBattle(adv_lizi, enemy);
+        Game.DoBattle(adv_lizi, enemy).Wait();
         Assert.IsTrue(player.Hand.Contains(card2));//只能拿3C维奥尔
         Assert.IsTrue(rival.Orb.Count == 0); //应该被击破了
 

@@ -35,7 +35,7 @@ public class Card00081Test
         Request.SetNextResult(); //默认选择第一个Induction
         Request.SetNextResult(true); //选择使用
         Request.SetNextResult(); //翻面
-        Game.DoDeployment(myLowCostUnit, true);
+        Game.DoDeployment(myLowCostUnit, true).Wait();
 
         Assert.IsTrue(player.Hand.Count == 1);
     }

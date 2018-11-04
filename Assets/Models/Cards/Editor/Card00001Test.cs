@@ -32,12 +32,12 @@ public class Card00001Test
         rival.BackField.AddCard(hisUnit2);
         rival.BackField.AddCard(hisUnit3);
 
-        Game.DoDeployment(myHighCostUnit, true); //什么都没发生
+        Game.DoDeployment(myHighCostUnit, true).Wait(); //什么都没发生
 
         Request.SetNextResult(); //默认选择第一个Induction
         Request.SetNextResult(true); //选择使用
         Request.SetNextResult(new List<Card>() { hisUnit2 }); //选择对象
-        Game.DoDeployment(myLowCostUnit1, true);
+        Game.DoDeployment(myLowCostUnit1, true).Wait();
         Assert.IsTrue(rival.BackField.Cards.SequenceEqual(new List<Card>() { hisUnit3 }));
     }
 }

@@ -41,12 +41,12 @@ public class Card00080Test
 
         //攻击马尔斯
         Request.SetNextResult(); //横置
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]); //发动
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait(); //发动
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(true); //回避
         Request.SetNextResult(); //选择回避丢弃的手牌
-        Game.DoBattle(card, rivalUnit1);
+        Game.DoBattle(card, rivalUnit1).Wait();
         Assert.IsTrue(rivalUnit1.IsOnField); //应该没有击破
 
         card.IsHorizontal = false;
@@ -54,11 +54,11 @@ public class Card00080Test
 
         //攻击希达
         Request.SetNextResult(); //横置
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]); //发动
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait(); //发动
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(true); //回避，但是应该不需要选择，因为不能回避
-        Game.DoBattle(card, rivalUnit2);
+        Game.DoBattle(card, rivalUnit2).Wait();
         Assert.IsFalse(rivalUnit2.IsOnField); //应该没有击破
     }
 

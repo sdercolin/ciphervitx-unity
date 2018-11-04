@@ -36,7 +36,7 @@ public class Card00098Test
 
         Request.SetNextResult(); //翻面
         Request.SetNextResult(); //选择
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(rival.FrontField.Count == 2);
         Assert.IsTrue(rival.BackField.Count == 0);

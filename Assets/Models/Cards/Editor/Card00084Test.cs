@@ -49,7 +49,7 @@ public class Card00084Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(true); //回避，但无效
         Request.SetNextResult(); //拿一个宝玉
-        Game.DoBattle(dajie, hisHero);
+        Game.DoBattle(dajie, hisHero).Wait();
 
         Assert.IsTrue(rival.Orb.Count == 0);
     }
@@ -86,7 +86,7 @@ public class Card00084Test
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
         Request.SetNextResult(); //拿一个宝玉
-        Game.DoBattle(dajie, hisHero);
+        Game.DoBattle(dajie, hisHero).Wait();
 
         Assert.IsTrue(rival.Orb.Count == 0);
     }

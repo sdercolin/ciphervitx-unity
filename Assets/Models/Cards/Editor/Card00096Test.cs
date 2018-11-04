@@ -41,7 +41,7 @@ public class Card00096Test
         rival.FrontField.AddCard(rivalUnit3);
 
         Request.SetNextResult(); //翻面
-        Game.DoActionSkill(card.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(card.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(rival.FrontField.Count == 1);
         Assert.IsTrue(card.Power == 90);

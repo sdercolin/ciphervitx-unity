@@ -49,14 +49,14 @@ public class Card00119Test
         var orb = CardFactory.CreateCard(15, rival);
         rival.Orb.AddCard(orb);
 
-        Game.DoLevelUp(gaiya, true);
+        Game.DoLevelUp(gaiya, true).Wait();
 
         Request.SetNextResult(true);//选择付费
         Request.SetNextResult(new List<Card>() { bond1, bond2 }); //设定要翻的费
         Request.SetNextResult();//选择对手主人公
         Request.SetNextResult();
 
-        Game.DoActionSkill(gaiya.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(gaiya.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(rival.Orb.Count == 0);
         Assert.IsTrue(player.Hand.Contains(draw));
     }
@@ -102,7 +102,7 @@ public class Card00119Test
         Request.SetNextResult();//选择对手主人公
         Request.SetNextResult();
 
-        Game.DoActionSkill(gaiya.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(gaiya.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(rival.Orb.Count == 0);
         Assert.IsTrue(player.Hand.Count  == 0);
     }
@@ -148,7 +148,7 @@ public class Card00119Test
         Request.SetNextResult();//选择对手主人公
         Request.SetNextResult();
 
-        Game.DoActionSkill(gaiya.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(gaiya.GetUsableActionSkills()[0]).Wait();
         Assert.IsTrue(rival.Orb.Count == 1);
         Assert.IsTrue(player.Hand.Count == 0);
     }

@@ -25,7 +25,7 @@ public class Card00007Test
 
         Request.SetNextResult(new List<Card>() { costCard });
         Request.SetNextResult(new List<Card>() { targetCard });
-        Game.DoActionSkill(xida.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(xida.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(targetCard.Power == 80);
     }
