@@ -41,13 +41,11 @@ public class Card00095Test
 
         //4张
         Game.TryDoMessage(new EmptyMessage());
-        Game.DoDeployment(card, true).Wait();
-        Assert.IsTrue(player.FrontField.Count == 0);
+        Assert.IsFalse(card.CheckDeployment());
 
         //5 张
         player.Retreat.AddCard(retreat5);
         Game.TryDoMessage(new EmptyMessage());
-        Game.DoDeployment(card, true).Wait();
-        Assert.IsTrue(player.FrontField.Count == 1);
+        Assert.IsTrue(card.CheckDeployment());
     }
 }
