@@ -22,10 +22,12 @@ public abstract class Buff : IAttachable
     public string Guid { get; set; }
     public override string ToString()
     {
-        var toSerialize = new Dictionary<string, dynamic>();
-        toSerialize.Add("type", GetType().Name);
-        toSerialize.Add("guid", Guid);
-        toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));
+        var toSerialize = new Dictionary<string, dynamic>
+        {
+            { "type", GetType().Name },
+            { "guid", Guid },
+            { "onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown) }
+        };
         if (Owner != null)
         {
             toSerialize.Add("owner", Owner);

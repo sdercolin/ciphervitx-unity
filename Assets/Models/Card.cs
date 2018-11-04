@@ -62,8 +62,10 @@ public abstract class Card
     {
         get
         {
-            var result = new List<string>();
-            result.Add(UnitName);
+            var result = new List<string>
+            {
+                UnitName
+            };
             BuffList.ForEach(x =>
             {
                 var buff = x as UnitNameBuff;
