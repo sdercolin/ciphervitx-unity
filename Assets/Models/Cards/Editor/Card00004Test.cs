@@ -17,7 +17,7 @@ public class Card00004Test
         var card = CardFactory.CreateCard(4, player);
         var card1 = CardFactory.CreateCard(6, player);
         var card2 = CardFactory.CreateCard(7, player);
-        var card3 = CardFactory.CreateCard(1, player);
+        var card3 = CardFactory.CreateCard(10, player);
         player.FrontField.AddCard(card);
         player.Hand.AddCard(card1);
         player.Hand.AddCard(card2);
