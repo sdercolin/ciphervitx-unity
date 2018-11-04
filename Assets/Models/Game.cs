@@ -49,6 +49,7 @@ public static class Game
     {
         LosingProcessDisabled = true;
         DeckReplenishProcessDisabled = true;
+        Game.TurnPlayer = Game.Player;
     }
     public static bool LosingProcessDisabled;
     public static bool DeckReplenishProcessDisabled;
