@@ -60,7 +60,7 @@ public static class Config
     public static void Load()
     {
         config.Clear();
-        XDocument doc = XDocument.Load(path);
+        var doc = XDocument.Load(path);
         foreach (var el in doc.Root.Elements())
         {
             config.Add(el.Attributes().Single(attr => attr.Name == "key").Value, el.Attributes().Single(attr => attr.Name == "value").Value);
@@ -69,7 +69,7 @@ public static class Config
 
     private static void SaveUpdates()
     {
-        XDocument doc = XDocument.Parse("<?xml version=\"1.0\" encoding=\"utf-8\"?><root></root>");
+        var doc = XDocument.Parse("<?xml version=\"1.0\" encoding=\"utf-8\"?><root></root>");
         doc.Root.Add(config.Select(kv =>
         {
             var el = new XElement("config");

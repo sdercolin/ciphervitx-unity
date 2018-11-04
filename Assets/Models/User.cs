@@ -54,7 +54,7 @@ public abstract class User
     {
         get
         {
-            List<Card> allCards = new List<Card>();
+            var allCards = new List<Card>();
             ForEachCard(card => allCards.Add(card));
             return allCards;
         }
@@ -76,8 +76,8 @@ public abstract class User
         int heroIndex = -1;
         string[] lines = File.ReadAllLines(filename);
         string errorText = String.Empty;
-        List<Card> cardlistTemp = new List<Card>();
-        Dictionary<string, int> SameNameCountDictionary = new Dictionary<string, int>();
+        var cardlistTemp = new List<Card>();
+        var SameNameCountDictionary = new Dictionary<string, int>();
 
         foreach (string serial in lines)
         {
@@ -85,7 +85,7 @@ public abstract class User
             bool success = false;
             if (int.TryParse(serial.Trim('*', '+'), out serialInt))
             {
-                Card newcard = CardFactory.CreateCard(serialInt, this);
+                var newcard = CardFactory.CreateCard(serialInt, this);
                 if (newcard != null)
                 {
                     cardlistTemp.Add(newcard);
@@ -128,7 +128,7 @@ public abstract class User
 
         if (usePresetHero && heroIndex >= 0)
         {
-            Card hero = cardlistTemp[heroIndex];
+            var hero = cardlistTemp[heroIndex];
             if (hero.DeployCost != 1)
             {
                 errorText += "> " + Strings.Get("load_deck_hero_preset_illegal", hero.CardName) + Environment.NewLine;
@@ -145,7 +145,7 @@ public abstract class User
                 (await Request.ChooseOne(cardlistTemp.FindAll(card => card.DeployCost == 1), this, Request.RequestFlags.Null, Strings.Get("load_deck_request_choose_hero")))
                     .IsHero = true;
             }
-            Dictionary<string, int> cardDict = new Dictionary<string, int>();
+            var cardDict = new Dictionary<string, int>();
             foreach (var card in cardlistTemp)
             {
                 cardDict.Add(card.Guid, int.Parse(card.Serial.TrimStart('0')));
@@ -201,7 +201,7 @@ public abstract class User
     {
         if (target != null)
         {
-            List<Card> targets = new List<Card> { target };
+            var targets = new List<Card> { target };
             Move(targets, reason);
         }
     }
@@ -238,7 +238,7 @@ public abstract class User
     {
         if (target != null)
         {
-            List<Card> targets = new List<Card> { target };
+            var targets = new List<Card> { target };
             ReverseBond(targets, reason, asCost);
         }
     }
@@ -292,7 +292,7 @@ public abstract class User
 
     public void ConfirmSupportCard()
     {
-        Card battlingUnit = Game.BattlingUnits.Find(unit => unit.Controller == this);
+        var battlingUnit = Game.BattlingUnits.Find(unit => unit.Controller == this);
         bool isSuccessful = !(Support.SupportCard == null || battlingUnit.HasSameUnitNameWith(Support.SupportCard));
         Game.TryDoMessage(new ConfirmSupportMessage()
         {
@@ -374,7 +374,7 @@ public abstract class User
     {
         if (target != null)
         {
-            List<Card> targets = new List<Card> { target };
+            var targets = new List<Card> { target };
             SetToBond(targets, frontShown, reason);
         }
     }
@@ -406,7 +406,7 @@ public abstract class User
     {
         if (target != null)
         {
-            List<Card> targets = new List<Card> { target };
+            var targets = new List<Card> { target };
             DiscardHand(targets, asCost, reason);
         }
     }
@@ -632,7 +632,7 @@ public abstract class User
         {
             actionedDict = new Dictionary<Card, bool>();
         }
-        List<Card> chosen = await Request.Choose(GetDeployableCards(choices, ref toFrontFieldDict, ref actionedDict, reason), min, max, this);
+        var chosen = await Request.Choose(GetDeployableCards(choices, ref toFrontFieldDict, ref actionedDict, reason), min, max, this);
         var toFrontFieldList = new List<bool>();
         var actionedList = new List<bool>();
         foreach (var card in chosen)
@@ -664,7 +664,7 @@ public abstract class User
 
     public async Task LevelUp(Card target, Skill reason = null)
     {
-        List<Card> baseUnits = target.GetLevelUpableUnits(reason);
+        var baseUnits = target.GetLevelUpableUnits(reason);
         Card baseUnit;
         if (baseUnits.Count < 1)
         {
@@ -734,8 +734,8 @@ public abstract class User
         {
             if (Game.AttackingUnit.CheckCriticalAttack())
             {
-                List<Card> costs = Game.AttackingUnit.GetCostsForCriticalAttack();
-                Card cost = await Request.ChooseUpToOne(costs, this);
+                var costs = Game.AttackingUnit.GetCostsForCriticalAttack();
+                var cost = await Request.ChooseUpToOne(costs, this);
                 if (cost != null)
                 {
                     Game.TryDoMessage(new CriticalAttackMessage()
@@ -757,8 +757,8 @@ public abstract class User
         {
             if (Game.DefendingUnit.CheckAvoid())
             {
-                List<Card> costs = Game.DefendingUnit.GetCostsForAvoid();
-                Card cost = await Request.ChooseUpToOne(costs, this);
+                var costs = Game.DefendingUnit.GetCostsForAvoid();
+                var cost = await Request.ChooseUpToOne(costs, this);
                 if (cost != null)
                 {
                     Game.TryDoMessage(new AvoidMessage()
@@ -858,7 +858,7 @@ public abstract class User
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
-        ReadyForSameNameProcessPartialMessage readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()
+        var readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()
         {
             Targets = units,
             Name = name
@@ -874,7 +874,7 @@ public abstract class User
             {
                 savedUnit = await Request.ChooseOne(readyForSameNameProcessMessage.Targets, this);
             }
-            List<Card> confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
+            var confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
             confirmedTarget.Remove(savedUnit);
             return confirmedTarget;
         }
@@ -888,7 +888,7 @@ public abstract class User
     {
         if (target != null)
         {
-            List<Card> targets = new List<Card> { target };
+            var targets = new List<Card> { target };
             ShowCard(targets, reason);
         }
     }

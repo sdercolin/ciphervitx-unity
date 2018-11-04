@@ -45,7 +45,7 @@ public abstract class Cost
     /// </summary>
     public static Cost operator +(Cost a, Cost b)
     {
-        List<Cost> newElements = new List<Cost>();
+        var newElements = new List<Cost>();
         if (a is MultipleCost)
         {
             if (b is MultipleCost)

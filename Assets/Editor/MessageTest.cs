@@ -35,14 +35,14 @@ public class MessageTest
         //string message2Json = message2.ToString();
         //Debug.Log(message2Json);
 
-        DeployMessage message3 = new DeployMessage()
+        var message3 = new DeployMessage()
         {
             Targets = targets,
             ActionedList = new List<bool>() { true },
             ToFrontFieldList = new List<bool>() { false },
             Reason = null
         };
-        DeployMessage clone3 = message3.Clone() as DeployMessage;
+        var clone3 = message3.Clone() as DeployMessage;
         Assert.IsTrue(clone3 is DeployMessage);
         Assert.IsTrue(clone3.Reason == null);
         Assert.IsFalse(clone3.Targets == targets);

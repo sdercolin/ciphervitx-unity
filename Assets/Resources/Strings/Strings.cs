@@ -15,7 +15,7 @@ public static class Strings
     public static void Load(string language)
     {
         string complete_path = (language == "") ? String.Format(path, "") : String.Format(path, "_" + language);
-        XmlDocument xml = new XmlDocument();
+        var xml = new XmlDocument();
         xml.Load(complete_path);
         stringsDict.Clear();
         foreach (var node in xml.DocumentElement.ChildNodes)

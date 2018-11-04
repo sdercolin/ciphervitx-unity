@@ -87,7 +87,7 @@ public static class Game
 
     public static IAttachable GetItemByGuid(string guid)
     {
-        foreach (Card card in AllCards)
+        foreach (var card in AllCards)
         {
             var itemFound = card.AttachableList.Find(item => item.Guid == guid);
             if (itemFound != null)
@@ -142,7 +142,7 @@ public static class Game
     {
         //Debug.Log("BroadcastTrying message: " + Environment.NewLine
         //    + StringUtils.CreateFromAny(message) + Environment.NewLine);
-        foreach (Card card in AllCards)
+        foreach (var card in AllCards)
         {
             if (!card.Try(message, ref substitute))
             {
@@ -550,8 +550,8 @@ public static class Game
     //同名処理
     private static async Task<bool> DoSameNameProcess()
     {
-        List<string> nameChecked = new List<string>();
-        List<Card> cardsToSendToRetreat = new List<Card>();
+        var nameChecked = new List<string>();
+        var cardsToSendToRetreat = new List<Card>();
         foreach (var user in AllUsers)
         {
             foreach (var card in user.Field.Cards)
@@ -588,8 +588,8 @@ public static class Game
     private static async Task<bool> DoDestructionProcess()
     {
         bool processed = false;
-        List<Card> cardsToSendToRetreat = new List<Card>();
-        Dictionary<User, int> orbsDetructionCountDict = new Dictionary<User, int>();
+        var cardsToSendToRetreat = new List<Card>();
+        var orbsDetructionCountDict = new Dictionary<User, int>();
         foreach (var card in AllCards)
         {
             if (card.DestroyedCount > 0)
@@ -664,7 +664,7 @@ public static class Game
         {
             return;
         }
-        List<User> losingUsers = new List<User>();
+        var losingUsers = new List<User>();
         foreach (var user in AllUsers)
         {
             if ((user.Field.Contains(user.Hero)) || (user.Deck.Count == 0 && user.Retreat.Count == 0))
@@ -681,7 +681,7 @@ public static class Game
     //配置処理
     private static bool DoPositionProcess()
     {
-        List<Card> cardsToSendToRetreat = new List<Card>();
+        var cardsToSendToRetreat = new List<Card>();
         foreach (var card in AllCards)
         {
             foreach (var item in card.SubSkillList)

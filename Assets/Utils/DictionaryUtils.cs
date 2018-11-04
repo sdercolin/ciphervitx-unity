@@ -11,7 +11,7 @@ public static class DictionaryUtils
         {
             return null;
         }
-        Dictionary<T1, T2> clone = new Dictionary<T1, T2>();
+        var clone = new Dictionary<T1, T2>();
         foreach (var key in dictionary.Keys)
         {
             clone.Add(key, dictionary[key]);

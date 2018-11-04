@@ -70,7 +70,7 @@ public static class Request
 
     public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
-        List<T> results = await Choose(choices, 0, 1, targetUser);
+        var results = await Choose(choices, 0, 1, targetUser);
         if (results.Count == 0)
         {
             return default(T);

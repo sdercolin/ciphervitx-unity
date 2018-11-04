@@ -108,12 +108,12 @@ public abstract class Area
     public List<int> GetShuffledOrder()
     {
         int N = list.Count;
-        List<int> newOrder = new List<int>();
+        var newOrder = new List<int>();
         for (int i = 0; i < N; i++)
         {
             newOrder.Add(i);
         }
-        Random rnd = new Random();
+        var rnd = new Random();
         for (int j = 0; j < N; j++)
         {
             int pos = rnd.Next(j, N);
@@ -141,7 +141,7 @@ public abstract class Area
     /// <returns>具备该单位名的卡的列表</returns>
     public List<Card> SearchCard(string UnitName)
     {
-        List<Card> result = new List<Card>();
+        var result = new List<Card>();
         Cards.ForEach(card =>
         {
             if (card.HasUnitNameOf(UnitName))

@@ -9,14 +9,14 @@ public static class ListUtils
         {
             return null;
         }
-        List<T> clone = new List<T>();
+        var clone = new List<T>();
         clone.AddRange(list);
         return clone;
     }
 
     public static List<T> Combine<T>(List<T> listA, List<T> listB)
     {
-        List<T> combined = new List<T>();
+        var combined = new List<T>();
         combined.AddRange(listA);
         combined.AddRange(listB);
         return combined;
@@ -24,7 +24,7 @@ public static class ListUtils
 
     public static List<T2> UpdateParallel<T1, T2>(List<T1> newKey, List<T1> oldKey, List<T2> oldValue)
     {
-        List<T2> newValue = new List<T2>();
+        var newValue = new List<T2>();
         foreach (var item in newKey)
         {
             int index = oldKey.IndexOf(item);
@@ -43,7 +43,7 @@ public static class ListUtils
     public static string ToString<T>(List<T> list)
     {
         string json = String.Empty;
-        foreach (T item in list)
+        foreach (var item in list)
         {
             if (String.IsNullOrEmpty(json))
             {

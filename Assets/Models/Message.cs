@@ -26,8 +26,8 @@ public class Message
 
     public Message Clone()
     {
-        Type messageType = GetType();
-        Message clone = Activator.CreateInstance(messageType) as Message;
+        var messageType = GetType();
+        var clone = Activator.CreateInstance(messageType) as Message;
         clone.SendBySelf = SendBySelf;
         for (int i = 0; i < fieldNumber; i++)
         {
@@ -50,7 +50,7 @@ public class Message
     public virtual void Do() { }
     public List<T> Filter<T>(List<T> list, Predicate<T> predicate)
     {
-        List<T> results = new List<T>();
+        var results = new List<T>();
         foreach (var item in list)
         {
             if (predicate(item))
@@ -113,7 +113,7 @@ public class Message
         {
             return null;
         }
-        Type messageType = Assembly.GetExecutingAssembly().GetType(typename);
+        var messageType = Assembly.GetExecutingAssembly().GetType(typename);
         var newMessage = Activator.CreateInstance(messageType) as Message;
         foreach (var item in splited)
         {
@@ -140,7 +140,7 @@ public class Message
         }
         else
         {
-            List<Message> newElements = new List<Message>();
+            var newElements = new List<Message>();
             if (a is MultipleMessage)
             {
                 if (b is MultipleMessage)
@@ -216,7 +216,7 @@ public class SetDeckMessage : Message
     {
         foreach (var guid in CardDict.Keys)
         {
-            Card newCard = CardFactory.CreateCard(CardDict[guid], User);
+            var newCard = CardFactory.CreateCard(CardDict[guid], User);
             User.Deck.ImportCard(newCard);
             newCard.Guid = guid;
             if (guid == HeroGuid)
@@ -307,7 +307,7 @@ public class DeployMessage : Message
     public Skill Reason { get { return field4; } set { field4 = value; } }
     public override void Do()
     {
-        foreach (Card card in Targets)
+        foreach (var card in Targets)
         {
             if (Reason == null)
             {
@@ -373,7 +373,7 @@ public class MoveMessage : Message
     public Skill Reason { get { return field2; } set { field2 = value; } }
     public override void Do()
     {
-        foreach (Card card in Targets)
+        foreach (var card in Targets)
         {
             if (card.BelongedRegion == card.Controller.BackField)
             {
@@ -398,7 +398,7 @@ public class ReverseBondMessage : Message
     public bool AsCost { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
-        foreach (Card card in Targets)
+        foreach (var card in Targets)
         {
             card.FrontShown = false;
         }
@@ -412,7 +412,7 @@ public class ToBondMessage : Message
     public Skill Reason { get { return field3; } set { field3 = value; } }
     public override void Do()
     {
-        foreach (Card card in Targets)
+        foreach (var card in Targets)
         {
             card.MoveTo(card.Controller.Bond);
             if (!TargetFrontShown)

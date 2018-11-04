@@ -117,10 +117,10 @@ public static class StringUtils
         {
             return null;
         }
-        Type type = Assembly.GetExecutingAssembly().GetType(typename);
-        List<object> parameters = new List<object>();
-        List<string> parameterNames = new List<string>();
-        Dictionary<string, dynamic> otherFields = new Dictionary<string, dynamic>();
+        var type = Assembly.GetExecutingAssembly().GetType(typename);
+        var parameters = new List<object>();
+        var parameterNames = new List<string>();
+        var otherFields = new Dictionary<string, dynamic>();
         var constructorInfo = type.GetConstructors()[0];
         foreach (var param in constructorInfo.GetParameters())
         {

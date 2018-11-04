@@ -33,7 +33,7 @@ public abstract class SubSkill : Skill
 
     public override string ToString()
     {
-        Dictionary<string, dynamic> toSerialize = new Dictionary<string, dynamic>();
+        var toSerialize = new Dictionary<string, dynamic>();
         toSerialize.Add("type", GetType().Name);
         toSerialize.Add("guid", Guid);
         toSerialize.Add("onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown));

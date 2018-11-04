@@ -225,7 +225,7 @@ public abstract class AutoSkill : Skill
         {
             Game.InductionSetList.Add(new List<Induction>());
         }
-        List<Induction> inductionSet = Game.InductionSetList[Game.InductionSetList.Count - 1];
+        var inductionSet = Game.InductionSetList[Game.InductionSetList.Count - 1];
         inductionSet.Add(induction);
     }
 
@@ -407,7 +407,7 @@ public abstract class PermanentSkill : Skill
             DetachAll();
             return;
         }
-        foreach (Card card in Game.AllCards)
+        foreach (var card in Game.AllCards)
         {
             if (CanTarget(card) && !Targets.Contains(card))
             {

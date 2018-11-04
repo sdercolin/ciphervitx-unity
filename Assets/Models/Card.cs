@@ -62,11 +62,11 @@ public abstract class Card
     {
         get
         {
-            List<string> result = new List<string>();
+            var result = new List<string>();
             result.Add(UnitName);
             BuffList.ForEach(x =>
             {
-                UnitNameBuff buff = x as UnitNameBuff;
+                var buff = x as UnitNameBuff;
                 if (buff != null)
                 {
                     if (buff.IsAdding)
@@ -118,7 +118,7 @@ public abstract class Card
             int powerNow = power;
             BuffList.ForEach(x =>
             {
-                PowerBuff buff = x as PowerBuff;
+                var buff = x as PowerBuff;
                 if (buff != null)
                 {
                     powerNow += buff.Value;
@@ -139,7 +139,7 @@ public abstract class Card
             int supportNow = support;
             BuffList.ForEach(x =>
             {
-                SupportBuff buff = x as SupportBuff;
+                var buff = x as SupportBuff;
                 if (buff != null)
                 {
                     supportNow += buff.Value;
@@ -160,7 +160,7 @@ public abstract class Card
             int deployCostNow = deployCost;
             BuffList.ForEach(x =>
             {
-                DeployCostBuff buff = x as DeployCostBuff;
+                var buff = x as DeployCostBuff;
                 if (buff != null)
                 {
                     if (buff.IsBecoming)
@@ -189,7 +189,7 @@ public abstract class Card
             int classChangeCostNow = classChangeCost;
             BuffList.ForEach(x =>
             {
-                ClassChangeCostBuff buff = x as ClassChangeCostBuff;
+                var buff = x as ClassChangeCostBuff;
                 if (buff != null)
                 {
                     if (buff.IsBecoming)
@@ -222,7 +222,7 @@ public abstract class Card
         bool hasNow = symbols.Contains(symbol);
         BuffList.ForEach(x =>
         {
-            SymbolBuff buff = x as SymbolBuff;
+            var buff = x as SymbolBuff;
             if (buff != null)
             {
                 if (buff.IsAdding)
@@ -254,7 +254,7 @@ public abstract class Card
         bool hasNow = genders.Contains(gender);
         BuffList.ForEach(x =>
         {
-            GenderBuff buff = x as GenderBuff;
+            var buff = x as GenderBuff;
             if (buff != null)
             {
                 if (buff.IsAdding)
@@ -286,7 +286,7 @@ public abstract class Card
         bool hasNow = weapons.Contains(weapon);
         BuffList.ForEach(x =>
         {
-            WeaponBuff buff = x as WeaponBuff;
+            var buff = x as WeaponBuff;
             if (buff != null)
             {
                 if (buff.IsAdding)
@@ -318,7 +318,7 @@ public abstract class Card
         bool hasNow = types.Contains(type);
         BuffList.ForEach(x =>
         {
-            TypeBuff buff = x as TypeBuff;
+            var buff = x as TypeBuff;
             if (buff != null)
             {
                 if (buff.IsAdding)
@@ -350,7 +350,7 @@ public abstract class Card
         bool hasNow = ranges.Contains(range);
         BuffList.ForEach(x =>
         {
-            RangeBuff buff = x as RangeBuff;
+            var buff = x as RangeBuff;
             if (buff != null)
             {
                 if (buff.IsAdding)
@@ -494,7 +494,7 @@ public abstract class Card
     {
         get
         {
-            List<Skill> skillList = new List<Skill>();
+            var skillList = new List<Skill>();
             foreach (var item in AttachableList)
             {
                 if (item is Skill && !(item is SubSkill))
@@ -513,7 +513,7 @@ public abstract class Card
     {
         get
         {
-            List<Buff> buffList = new List<Buff>();
+            var buffList = new List<Buff>();
             foreach (var item in AttachableList)
             {
                 if (item is Buff)
@@ -532,7 +532,7 @@ public abstract class Card
     {
         get
         {
-            List<SubSkill> subSkillList = new List<SubSkill>();
+            var subSkillList = new List<SubSkill>();
             foreach (var item in AttachableList)
             {
                 if (item is SubSkill)
