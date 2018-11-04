@@ -19,7 +19,6 @@ public class Card00071Test
         Game.Initialize();
         Game.SetTestMode();
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
 
         var card = CardFactory.CreateCard(71, player);

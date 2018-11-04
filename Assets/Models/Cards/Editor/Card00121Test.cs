@@ -53,7 +53,6 @@ public class Card00121Test
         Game.Initialize();
         Game.SetTestMode();
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
 
         // 己方配置
