@@ -53,9 +53,9 @@ public class Card00076Test
         rival.Bond.AddCard(rivalbond);
         rival.Deck.AddCard(rivalSupport2);
 
+        Request.SetNextResult(); //翻面1
         Game.DoActionSkill(card3.GetUsableActionSkills()[0]).Wait();
 
-        Request.SetNextResult(); //翻面1
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避
 
