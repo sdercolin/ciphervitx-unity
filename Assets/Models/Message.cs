@@ -332,6 +332,7 @@ public class DeployMessage : Message
         if (Targets.Contains(target))
         {
             int index = Targets.IndexOf(target);
+            Targets.Remove(target);
             ToFrontFieldList.RemoveAt(index);
             ActionedList.RemoveAt(index);
             return true;
