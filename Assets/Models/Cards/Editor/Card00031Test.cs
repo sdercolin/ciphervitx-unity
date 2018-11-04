@@ -100,7 +100,7 @@ public class Card00031Test
         Assert.IsTrue(count == 0);
 
         // Class Change
-        Game.DoLevelUp(adv_lufulei, true).Start();
+        Game.DoLevelUp(adv_lufulei, true).Wait();
         Assert.IsTrue(player.Hand.Contains(bonus));
 
         // case1 begin 
