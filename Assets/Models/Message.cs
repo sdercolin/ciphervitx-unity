@@ -679,7 +679,10 @@ public class DrawCardMessage : Message
     {
         for (int i = 0; i < Number; i++)
         {
-            Player.Deck.Top.MoveTo(Player.Hand);
+            if (Player.Deck.Count > 0)
+            {
+                Player.Deck.Top.MoveTo(Player.Hand);
+            }
         }
     }
 }
