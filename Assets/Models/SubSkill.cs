@@ -24,7 +24,7 @@ public abstract class SubSkill : Skill
     /// </summary>
     public LastingTypeEnum LastingType;
 
-    private static int fieldNumber = 5;
+    private static readonly int fieldNumber = 5;
     protected dynamic field1 = null;
     protected dynamic field2 = null;
     protected dynamic field3 = null;

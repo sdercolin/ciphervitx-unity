@@ -12,7 +12,7 @@ public class Message
     /// <summary>
     /// 数据
     /// </summary>
-    private static int fieldNumber = 10;
+    private static readonly int fieldNumber = 10;
     protected dynamic field1 = null;
     protected dynamic field2 = null;
     protected dynamic field3 = null;
