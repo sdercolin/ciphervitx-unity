@@ -36,21 +36,6 @@ public class Card00031Test
         var hisUint2 = CardFactory.CreateCard(97, rival);
         rival.BackField.AddCard(hisUint2);
 
-
-        // case1 begin
-        // 选择后场
-        // ==========================================
-        //Request.SetNextResult();
-        //Request.SetNextResult(true);
-        //Request.SetNextResult(new List<Card>() { hisUint2 });
-        //Game.DoLevelUp(adv_myUnit, true);
-
-        //Assert.IsTrue(rival.BackField.Cards.Count == 0);
-        // ==========================================
-        // case1 end 测试结果OK
-
-
-        // case2 begin
         // 选择前场，应发生进军
         // ==========================================
         Request.SetNextResult();
@@ -61,8 +46,46 @@ public class Card00031Test
 
         Assert.IsTrue(rival.BackField.Cards.Count == 0);
         // ==========================================
-        // case2 end
     }
+
+    [Test]
+    public void Skill1Test2()
+    {
+        /// <summary>
+        /// スキル1
+        /// 『神軍師の采配』【自】他の味方がクラスチェンジするたび、敵を１体選び、移動させてもよい。
+        /// </summary>
+        Game.Initialize();
+        Game.SetTestMode();
+        var player = Game.Player;
+        var rival = Game.Rival;
+        Game.TurnPlayer = player;
+
+        var lufulei = CardFactory.CreateCard(31, player);
+        player.FrontField.AddCard(lufulei);
+        var myUnit = CardFactory.CreateCard(98, player);
+        player.FrontField.AddCard(myUnit);
+        var adv_myUnit = CardFactory.CreateCard(97, player);
+        player.Hand.AddCard(adv_myUnit);
+        var bonus = CardFactory.CreateCard(1, player);
+        player.Deck.AddCard(bonus);
+
+        // 前场后场各1人
+        var hisUint1 = CardFactory.CreateCard(31, rival);
+        rival.FrontField.AddCard(hisUint1);
+        var hisUint2 = CardFactory.CreateCard(97, rival);
+        rival.BackField.AddCard(hisUint2);
+
+        // 选择后场
+        // ==========================================
+        Request.SetNextResult();
+        Request.SetNextResult(true);
+        Request.SetNextResult(new List<Card>() { hisUint2 });
+        Game.DoLevelUp(adv_myUnit, true);
+
+        Assert.IsTrue(rival.BackField.Cards.Count == 0);
+    }
+
 
     [Test]
     public void Skill2Test()
@@ -103,23 +126,6 @@ public class Card00031Test
         Game.DoLevelUp(adv_lufulei, true).Wait();
         Assert.IsTrue(player.Hand.Contains(bonus));
 
-        // case1 begin 
-        // 血一样的场合，应该是能发，但是空发
-        // ==========================================
-
-        //count = adv_lufulei.GetUsableActionSkills().Count;
-        //Assert.IsTrue(count == 1);
-
-        //Request.SetNextResult(new List<Card>() { bond1, bond2, bond3 }); //设定要翻的费
-        //Game.DoActionSkill(adv_lufulei.GetUsableActionSkills()[0]);
-
-        //Assert.IsTrue(player.Orb.Count == 0);
-        // ===========================================
-        // case1 end 测试结果OK
-
-
-
-        // case2 begin
         // 一般场合
         // ==========================================
         var orb = CardFactory.CreateCard(29, rival);
@@ -133,7 +139,57 @@ public class Card00031Test
 
         Assert.IsTrue(player.Orb.Contains(card));
         // ===========================================
-        // case2 end
+    }
 
+    [Test]
+    public void Skill2Test2()
+    {
+        /// <summary>
+        /// スキル2
+        /// 『これも、策のうちです』〖转职技〗【起】[翻面3]自分のオーブの数が相手より少ない場合、デッキの１番上のカードをオーブに追加する。（はこのユニットがクラスチェンジしていなければ使用できない）
+        /// </summary>
+        Game.Initialize();
+        Game.SetTestMode();
+        var player = Game.Player;
+        var rival = Game.Rival;
+        Game.TurnPlayer = player;
+
+        var lufulei = CardFactory.CreateCard(31, player);
+        player.FrontField.AddCard(lufulei);
+
+        var adv_lufulei = CardFactory.CreateCard(31, player);
+        player.Hand.AddCard(adv_lufulei);
+
+        var bond1 = CardFactory.CreateCard(29, player);
+        var bond2 = CardFactory.CreateCard(29, player);
+        var bond3 = CardFactory.CreateCard(29, player);
+        player.Bond.AddCard(bond1);
+        player.Bond.AddCard(bond2);
+        player.Bond.AddCard(bond3);
+
+        var bonus = CardFactory.CreateCard(30, player);
+        player.Deck.AddCard(bonus);
+        var card = CardFactory.CreateCard(31, player);
+        player.Deck.AddCard(card);
+
+        // 未转职不能发
+        int count = lufulei.GetUsableActionSkills().Count;
+        Assert.IsTrue(count == 0);
+
+        // Class Change
+        Game.DoLevelUp(adv_lufulei, true).Wait();
+        Assert.IsTrue(player.Hand.Contains(bonus));
+
+        // 血一样的场合，应该是能发，但是空发
+        // ==========================================
+
+        count = adv_lufulei.GetUsableActionSkills().Count;
+        Assert.IsTrue(count == 1);
+
+        Request.SetNextResult(new List<Card>() { bond1, bond2, bond3 }); //设定要翻的费
+        Game.DoActionSkill(adv_lufulei.GetUsableActionSkills()[0]);
+
+        Assert.IsTrue(player.Orb.Count == 0);
+        // ===========================================
     }
 }
