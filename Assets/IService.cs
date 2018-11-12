@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 
 public interface IService
 {
+    bool Connected { get; }
     Task<bool> Connect(string url);
     Task<bool> Join(string roomId);
-    Task<bool> Send(Message message);
-    Task<T> Request<T>(Message message);
+    Task Send(Message message);
+    Task<Message> Receive();
 }
