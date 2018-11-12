@@ -7,7 +7,7 @@ using System.Text;
 /// <summary>
 /// 所有卡的基类
 /// </summary>
-public abstract class Card
+public abstract class Card : IChoosable
 {
     public Card(User controller)
     {
@@ -19,9 +19,24 @@ public abstract class Card
     /// 卡的GuId，唯一识别卡的依据
     /// </summary>
     public string Guid;
+
     public override string ToString()
     {
         return "{\"guid\": \"" + Guid + "\" }";
+    }
+
+    public string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return CardName;
+        }
+    }
+
+    public string GetImagePath()
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>
