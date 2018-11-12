@@ -30,12 +30,13 @@ public abstract class Card : IChoosable
         switch (descriptionPattern)
         {
             default:
-                return CardName;
+                return "(" + BelongedRegion.GetDescription(descriptionPattern) + ")" + CardName;
         }
     }
 
     public string GetImagePath()
     {
+        // TODO: waiting for resource: images
         throw new NotImplementedException();
     }
 

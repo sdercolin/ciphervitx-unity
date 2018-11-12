@@ -5,6 +5,19 @@
   <string key="load_deck_same_card_over_limit" value="卡片「{0}」超过卡组可容纳数量。"/>
   <string key="load_deck_hero_preset_illegal" value="预设的主人公「{0}」的出击费用不为1。"/>
   <string key="load_deck_request_choose_hero" value="请选择作为主人公的卡。"/>
+  
+  <string key="description_player_default" value=""/>
+  <string key="description_player_full" value="我方"/>
+  <string key="description_rival" value="对方"/>
+  <string key="description_deck" value="卡组"/>
+  <string key="description_hand" value="手牌"/>
+  <string key="description_retreat" value="退避区"/>
+  <string key="description_support" value="支援区"/>
+  <string key="description_bond" value="羁绊区"/>
+  <string key="description_orb" value="宝玉区"/>
+  <string key="description_frontfield" value="前卫区"/>
+  <string key="description_backfield" value="后卫区"/>
+  <string key="description_overlay" value="叠放区"/>
 
   <string key="card_text_unitname_レナ" value="蕾娜"/>
   <string key="card_text_unitname_ジュリアン" value="朱利安"/>

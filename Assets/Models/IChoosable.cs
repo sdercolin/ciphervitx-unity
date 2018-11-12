@@ -8,5 +8,6 @@ public interface IChoosable
 
 public enum DescriptionPattern
 {
-    Default
+    Default,
+    Full
 }

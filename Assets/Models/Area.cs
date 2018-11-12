@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 所有区域的基类
 /// </summary>
-public abstract class Area
+public abstract class Area : IChoosable
 {
     public Area(User Controller)
     {
@@ -14,9 +14,17 @@ public abstract class Area
     }
 
     public string Guid;
+
     public override string ToString()
     {
         return "{\"guid\": \"" + Guid + "\" }";
+    }
+
+    public abstract string GetDescription(DescriptionPattern descriptionPattern);
+
+    public string GetImagePath()
+    {
+        return null;
     }
 
     /// <summary>
@@ -179,6 +187,15 @@ public class Deck : Area
         this.Controller = Controller;
     }
 
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_deck");
+        }
+    }
+
     public Card Top => list[0];
 
     public List<Card> GetTopCards(int number)
@@ -222,6 +239,15 @@ public class Hand : Area
         this.Controller = Controller;
     }
 
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_hand");
+        }
+    }
+
     public override void ProcessCardIn(Card card, Area fromArea)
     {
         card.Reset();
@@ -238,6 +264,15 @@ public class Retreat : Area
     {
         list = new List<Card>();
         this.Controller = Controller;
+    }
+
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_retreat");
+        }
     }
 
     public override void ProcessCardIn(Card card, Area fromArea)
@@ -257,6 +292,15 @@ public class Support : Area
     {
         list = new List<Card>();
         this.Controller = Controller;
+    }
+
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_support");
+        }
     }
 
     public bool SupportedBy(string unitName)
@@ -286,6 +330,15 @@ public class Bond : Area
     {
         list = new List<Card>();
         this.Controller = Controller;
+    }
+
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_bond");
+        }
     }
 
     /// <summary>
@@ -329,6 +382,15 @@ public class Orb : Area
         this.Controller = Controller;
     }
 
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_orb");
+        }
+    }
+
     public override void ProcessCardIn(Card card, Area fromArea)
     {
         card.Reset();
@@ -345,6 +407,15 @@ public class Field : Area
     public Field(User Controller) : base(Controller)
     {
         this.Controller = Controller;
+    }
+
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return "";
+        }
     }
 
     public override List<Card> Cards => ListUtils.Combine(Controller.BackField.Cards, Controller.FrontField.Cards);
@@ -364,6 +435,15 @@ public class FrontField : Area
     {
         list = new List<Card>();
         this.Controller = Controller;
+    }
+
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_frontfield");
+        }
     }
 
     public override void ProcessCardIn(Card card, Area fromArea)
@@ -386,6 +466,15 @@ public class BackField : Area
         this.Controller = Controller;
     }
 
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_backfield");
+        }
+    }
+
     public override void ProcessCardIn(Card card, Area fromArea)
     {
         if (!(fromArea is FrontField))
@@ -404,6 +493,15 @@ public class Overlay : Area
     {
         list = new List<Card>();
         this.Controller = Controller;
+    }
+
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Controller.GetDescription(descriptionPattern) + Strings.Get("description_overlay");
+        }
     }
 
     public override void ProcessCardIn(Card card, Area fromArea)

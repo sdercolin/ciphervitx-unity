@@ -6,7 +6,7 @@ using System.IO;
 /// <summary>
 /// 玩家类
 /// </summary>
-public abstract class User
+public abstract class User : IChoosable
 {
     public User()
     {
@@ -24,9 +24,17 @@ public abstract class User
     }
 
     public string Guid;
+
     public override string ToString()
     {
         return "{\"guid\": \"" + Guid + "\" }";
+    }
+
+    public abstract string GetDescription(DescriptionPattern descriptionPattern);
+
+    public string GetImagePath()
+    {
+        return null;
     }
 
     public List<Area> AllAreas => new List<Area> { Deck, Hand, Retreat, Support, Bond, Orb, FrontField, BackField, Overlay };
@@ -961,6 +969,17 @@ public class Player : User
     public Player() : base() { }
 
     public override User Opponent => Game.Rival;
+
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            case DescriptionPattern.Full:
+                return Strings.Get("description_player_full");
+            default:
+                return Strings.Get("description_player_default");
+        }
+    }
 }
 
 /// <summary>
@@ -973,4 +992,13 @@ public class Rival : User
     public override User Opponent => Game.Player;
 
     public bool Synchronized = false;
+
+    public override string GetDescription(DescriptionPattern descriptionPattern)
+    {
+        switch (descriptionPattern)
+        {
+            default:
+                return Strings.Get("description_rival");
+        }
+    }
 }
