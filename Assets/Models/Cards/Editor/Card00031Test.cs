@@ -151,7 +151,6 @@ public class Card00031Test
         Game.Initialize();
         Game.SetTestMode();
         var player = Game.Player;
-        var rival = Game.Rival;
         Game.TurnPlayer = player;
 
         var lufulei = CardFactory.CreateCard(31, player);
