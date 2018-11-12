@@ -30,7 +30,7 @@ public abstract class User : IChoosable
         return "{\"guid\": \"" + Guid + "\" }";
     }
 
-    public abstract string GetDescription(DescriptionPattern descriptionPattern);
+    public abstract string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default);
 
     public string GetImagePath()
     {
@@ -970,7 +970,7 @@ public class Player : User
 
     public override User Opponent => Game.Rival;
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -993,7 +993,7 @@ public class Rival : User
 
     public bool Synchronized = false;
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {

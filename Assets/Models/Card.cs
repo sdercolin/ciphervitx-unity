@@ -25,7 +25,7 @@ public abstract class Card : IChoosable
         return "{\"guid\": \"" + Guid + "\" }";
     }
 
-    public string GetDescription(DescriptionPattern descriptionPattern)
+    public string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {

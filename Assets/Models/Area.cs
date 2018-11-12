@@ -20,7 +20,7 @@ public abstract class Area : IChoosable
         return "{\"guid\": \"" + Guid + "\" }";
     }
 
-    public abstract string GetDescription(DescriptionPattern descriptionPattern);
+    public abstract string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default);
 
     public string GetImagePath()
     {
@@ -187,7 +187,7 @@ public class Deck : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -239,7 +239,7 @@ public class Hand : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -266,7 +266,7 @@ public class Retreat : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -294,7 +294,7 @@ public class Support : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -332,7 +332,7 @@ public class Bond : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -382,7 +382,7 @@ public class Orb : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -409,7 +409,7 @@ public class Field : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -437,7 +437,7 @@ public class FrontField : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -466,7 +466,7 @@ public class BackField : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
@@ -495,7 +495,7 @@ public class Overlay : Area
         this.Controller = Controller;
     }
 
-    public override string GetDescription(DescriptionPattern descriptionPattern)
+    public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {
         switch (descriptionPattern)
         {
