@@ -36,11 +36,11 @@ public static class DictionaryUtils
     public static Dictionary<object, object> FromString(string json)
     {
         var result = new Dictionary<object, object>();
-        string[] splited = json.Trim(new char[] { '<', '>' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string[] splited = json.Trim(new char[] { '<', '>' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         foreach (var item in splited)
         {
-            var key = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[0];
-            var value = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries)[1];
+            var key = item.SplitOnce(": ")[0];
+            var value = item.SplitOnce(": ")[1];
             result.Add(StringUtils.ParseAny(key), StringUtils.ParseAny(value));
         }
         return result;

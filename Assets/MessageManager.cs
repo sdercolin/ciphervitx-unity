@@ -21,7 +21,7 @@ public class MessageManager
         if (await service.Connect(url))
         {
             Url = url;
-            var listeningTask = Task.Run(Listen);
+            new Thread(() => Listen().Wait()).Start();
             return true;
         }
         return false;

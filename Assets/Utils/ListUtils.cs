@@ -61,16 +61,16 @@ public static class ListUtils
 
     public static dynamic FromString(string json)
     {
-        string[] splited = json.Trim(new char[] { '[', ']' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
-        Type type = StringUtils.ParseAny(splited[0]).GetType();
+        string[] splited = json.Trim(new char[] { '[', ']' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
+        var type = StringUtils.ParseAny(splited[0]).GetType();
         while (!type.BaseType.Equals(typeof(object)))
         {
             type = type.BaseType;
         }
         Type[] typeArgs = { type };
-        Type constructed = typeof(List<>).MakeGenericType(typeArgs);
+        var constructed = typeof(List<>).MakeGenericType(typeArgs);
         object result = Activator.CreateInstance(constructed);
-        MethodInfo methodInfo = constructed.GetMethod("Add");
+        var methodInfo = constructed.GetMethod("Add");
         foreach (var item in splited)
         {
             object[] parametersArray = new object[] { StringUtils.ParseAny(item) };

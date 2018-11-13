@@ -75,7 +75,7 @@ public static class StringUtils
         else if (json.Length > 2 && json.First() == '{' && json.Last() == '}')
         {
             // is object: User, Area, Card, Skill, Buff
-            string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
             string guid = null;
             foreach (var item in splited)
             {
@@ -103,7 +103,7 @@ public static class StringUtils
 
     public static object ParseToCreate(string json)
     {
-        string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         string typename = null;
         foreach (var item in splited)
         {
@@ -134,9 +134,9 @@ public static class StringUtils
             {
                 continue;
             }
-            string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splited2 = item.SplitOnce(": ");
             string name = splited2[0].Trim(new char[] { '\"', ' ' });
-            object value = StringUtils.ParseAny(splited2[1]);
+            object value = ParseAny(splited2[1]);
             if (parameterNames.Contains(name))
             {
                 parameters[parameterNames.IndexOf(name)] = value;
@@ -183,5 +183,70 @@ public class DeserializeFailureException : Exception
     {
         FailedJson = failedJson;
         FailedFieldName = failedFieldName;
+    }
+}
+
+public static class StringExtensions
+{
+    public static string[] SplitOnce(this string content, string separator)
+    {
+        var index = content.IndexOf(separator, StringComparison.Ordinal);
+        var key = content.Substring(0, index);
+        var value = content.Substring(index+ separator.Length);
+        return new string[] { key, value };
+    }
+
+    public static string[] SplitProtectingWrappers(this string content, string separator, StringSplitOptions stringSplitOptions, params string[] wrapperPairs)
+    {
+        var wrappedDict = new Dictionary<string, string>();
+        int count = 1;
+        if (wrapperPairs.Length > 0)
+        {
+            while (true)
+            {
+                int? firstStart = null;
+                int? lastEnd = null;
+                foreach (var wrapperPair in wrapperPairs)
+                {
+                    if (wrapperPair.Length != 2)
+                    {
+                        continue;
+                    }
+                    var start = content.IndexOf(wrapperPair[0]);
+                    var end = content.LastIndexOf(wrapperPair[1]);
+                    if (start >= 0 && end >= 0)
+                    {
+                        if (firstStart == null || (start < firstStart && end > lastEnd))
+                        {
+                            firstStart = start;
+                            lastEnd = end;
+                        }
+                    }
+                }
+                if (firstStart == null || lastEnd == null)
+                {
+                    break;
+                }
+                var sub = content.Substring((int)firstStart, (int)lastEnd - (int)firstStart + 1);
+                wrappedDict.Add("@#" + count.ToString(), sub);
+                content = content.Substring(0, (int)firstStart) + content.Substring((int)lastEnd + 1);
+                count++;
+            }
+        }
+        var splited = content.Split(new string[] { separator }, stringSplitOptions);
+        var result = new List<string>();
+        foreach (var part in splited)
+        {
+            var partResult = part;
+            foreach (var wrapped in wrappedDict)
+            {
+                if (part.Contains(wrapped.Key))
+                {
+                    partResult = partResult.Replace(wrapped.Key, wrapped.Value);
+                }
+            }
+            result.Add(partResult);
+        }
+        return result.ToArray();
     }
 }

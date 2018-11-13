@@ -99,7 +99,7 @@ public class Message
 
     public static Message FromString(string json)
     {
-        string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         string typename = null;
         foreach (var item in splited)
         {
@@ -123,9 +123,8 @@ public class Message
                 {
                     continue;
                 }
-                var index = item.IndexOf(": ", StringComparison.Ordinal);
-                object value = StringUtils.ParseAny(item.Substring(index + 2));
-                typeof(Message).GetField(item.Substring(0, index).Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
+                object value = StringUtils.ParseAny(item.SplitOnce(": ")[1]);
+                typeof(Message).GetField(item.SplitOnce(": ")[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
             }
             return newMessage;
         }

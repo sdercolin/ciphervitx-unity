@@ -23,7 +23,7 @@ public static class EnumUtils
     {
         try
         {
-            string[] splited = json.Trim(new char[] { '"' }).Split(new string[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splited = json.Trim(new char[] { '"' }).SplitOnce("#");
             type = Assembly.GetExecutingAssembly().GetType(splited.First());
             if (type != null)
             {

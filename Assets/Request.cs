@@ -275,7 +275,7 @@ public abstract class RemoteRequest
         string json = "\"type\": \"" + GetType().Name + "\", \"response\": " + StringUtils.CreateFromAny(Response) + ", \"requestId\": \"" + Guid + "\"";
         if (GetType().IsGenericType)
         {
-            Type innerType = GetType().GenericTypeArguments[0];
+            var innerType = GetType().GenericTypeArguments[0];
             json += ", \"innerType\": \"" + innerType.Name + "\"";
         }
         for (int i = 0; i < fieldNumber; i++)
@@ -291,7 +291,7 @@ public abstract class RemoteRequest
 
     public static RemoteRequest FromString(string json)
     {
-        string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         string typename = null;
         dynamic response = null;
         string guid = null;
@@ -325,7 +325,7 @@ public abstract class RemoteRequest
             RemoteRequest newRequest;
             if (requestType.ContainsGenericParameters)
             {
-                Type innerType = Assembly.GetExecutingAssembly().GetType(innerTypename);
+                var innerType = Assembly.GetExecutingAssembly().GetType(innerTypename);
                 while (!innerType.BaseType.Equals(typeof(object)))
                 {
                     innerType = innerType.BaseType;
@@ -358,9 +358,8 @@ public abstract class RemoteRequest
                 {
                     continue;
                 }
-                var index = item.IndexOf(": ", StringComparison.Ordinal);
-                object value = StringUtils.ParseAny(item.Substring(index + 2));
-                requestType.GetField(item.Substring(0, index).Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
+                object value = StringUtils.ParseAny(item.SplitOnce(": ")[1]);
+                requestType.GetField(item.SplitOnce(": ")[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
             }
             return newRequest;
         }

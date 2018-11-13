@@ -33,8 +33,10 @@ public class RequestTest
 
     class DummyService : IService
     {
-        public bool Connected {
-            get {
+        public bool Connected
+        {
+            get
+            {
                 return true;
             }
         }
@@ -69,15 +71,15 @@ public class RequestTest
 
         public async Task Send(string data)
         {
-            var sendTask = Task.Run(() =>
+            new Thread(() =>
             {
                 LogUtils.Log("Service Send() called: " + Thread.CurrentThread.Name);
                 queue.Enqueue(data);
                 LogUtils.Log("Enqueue: " + queue.GetHashCode() + " count = " + queue.Count);
-            });
+            }).Start();
+            await Task.CompletedTask;
         }
 
         readonly Queue<string> queue = new Queue<string>();
     }
 }
-
