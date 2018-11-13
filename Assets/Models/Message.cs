@@ -119,7 +119,7 @@ public class Message
             var newMessage = Activator.CreateInstance(messageType) as Message;
             foreach (var item in splited)
             {
-                if (item.Contains("\"type\": \""))
+                if (item.Contains("\"type\": "))
                 {
                     continue;
                 }
@@ -128,9 +128,8 @@ public class Message
             }
             return newMessage;
         }
-        catch (Exception e)
+        catch
         {
-            LogUtils.Log(e.ToString());
             return null;
         }
     }

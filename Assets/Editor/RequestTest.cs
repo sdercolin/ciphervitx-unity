@@ -23,10 +23,13 @@ public class RequestTest
         var card1 = CardFactory.CreateCard(1, player);
         var card2 = CardFactory.CreateCard(2, player);
         var card3 = CardFactory.CreateCard(3, player);
+        player.Deck.AddCard(card1);
+        player.Deck.AddCard(card2);
+        player.Deck.AddCard(card3);
         var task = Request.Choose(new List<Card> { card1, card2, card3 }, rival);
-        task.Wait(5000);
+        task.Wait(1000);
         Assert.IsTrue(task.IsCompleted);
-        Assert.AreEqual(3, task.Result);
+        Assert.AreEqual(3, task.Result.Count);
         Assert.AreSame(card1, task.Result[0]);
         Game.MessageManager = null;
     }
@@ -53,29 +56,24 @@ public class RequestTest
 
         public async Task<string> Receive()
         {
-            LogUtils.Log("Service Receive() called: " + Thread.CurrentThread.Name);
-            var result = await Task.Run(() =>
+            return await Task.Run(() =>
             {
                 while (queue.Count == 0)
                 {
                     Thread.Sleep(100);
-                    LogUtils.Log("Queue: " + queue.GetHashCode() + " count = " + queue.Count);
                 }
                 var requestString = queue.Dequeue();
                 var request = RemoteRequest.FromString(requestString) as ChooseRemoteRequest<Card>;
                 request.Response = request.Choices;
                 return request.ToString();
             });
-            return result;
         }
 
         public async Task Send(string data)
         {
             Task.Run(() =>
             {
-                LogUtils.Log("Service Send() called: " + Thread.CurrentThread.Name);
                 queue.Enqueue(data);
-                LogUtils.Log("Enqueue: " + queue.GetHashCode() + " count = " + queue.Count);
             }).Forget();
             await Task.CompletedTask;
         }

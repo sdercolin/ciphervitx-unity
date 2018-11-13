@@ -27,9 +27,13 @@ public static class StringUtils
         {
             return item.ToString();
         }
+        else if (item.GetType().IsEnum)
+        {
+            return EnumUtils.ToString(item);
+        }
         else
         {
-            // is Enum or string
+            // is string
             return "\"" + item.ToString() + "\"";
         }
     }
@@ -54,7 +58,7 @@ public static class StringUtils
             // is boolean
             return boolean;
         }
-        else if (json.Length > 2 && json.First() == '"' && json.Last() == '"')
+        else if (json.Length >= 2 && json.First() == '"' && json.Last() == '"')
         {
             if (EnumUtils.TryParse(json, out enumType, out enumValue))
             {
@@ -64,6 +68,10 @@ public static class StringUtils
             else
             {
                 // is string
+                if (json == "\"\"")
+                {
+                    return "";
+                }
                 return json.Substring(1, json.Length - 2);
             }
         }
@@ -71,6 +79,11 @@ public static class StringUtils
         {
             // is list
             return ListUtils.FromString(json);
+        }
+        else if (json.Length > 2 && json.First() == '<' && json.Last() == '>')
+        {
+            // not done yet: is dictionary
+            throw new NotImplementedException();
         }
         else if (json.Length > 2 && json.First() == '{' && json.Last() == '}')
         {

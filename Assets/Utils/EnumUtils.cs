@@ -11,7 +11,8 @@ public static class EnumUtils
     {
         if (typeof(T).IsEnum)
         {
-            return "\"" + typeof(T).Name + "#" + item.ToString() + "\"";
+            var typename = typeof(T).FullName;
+            return "\"" + typename + "#" + item.ToString() + "\"";
         }
         else
         {
@@ -24,10 +25,10 @@ public static class EnumUtils
         try
         {
             string[] splited = json.Trim(new char[] { '"' }).SplitOnce("#");
-            type = Assembly.GetExecutingAssembly().GetType(splited.First());
+            type = Assembly.GetExecutingAssembly().GetType(splited[0]);
             if (type != null)
             {
-                value = Enum.ToObject(type, splited.Last());
+                value = Enum.Parse(type, splited[1]);
                 return true;
             }
         }

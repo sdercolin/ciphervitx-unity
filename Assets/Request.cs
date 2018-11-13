@@ -302,13 +302,13 @@ public abstract class RemoteRequest
             {
                 typename = item.Replace("\"type\": \"", "").Trim('\"', ' ');
             }
-            if (item.Contains("\"response\": \""))
+            if (item.Contains("\"response\":"))
             {
-                response = StringUtils.CreateFromAny(item.Replace("\"response\": \"", "").Trim('\"', ' '));
+                response = StringUtils.ParseAny(item.Replace("\"response\":", "").Trim(' '));
             }
             if (item.Contains("\"requestId\": \"") )
             {
-                guid = StringUtils.CreateFromAny(item.Replace("\"requestId\": \"", "").Trim('\"', ' '));
+                guid = item.Replace("\"requestId\": \"", "").Trim('\"', ' ');
             }
             if (item.Contains("\"innerType\": \""))
             {
@@ -342,30 +342,30 @@ public abstract class RemoteRequest
             newRequest.Guid = guid;
             foreach (var item in splited)
             {
-                if (item.Contains("\"type\": \""))
+                if (item.Contains("\"type\": "))
                 {
                     continue;
                 }
-                if (item.Contains("\"response\": \""))
+                if (item.Contains("\"response\": "))
                 {
                     continue;
                 }
-                if (item.Contains("\"requestId\": \""))
+                if (item.Contains("\"requestId\": "))
                 {
                     continue;
                 }
-                if (item.Contains("\"innerType\": \""))
+                if (item.Contains("\"innerType\": "))
                 {
                     continue;
                 }
+                var key = item.SplitOnce(": ")[0].Trim(new char[] { '\"' });
                 object value = StringUtils.ParseAny(item.SplitOnce(": ")[1]);
-                requestType.GetField(item.SplitOnce(": ")[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
+                requestType.GetField(key, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
             }
             return newRequest;
         }
-        catch (Exception e)
+        catch
         {
-            LogUtils.Log(e.ToString());
             return null;
         }
     }

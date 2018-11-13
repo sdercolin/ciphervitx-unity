@@ -61,9 +61,12 @@ public class MessageManager
                 if (request != null)
                 {
                     LogUtils.Log("Converted to RemoteRequest: " + request.GetType().Name);
-                    var oriRequest = waitingRequests.Find(it => it.Guid == request.Guid);
-                    oriRequest.Response = request.Response;
-                    waitingRequests.Remove(oriRequest);
+                    if (request.Response != null)
+                    {
+                        var oriRequest = waitingRequests.Find(it => it.Guid == request.Guid);
+                        oriRequest.Response = request.Response;
+                        waitingRequests.Remove(oriRequest);
+                    }
                 }
             }
             Thread.Sleep(100);
@@ -79,13 +82,10 @@ public class MessageManager
         await service.Send(request.ToString());
         waitingRequests.Add(request);
         LogUtils.Log("Requested: " + request.GetType().Name);
-        await Task.Run(() =>
+        while (request.Response == null)
         {
-            while (request.Response == null)
-            {
-                Thread.Sleep(200);
-            }
-        });
+            Thread.Sleep(200);
+        }
         return request;
     }
 }
