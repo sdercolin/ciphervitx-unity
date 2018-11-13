@@ -5,6 +5,11 @@ using UnityEngine;
 
 public static class Game
 {
+    #region non-game components
+    public static MessageManager messageManager;
+    #endregion
+
+
     public static void Initialize()
     {
         Config.Load();
@@ -32,6 +37,7 @@ public static class Game
     public static User NotTurnPlayer => TurnPlayer.Opponent;
     public static int TurnCount;
     public static Phase CurrentPhase;
+    public static bool ProcessingTurn => TurnPlayer is Player;
 
     //战斗用
     public static Card AttackingUnit; //攻击单位
@@ -126,7 +132,10 @@ public static class Game
     {
         Debug.Log("Broadcasting message: " + Environment.NewLine
             + StringUtils.CreateFromAny(message) + Environment.NewLine);
-        //TO DO:发送消息给对方
+        if (message.SendBySelf)
+        {
+            messageManager?.Send(message);
+        }
         ForEachCard(card =>
         {
             card.Read(message);

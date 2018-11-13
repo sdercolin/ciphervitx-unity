@@ -221,12 +221,15 @@ public abstract class AutoSkill : Skill
     /// </summary>
     public void Induce(Induction induction)
     {
-        if (Game.InductionSetList.Count == 0)
+        if (Game.ProcessingTurn)
         {
-            Game.InductionSetList.Add(new List<Induction>());
+            if (Game.InductionSetList.Count == 0)
+            {
+                Game.InductionSetList.Add(new List<Induction>());
+            }
+            var inductionSet = Game.InductionSetList[Game.InductionSetList.Count - 1];
+            inductionSet.Add(induction);
         }
-        var inductionSet = Game.InductionSetList[Game.InductionSetList.Count - 1];
-        inductionSet.Add(induction);
     }
 
     private void UnInduceAll()
