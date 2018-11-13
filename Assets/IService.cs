@@ -6,6 +6,6 @@ public interface IService
     bool Connected { get; }
     Task<bool> Connect(string url);
     Task<bool> Join(string roomId);
-    Task Send(Message message);
-    Task<Message> Receive();
+    Task Send(string data);
+    Task<string> Receive();
 }

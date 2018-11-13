@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -8,8 +9,9 @@ using UnityEngine;
 public static class Request
 {
     #region Testing
-    private static Queue<dynamic> NextResults = new Queue<dynamic>();
-    private static Queue<bool> NextResultsAreIndexes = new Queue<bool>();
+    static Queue<dynamic> NextResults = new Queue<dynamic>();
+    static Queue<bool> NextResultsAreIndexes = new Queue<bool>();
+
     /// <summary>
     /// 设置下一个请求的结果
     /// </summary>
@@ -34,51 +36,31 @@ public static class Request
         {
             return choices.GetRange(0, max);
         }
-        else
+        if (isIndex)
         {
-            if (isIndex)
+            var result = new List<T>();
+            var indexList = nextResult as List<int>;
+            foreach (var index in indexList)
             {
-                var result = new List<T>();
-                var indexList = nextResult as List<int>;
-                foreach (var index in indexList)
-                {
-                    result.Add(choices[index]);
-                }
-                return result;
+                result.Add(choices[index]);
             }
-            else
-            {
-                return nextResult;
-            }
+            return result;
         }
+        return nextResult;
     }
     public static bool GetNextAskResult()
     {
         dynamic nextResult = NextResults.Dequeue();
         bool isDefault = nextResult == null;
         NextResultsAreIndexes.Dequeue();
-        if (isDefault)
-        {
-            return false;
-        }
-        else
-        {
-            return nextResult;
-        }
+        return isDefault ? false : (bool)nextResult;
     }
     #endregion
 
     public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
         var results = await Choose(choices, 0, 1, targetUser);
-        if (results.Count == 0)
-        {
-            return default(T);
-        }
-        else
-        {
-            return results[0];
-        }
+        return results.Count == 0 ? default(T) : results[0];
     }
 
     public static async Task<T> ChooseOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
@@ -111,7 +93,7 @@ public static class Request
         min = Math.Min(min, max);
         if (NextResults.Count > 0)
         {
-            var result = GetNextChooseResult<T>(choices, min, max);
+            var result = GetNextChooseResult(choices, min, max);
             Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
@@ -124,7 +106,24 @@ public static class Request
                     return choices;
                 }
             }
-            // TO DO
+            if (targetUser is Player)
+            {
+                // request UI
+            }
+            else
+            {
+                // request server
+                var remoteRequest = new ChooseRemoteRequest<T>
+                {
+                    Choices = choices,
+                    Min = min,
+                    Max = max,
+                    Flags = flags,
+                    Description = description
+                };
+                var returnedRequest = await Game.MessageManager.Request(remoteRequest) as ChooseRemoteRequest<T>;
+                return returnedRequest?.Response as List<T>;
+            }
             return null;
         }
     }
@@ -257,3 +256,96 @@ public static class Request
     }
 }
 
+public abstract class RemoteRequest
+{
+    static readonly int fieldNumber = 7;
+    protected dynamic field1;
+    protected dynamic field2;
+    protected dynamic field3;
+    protected dynamic field4;
+    protected dynamic field5;
+    protected dynamic field6;
+    protected dynamic field7;
+
+    public virtual dynamic Response { get; set; }
+    public string Guid = System.Guid.NewGuid().ToString();
+
+    public override string ToString()
+    {
+        string json = "\"type\": \"" + GetType().Name + "\", \"response\": " + StringUtils.CreateFromAny(Response) + ", \"guid\": \"" + Guid + "\"";
+        for (int i = 0; i < fieldNumber; i++)
+        {
+            dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+            if (field != null)
+            {
+                json += ", \"field" + (i + 1).ToString() + "\": " + StringUtils.CreateFromAny(field);
+            }
+        }
+        return "{" + json + "}";
+    }
+
+    public static RemoteRequest FromString(string json)
+    {
+        string[] splited = json.Trim(new char[] { '{', '}' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        string typename = null;
+        dynamic response = null;
+        string guid = null;
+        foreach (var item in splited)
+        {
+            if (item.Contains("\"type\": \""))
+            {
+                typename = item.Replace("\"type\": \"", "").Trim('\"');
+            }
+            if (item.Contains("\"response\": \""))
+            {
+                response = StringUtils.CreateFromAny(item.Replace("\"response\": \"", "").Trim('\"'));
+            }
+            if (item.Contains("\"guid\": \""))
+            {
+                guid = StringUtils.CreateFromAny(item.Replace("\"guid\": \"", "").Trim('\"'));
+            }
+        }
+        if (typename == null)
+        {
+            return null;
+        }
+        var requestType = Assembly.GetExecutingAssembly().GetType(typename);
+        try
+        {
+            var newRequest = Activator.CreateInstance(requestType) as RemoteRequest;
+            newRequest.Response = response;
+            newRequest.Guid = guid;
+            foreach (var item in splited)
+            {
+                if (item.Contains("\"type\": \""))
+                {
+                    continue;
+                }
+                string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+                object value = StringUtils.ParseAny(splited2[1]);
+                typeof(Message).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
+            }
+            return newRequest;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public abstract Task Do();
+}
+
+public class ChooseRemoteRequest<T> : RemoteRequest
+{
+    public List<T> Choices { get { return field1; } set { field1 = value; } }
+    public int Min { get { return field2; } set { field2 = value; } }
+    public int Max { get { return field3; } set { field3 = value; } }
+    public Request.RequestFlags Flags { get { return field4; } set { field4 = value; } }
+    public string Description { get { return field5; } set { field5 = value; } }
+
+    public async override Task Do()
+    {
+        await Request.Choose(Choices, Min, Max, Game.Player, Flags, Description);
+    }
+}

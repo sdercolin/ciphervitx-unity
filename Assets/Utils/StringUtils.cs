@@ -36,7 +36,7 @@ public static class StringUtils
 
     public static object ParseAny(string json)
     {
-        if (json == null || json == "" || json == "\"null\"")
+        if (string.IsNullOrEmpty(json) || json == "\"null\"")
         {
             return null;
         }

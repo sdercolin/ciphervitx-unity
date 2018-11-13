@@ -6,6 +6,7 @@ using System.Threading;
 public class MessageManager
 {
     readonly List<Message> history = new List<Message>();
+    readonly List<RemoteRequest> waitingRequests = new List<RemoteRequest>();
     readonly IService service;
     String Url;
 
@@ -27,11 +28,13 @@ public class MessageManager
 
     public void Send(Message message)
     {
-        Task.Run(() => { 
-            if(!service.Connected){
+        Task.Run(() =>
+        {
+            if (!service.Connected)
+            {
                 service.Connect(Url).Wait();
             }
-            service.Send(message).Wait();
+            service.Send(message.ToString()).Wait();
         });
     }
 
@@ -39,12 +42,43 @@ public class MessageManager
     {
         while (service.Connected)
         {
-            var message = await service.Receive();
-            history.Add(message);
-            message.SendBySelf = false;
-            Game.DoMessage(message);
+            var data = await service.Receive();
+            var message = Message.FromString(data);
+            if (message != null)
+            {
+                history.Add(message);
+                message.SendBySelf = false;
+                Game.DoMessage(message);
+            }
+            else
+            {
+                var request = RemoteRequest.FromString(data);
+                if (request != null)
+                {
+                    var oriRequest = waitingRequests.Find(it => it.Guid == request.Guid);
+                    oriRequest.Response = request.Response;
+                    waitingRequests.Remove(oriRequest);
+                }
+            }
             Thread.Sleep(100);
         }
     }
 
+    public async Task<RemoteRequest> Request(RemoteRequest request)
+    {
+        if (!service.Connected)
+        {
+            await service.Connect(Url);
+        }
+        await service.Send(request.ToString());
+        waitingRequests.Add(request);
+        await Task.Run(() =>
+        {
+            while (request.Response == null)
+            {
+                Thread.Sleep(200);
+            }
+        });
+        return request;
+    }
 }

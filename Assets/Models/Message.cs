@@ -114,18 +114,25 @@ public class Message
             return null;
         }
         var messageType = Assembly.GetExecutingAssembly().GetType(typename);
-        var newMessage = Activator.CreateInstance(messageType) as Message;
-        foreach (var item in splited)
+        try
         {
-            if (item.Contains("\"type\": \""))
+            var newMessage = Activator.CreateInstance(messageType) as Message;
+            foreach (var item in splited)
             {
-                continue;
+                if (item.Contains("\"type\": \""))
+                {
+                    continue;
+                }
+                string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+                object value = StringUtils.ParseAny(splited2[1]);
+                typeof(Message).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
             }
-            string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-            object value = StringUtils.ParseAny(splited2[1]);
-            typeof(Message).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
+            return newMessage;
         }
-        return newMessage;
+        catch
+        {
+            return null;
+        }
     }
 
     public static Message operator +(Message a, Message b)

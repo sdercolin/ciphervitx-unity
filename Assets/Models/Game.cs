@@ -6,7 +6,7 @@ using UnityEngine;
 public static class Game
 {
     #region non-game components
-    public static MessageManager messageManager;
+    public static MessageManager MessageManager;
     #endregion
 
 
@@ -134,7 +134,7 @@ public static class Game
             + StringUtils.CreateFromAny(message) + Environment.NewLine);
         if (message.SendBySelf)
         {
-            messageManager?.Send(message);
+            MessageManager?.Send(message);
         }
         ForEachCard(card =>
         {
