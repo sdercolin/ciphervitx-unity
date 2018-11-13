@@ -123,14 +123,15 @@ public class Message
                 {
                     continue;
                 }
-                string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-                object value = StringUtils.ParseAny(splited2[1]);
-                typeof(Message).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
+                var index = item.IndexOf(": ", StringComparison.Ordinal);
+                object value = StringUtils.ParseAny(item.Substring(index + 2));
+                typeof(Message).GetField(item.Substring(0, index).Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
             }
             return newMessage;
         }
-        catch
+        catch (Exception e)
         {
+            LogUtils.Log(e.ToString());
             return null;
         }
     }

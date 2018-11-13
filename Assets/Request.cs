@@ -121,7 +121,7 @@ public static class Request
                     Flags = flags,
                     Description = description
                 };
-                var returnedRequest = await Game.MessageManager.Request(remoteRequest) as ChooseRemoteRequest<T>;
+                var returnedRequest = await Game.MessageManager?.Request(remoteRequest) as ChooseRemoteRequest<T>;
                 return returnedRequest?.Response as List<T>;
             }
             return null;
@@ -272,7 +272,12 @@ public abstract class RemoteRequest
 
     public override string ToString()
     {
-        string json = "\"type\": \"" + GetType().Name + "\", \"response\": " + StringUtils.CreateFromAny(Response) + ", \"guid\": \"" + Guid + "\"";
+        string json = "\"type\": \"" + GetType().Name + "\", \"response\": " + StringUtils.CreateFromAny(Response) + ", \"requestId\": \"" + Guid + "\"";
+        if (GetType().IsGenericType)
+        {
+            Type innerType = GetType().GenericTypeArguments[0];
+            json += ", \"innerType\": \"" + innerType.Name + "\"";
+        }
         for (int i = 0; i < fieldNumber; i++)
         {
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
@@ -290,19 +295,24 @@ public abstract class RemoteRequest
         string typename = null;
         dynamic response = null;
         string guid = null;
+        string innerTypename = null;
         foreach (var item in splited)
         {
             if (item.Contains("\"type\": \""))
             {
-                typename = item.Replace("\"type\": \"", "").Trim('\"');
+                typename = item.Replace("\"type\": \"", "").Trim('\"', ' ');
             }
             if (item.Contains("\"response\": \""))
             {
-                response = StringUtils.CreateFromAny(item.Replace("\"response\": \"", "").Trim('\"'));
+                response = StringUtils.CreateFromAny(item.Replace("\"response\": \"", "").Trim('\"', ' '));
             }
-            if (item.Contains("\"guid\": \""))
+            if (item.Contains("\"requestId\": \"") )
             {
-                guid = StringUtils.CreateFromAny(item.Replace("\"guid\": \"", "").Trim('\"'));
+                guid = StringUtils.CreateFromAny(item.Replace("\"requestId\": \"", "").Trim('\"', ' '));
+            }
+            if (item.Contains("\"innerType\": \""))
+            {
+                innerTypename = item.Replace("\"innerType\": \"", "").Trim('\"', ' ');
             }
         }
         if (typename == null)
@@ -312,7 +322,22 @@ public abstract class RemoteRequest
         var requestType = Assembly.GetExecutingAssembly().GetType(typename);
         try
         {
-            var newRequest = Activator.CreateInstance(requestType) as RemoteRequest;
+            RemoteRequest newRequest;
+            if (requestType.ContainsGenericParameters)
+            {
+                Type innerType = Assembly.GetExecutingAssembly().GetType(innerTypename);
+                while (!innerType.BaseType.Equals(typeof(object)))
+                {
+                    innerType = innerType.BaseType;
+                }
+                Type[] typeArgs = { innerType };
+                requestType = requestType.MakeGenericType(typeArgs);
+                newRequest = Activator.CreateInstance(requestType) as RemoteRequest;
+            }
+            else
+            {
+                newRequest = Activator.CreateInstance(requestType) as RemoteRequest;
+            }
             newRequest.Response = response;
             newRequest.Guid = guid;
             foreach (var item in splited)
@@ -321,14 +346,27 @@ public abstract class RemoteRequest
                 {
                     continue;
                 }
-                string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-                object value = StringUtils.ParseAny(splited2[1]);
-                typeof(Message).GetField(splited2[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
+                if (item.Contains("\"response\": \""))
+                {
+                    continue;
+                }
+                if (item.Contains("\"requestId\": \""))
+                {
+                    continue;
+                }
+                if (item.Contains("\"innerType\": \""))
+                {
+                    continue;
+                }
+                var index = item.IndexOf(": ", StringComparison.Ordinal);
+                object value = StringUtils.ParseAny(item.Substring(index + 2));
+                requestType.GetField(item.Substring(0, index).Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
             }
             return newRequest;
         }
-        catch
+        catch (Exception e)
         {
+            LogUtils.Log(e.ToString());
             return null;
         }
     }

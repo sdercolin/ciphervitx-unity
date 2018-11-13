@@ -55,4 +55,24 @@ public class MessageTest
         //string message3Json = message3.ToString();
         //LogUtils.Log(message2Json);
     }
+
+    [Test]
+    public void ParseTest(){
+        Game.Initialize();
+        Game.SetTestMode();
+        var card = CardFactory.CreateCard(1, Game.Player);
+        Game.Player.Deck.AddCard(card);
+        var targets = new List<Card>() { card };
+        var message = new DeployMessage()
+        {
+            Targets = targets,
+            ActionedList = new List<bool>() { true },
+            ToFrontFieldList = new List<bool>() { false },
+            Reason = null
+        };
+        var messageString = message.ToString();
+        var messageParsed = Message.FromString(messageString) as DeployMessage;
+        Assert.NotNull(messageParsed);
+        Assert.AreEqual(message.Targets.Count, messageParsed.Targets.Count);
+    }
 }

@@ -81,7 +81,7 @@ public static class StringUtils
             {
                 if (item.Contains("\"guid\": \""))
                 {
-                    guid = item.Replace("\"guid\": \"", "").Trim('\"');
+                    guid = item.Replace("\"guid\": \"", "").Trim('\"', ' ');
                     break;
                 }
             }
@@ -109,7 +109,7 @@ public static class StringUtils
         {
             if (item.Contains("\"type\": \""))
             {
-                typename = item.Replace("\"type\": \"", "").Trim('\"');
+                typename = item.Replace("\"type\": \"", "").Trim('\"', ' ');
                 break;
             }
         }
@@ -135,7 +135,7 @@ public static class StringUtils
                 continue;
             }
             string[] splited2 = item.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-            string name = splited2[0].Trim(new char[] { '\"' });
+            string name = splited2[0].Trim(new char[] { '\"', ' ' });
             object value = StringUtils.ParseAny(splited2[1]);
             if (parameterNames.Contains(name))
             {

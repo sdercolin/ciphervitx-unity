@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 public static class ListUtils
 {
@@ -57,13 +59,22 @@ public static class ListUtils
         return "[" + json + "]";
     }
 
-    public static List<object> FromString(string json)
+    public static dynamic FromString(string json)
     {
-        var result = new List<object>();
         string[] splited = json.Trim(new char[] { '[', ']' }).Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+        Type type = StringUtils.ParseAny(splited[0]).GetType();
+        while (!type.BaseType.Equals(typeof(object)))
+        {
+            type = type.BaseType;
+        }
+        Type[] typeArgs = { type };
+        Type constructed = typeof(List<>).MakeGenericType(typeArgs);
+        object result = Activator.CreateInstance(constructed);
+        MethodInfo methodInfo = constructed.GetMethod("Add");
         foreach (var item in splited)
         {
-            result.Add(StringUtils.ParseAny(item));
+            object[] parametersArray = new object[] { StringUtils.ParseAny(item) };
+            methodInfo.Invoke(result, parametersArray);
         }
         return result;
     }

@@ -17,6 +17,7 @@ public class MessageManager
 
     public async Task<bool> Connect(String url)
     {
+        LogUtils.Log("Start connecting: " + url);
         if (await service.Connect(url))
         {
             Url = url;
@@ -40,12 +41,16 @@ public class MessageManager
 
     async Task Listen()
     {
+        LogUtils.Log("Successfully connected, start listening... ");
         while (service.Connected)
         {
+            LogUtils.Log("Receiving...");
             var data = await service.Receive();
+            LogUtils.Log("Received: " + data);
             var message = Message.FromString(data);
             if (message != null)
             {
+                LogUtils.Log("Converted to Message: " + message.GetType().Name);
                 history.Add(message);
                 message.SendBySelf = false;
                 Game.DoMessage(message);
@@ -55,6 +60,7 @@ public class MessageManager
                 var request = RemoteRequest.FromString(data);
                 if (request != null)
                 {
+                    LogUtils.Log("Converted to RemoteRequest: " + request.GetType().Name);
                     var oriRequest = waitingRequests.Find(it => it.Guid == request.Guid);
                     oriRequest.Response = request.Response;
                     waitingRequests.Remove(oriRequest);
@@ -72,6 +78,7 @@ public class MessageManager
         }
         await service.Send(request.ToString());
         waitingRequests.Add(request);
+        LogUtils.Log("Requested: " + request.GetType().Name);
         await Task.Run(() =>
         {
             while (request.Response == null)
