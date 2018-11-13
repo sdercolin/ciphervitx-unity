@@ -221,7 +221,7 @@ public abstract class AutoSkill : Skill
     /// </summary>
     public void Induce(Induction induction)
     {
-        if (Game.ProcessingTurn)
+        if (Game.ProcessingTurn || Game.InduceInRivalTurn)
         {
             if (Game.InductionSetList.Count == 0)
             {

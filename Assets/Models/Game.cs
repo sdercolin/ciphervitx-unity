@@ -26,6 +26,7 @@ public static class Game
         PlayFirstTurn = false;
         Request.ClearNextResults(); // for testing
         LosingProcessDisabled = false; // for testing
+        InduceInRivalTurn = false; // for testing
     }
 
     public static Player Player;
@@ -55,10 +56,12 @@ public static class Game
     {
         LosingProcessDisabled = true;
         DeckReplenishProcessDisabled = true;
+        InduceInRivalTurn = true;
         Game.TurnPlayer = Game.Player;
     }
     public static bool LosingProcessDisabled;
     public static bool DeckReplenishProcessDisabled;
+    public static bool InduceInRivalTurn;
 
     public static List<Card> AllCards => ListUtils.Combine(Player.AllCards, Rival.AllCards);
 
