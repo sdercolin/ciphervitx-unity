@@ -192,7 +192,7 @@ public static class StringExtensions
     {
         var index = content.IndexOf(separator, StringComparison.Ordinal);
         var key = content.Substring(0, index);
-        var value = content.Substring(index+ separator.Length);
+        var value = content.Substring(index + separator.Length);
         return new string[] { key, value };
     }
 
@@ -213,8 +213,30 @@ public static class StringExtensions
                         continue;
                     }
                     var start = content.IndexOf(wrapperPair[0]);
-                    var end = content.LastIndexOf(wrapperPair[1]);
-                    if (start >= 0 && end >= 0)
+                    if (start < 0)
+                    {
+                        continue;
+                    }
+                    var layer = 1;
+                    var end = start + 1;
+                    while (layer > 0)
+                    {
+                        var nextPos = content.IndexOfAny(new char[] { wrapperPair[0], wrapperPair[1] }, end);
+                        if (nextPos < 0)
+                        {
+                            break;
+                        }
+                        if (content[nextPos] == wrapperPair[0])
+                        {
+                            layer++;
+                        }
+                        else
+                        {
+                            layer--;
+                        }
+                        end = nextPos;
+                    }
+                    if (layer == 0)
                     {
                         if (firstStart == null || (start < firstStart && end > lastEnd))
                         {
@@ -228,9 +250,9 @@ public static class StringExtensions
                     break;
                 }
                 var sub = content.Substring((int)firstStart, (int)lastEnd - (int)firstStart + 1);
-                wrappedDict.Add("@#" + count.ToString(), sub);
-                content = content.Substring(0, (int)firstStart) + content.Substring((int)lastEnd + 1);
-                count++;
+                var key = "@#" + (count++).ToString();
+                wrappedDict.Add(key, sub);
+                content = content.Substring(0, (int)firstStart) + key + content.Substring((int)lastEnd + 1);
             }
         }
         var splited = content.Split(new string[] { separator }, stringSplitOptions);
