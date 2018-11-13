@@ -71,12 +71,12 @@ public class RequestTest
 
         public async Task Send(string data)
         {
-            new Thread(() =>
+            Task.Run(() =>
             {
                 LogUtils.Log("Service Send() called: " + Thread.CurrentThread.Name);
                 queue.Enqueue(data);
                 LogUtils.Log("Enqueue: " + queue.GetHashCode() + " count = " + queue.Count);
-            }).Start();
+            }).Forget();
             await Task.CompletedTask;
         }
 
