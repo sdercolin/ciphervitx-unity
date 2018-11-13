@@ -133,7 +133,7 @@ public static class Game
     /// <param name="message">消息</param>
     private static void Broadcast(Message message)
     {
-        Debug.Log("Broadcasting message: " + Environment.NewLine
+        LogUtils.Log("Broadcasting message: " + Environment.NewLine
             + StringUtils.CreateFromAny(message) + Environment.NewLine);
         if (message.SendBySelf)
         {
@@ -153,7 +153,7 @@ public static class Game
     /// <returns>如允许，则返回True</returns>
     private static bool BroadcastTry(Message message, ref Message substitute)
     {
-        //Debug.Log("BroadcastTrying message: " + Environment.NewLine
+        //LogUtils.Log("BroadcastTrying message: " + Environment.NewLine
         //    + StringUtils.CreateFromAny(message) + Environment.NewLine);
         foreach (var card in AllCards)
         {

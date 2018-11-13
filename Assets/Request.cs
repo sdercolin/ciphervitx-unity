@@ -85,7 +85,7 @@ public static class Request
 
     public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
     {
-        Debug.Log("Requesting Choose: " + Environment.NewLine
+        LogUtils.Log("Requesting Choose: " + Environment.NewLine
             + "choices = " + ListUtils.ToString(choices) + Environment.NewLine
             + "min = " + min + Environment.NewLine
             + "max = " + max);
@@ -94,7 +94,7 @@ public static class Request
         if (NextResults.Count > 0)
         {
             var result = GetNextChooseResult(choices, min, max);
-            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
         else
@@ -130,12 +130,12 @@ public static class Request
 
     public static async Task<bool> AskIfUse<T>(T target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        Debug.Log("Requesting AskIfUse: " + Environment.NewLine
+        LogUtils.Log("Requesting AskIfUse: " + Environment.NewLine
             + "target = " + StringUtils.CreateFromAny(target));
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
         else
@@ -147,13 +147,13 @@ public static class Request
 
     public static async Task<bool> AskIfReverseBond(int number, Skill reason, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        Debug.Log("Requesting AskIfReverseBond: " + Environment.NewLine
+        LogUtils.Log("Requesting AskIfReverseBond: " + Environment.NewLine
             + "number = " + StringUtils.CreateFromAny(number) + Environment.NewLine
             + "reason = " + StringUtils.CreateFromAny(reason));
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
         else
@@ -165,11 +165,11 @@ public static class Request
 
     public static async Task<bool> AskIfCriticalAttack(User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        Debug.Log("Requesting AskIfCriticalAttack");
+        LogUtils.Log("Requesting AskIfCriticalAttack");
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
         else
@@ -181,11 +181,11 @@ public static class Request
 
     public static async Task<bool> AskIfAvoid(User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        Debug.Log("Requesting AskIfAvoid");
+        LogUtils.Log("Requesting AskIfAvoid");
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
         else
@@ -202,12 +202,12 @@ public static class Request
 
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        Debug.Log("Requesting AskIfSendToRetreat: " + Environment.NewLine
+        LogUtils.Log("Requesting AskIfSendToRetreat: " + Environment.NewLine
             + "targets = " + StringUtils.CreateFromAny(targets));
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
         else
@@ -219,12 +219,12 @@ public static class Request
 
     public static async Task<bool> AskIfDeployToFrontField(Card target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        Debug.Log("Requesting AskIfDeployToFrontField: " + Environment.NewLine
+        LogUtils.Log("Requesting AskIfDeployToFrontField: " + Environment.NewLine
             + "target = " + StringUtils.CreateFromAny(target));
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            Debug.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
         else
