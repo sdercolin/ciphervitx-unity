@@ -35,7 +35,7 @@ public abstract class Area : IChoosable
     /// <summary>
     /// 该区域的卡片列表的浅表拷贝
     /// </summary>
-    public virtual List<Card> Cards => ListUtils.Clone(list);
+    public virtual List<Card> Cards => list.Clone();
 
     /// <summary>
     /// 是否包含某张卡

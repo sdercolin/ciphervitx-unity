@@ -5,7 +5,7 @@ using System.Reflection;
 
 public static class ListUtils
 {
-    public static List<T> Clone<T>(List<T> list)
+    public static List<T> Clone<T>(this List<T> list)
     {
         if (list == null)
         {

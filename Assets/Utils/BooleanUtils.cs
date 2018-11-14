@@ -8,14 +8,7 @@ public static class BooleanUtils
 {
     public static string ToString(bool item)
     {
-        if (item)
-        {
-            return "\"true\"";
-        }
-        else
-        {
-            return "\"false\"";
-        }
+        return item ? "\"true\"" : "\"false\"";
     }
     public static bool? FromString(string json)
     {
@@ -23,14 +16,11 @@ public static class BooleanUtils
         {
             return true;
         }
-        else if (json == "\"false\"")
+        if (json == "\"false\"")
         {
             return false;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public static bool TryParse(string json, out bool value)
@@ -40,16 +30,13 @@ public static class BooleanUtils
             value = true;
             return true;
         }
-        else if (json == "\"false\"")
+        if (json == "\"false\"")
         {
             value = false;
             return true;
         }
-        else
-        {
-            value = false;
-            return false;
-        }
+        value = false;
+        return false;
     }
 }
 

@@ -11,31 +11,31 @@ public static class StringUtils
         {
             return "\"null\"";
         }
-        else if (item is int)
+        if (item is int)
         {
             return item.ToString();
         }
-        else if (item is bool)
+        if (item is bool)
         {
             return BooleanUtils.ToString(item);
         }
-        else if (item is System.Collections.IList)
+        if (item is System.Collections.IList)
         {
             return ListUtils.ToString(item);
         }
-        else if (item is Card || item is Area || item is User || item is IAttachable)
+        if (item is Card || item is Area || item is User || item is IAttachable)
         {
             return item.ToString();
         }
-        else if (item.GetType().IsEnum)
+        if(item is System.Collections.IDictionary){
+            return DictionaryUtils.ToString(item);
+        }
+        if (item.GetType().IsEnum)
         {
             return EnumUtils.ToString(item);
         }
-        else
-        {
-            // is string
-            return "\"" + item.ToString() + "\"";
-        }
+        // is string
+        return "\"" + item.ToString() + "\"";
     }
 
     public static object ParseAny(string json)
@@ -53,27 +53,24 @@ public static class StringUtils
             // is integer
             return integer;
         }
-        else if (BooleanUtils.TryParse(json, out boolean))
+        if (BooleanUtils.TryParse(json, out boolean))
         {
             // is boolean
             return boolean;
         }
-        else if (json.Length >= 2 && json.First() == '"' && json.Last() == '"')
+        if (json.Length >= 2 && json.First() == '"' && json.Last() == '"')
         {
             if (EnumUtils.TryParse(json, out enumType, out enumValue))
             {
                 // is enum
                 return enumValue;
             }
-            else
+            // is string
+            if (json == "\"\"")
             {
-                // is string
-                if (json == "\"\"")
-                {
-                    return "";
-                }
-                return json.Substring(1, json.Length - 2);
+                return "";
             }
+            return json.Substring(1, json.Length - 2);
         }
         else if (json.Length > 2 && json.First() == '[' && json.Last() == ']')
         {

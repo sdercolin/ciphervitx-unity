@@ -390,7 +390,7 @@ public abstract class PermanentSkill : Skill
 
     protected void DetachAll()
     {
-        ListUtils.Clone(Targets).ForEach(target => Detach(target));
+        Targets.Clone().ForEach(Detach);
     }
 
     public override void Read(Message message)

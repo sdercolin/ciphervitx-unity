@@ -12,12 +12,9 @@ public static class EnumUtils
         if (typeof(T).IsEnum)
         {
             var typename = typeof(T).FullName;
-            return "\"" + typename + "#" + item.ToString() + "\"";
+            return "\"" + typename + "#" + item + "\"";
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public static bool TryParse(string json, out Type type, out object value)

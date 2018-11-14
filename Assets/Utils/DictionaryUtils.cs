@@ -5,7 +5,7 @@ using System.Text;
 
 public static class DictionaryUtils
 {
-    public static Dictionary<T1, T2> Clone<T1, T2>(Dictionary<T1, T2> dictionary)
+    public static Dictionary<T1, T2> Clone<T1, T2>(this Dictionary<T1, T2> dictionary)
     {
         if (dictionary == null)
         {

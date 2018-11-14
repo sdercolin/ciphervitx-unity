@@ -97,35 +97,32 @@ public static class Request
             LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
+        if (targetUser is Player && Config.GetValue("apply_default_choices") == "true")
+        {
+            if (min == choices.Count)
+            {
+                return choices;
+            }
+        }
+        if (targetUser is Player)
+        {
+            // request UI
+        }
         else
         {
-            if (targetUser is Player && Config.GetValue("apply_default_choices") == "true")
+            // request server
+            var remoteRequest = new ChooseRemoteRequest<T>
             {
-                if (min == choices.Count)
-                {
-                    return choices;
-                }
-            }
-            if (targetUser is Player)
-            {
-                // request UI
-            }
-            else
-            {
-                // request server
-                var remoteRequest = new ChooseRemoteRequest<T>
-                {
-                    Choices = choices,
-                    Min = min,
-                    Max = max,
-                    Flags = flags,
-                    Description = description
-                };
-                var returnedRequest = await Game.MessageManager?.Request(remoteRequest) as ChooseRemoteRequest<T>;
-                return returnedRequest?.Response as List<T>;
-            }
-            return null;
+                Choices = choices,
+                Min = min,
+                Max = max,
+                Flags = flags,
+                Description = description
+            };
+            var returnedRequest = await Game.MessageManager?.Request(remoteRequest) as ChooseRemoteRequest<T>;
+            return returnedRequest?.Response as List<T>;
         }
+        return null;
     }
 
     public static async Task<bool> AskIfUse<T>(T target, User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -138,11 +135,8 @@ public static class Request
             LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
-        else
-        {
-            // TO DO
-            return false;
-        }
+        // TO DO
+        return false;
     }
 
     public static async Task<bool> AskIfReverseBond(int number, Skill reason, User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -156,11 +150,8 @@ public static class Request
             LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
-        else
-        {
-            // TO DO
-            return false;
-        }
+        // TO DO
+        return false;
     }
 
     public static async Task<bool> AskIfCriticalAttack(User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -172,11 +163,8 @@ public static class Request
             LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
-        else
-        {
-            // TO DO
-            return false;
-        }
+        // TO DO
+        return false;
     }
 
     public static async Task<bool> AskIfAvoid(User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -188,11 +176,8 @@ public static class Request
             LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
-        else
-        {
-            // TO DO
-            return false;
-        }
+        // TO DO
+        return false;
     }
 
     public static async Task<bool> AskIfSendToRetreat(Card target, User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -210,11 +195,8 @@ public static class Request
             LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
-        else
-        {
-            // TO DO
-            return false;
-        }
+        // TO DO
+        return false;
     }
 
     public static async Task<bool> AskIfDeployToFrontField(Card target, User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -227,11 +209,8 @@ public static class Request
             LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
             return result;
         }
-        else
-        {
-            // TO DO
-            return true;
-        }
+        // TO DO
+        return true;
     }
 
     public static async Task<int> ChooseRPS(User targetUser, RequestFlags flags = RequestFlags.Null)

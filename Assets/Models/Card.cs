@@ -778,7 +778,7 @@ public abstract class Card : IChoosable
             }
             return false;
         });
-        foreach (var unit in ListUtils.Clone(baseUnits))
+        foreach (var unit in baseUnits.Clone())
         {
             var message = Game.TryMessage(new LevelUpMessage()
             {
@@ -884,7 +884,7 @@ public abstract class Card : IChoosable
         {
             targets.AddRange(Opponent.BackField.Cards);
         }
-        foreach (var unit in ListUtils.Clone(targets))
+        foreach (var unit in targets.Clone())
         {
             var message = Game.TryMessage(new AttackMessage()
             {
@@ -932,7 +932,7 @@ public abstract class Card : IChoosable
     public List<Card> GetCostsForCriticalAttack(Skill reason = null)
     {
         var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
-        foreach (var card in ListUtils.Clone(targets))
+        foreach (var card in targets.Clone())
         {
             var message = Game.TryMessage(new CriticalAttackMessage()
             {
@@ -956,7 +956,7 @@ public abstract class Card : IChoosable
     public List<Card> GetCostsForAvoid(Skill reason = null)
     {
         var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
-        foreach (var card in ListUtils.Clone(targets))
+        foreach (var card in targets.Clone())
         {
             var message = Game.TryMessage(new AvoidMessage()
             {
@@ -1094,7 +1094,7 @@ public abstract class Card : IChoosable
     /// <param name="message">接受到的消息</param>
     public void Read(Message message)
     {
-        ListUtils.Clone(AttachableList).ForEach(item =>
+        AttachableList.Clone().ForEach(item =>
        {
            item.Read(message);
        });

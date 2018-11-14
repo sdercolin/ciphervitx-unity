@@ -543,7 +543,7 @@ public abstract class User : IChoosable
 
     public List<Card> GetDeployableCards(List<Card> targets, ref Dictionary<Card, bool> toFrontFieldDict, ref Dictionary<Card, bool> actionedDict, Skill reason = null)
     {
-        var targets_new = ListUtils.Clone(targets);
+        var targets_new = targets.Clone();
         foreach (var card in targets)
         {
             Area area = null;
@@ -882,7 +882,7 @@ public abstract class User : IChoosable
             {
                 savedUnit = await Request.ChooseOne(readyForSameNameProcessMessage.Targets, this);
             }
-            var confirmedTarget = ListUtils.Clone(readyForSameNameProcessMessage.Targets);
+            var confirmedTarget = readyForSameNameProcessMessage.Targets.Clone();
             confirmedTarget.Remove(savedUnit);
             return confirmedTarget;
         }
