@@ -57,6 +57,14 @@ public static class Request
     }
     #endregion
 
+    #region Choose
+    public static async Task<int> ChooseRPS(User targetUser, RequestFlags flags = RequestFlags.Null)
+    {
+        // TO DO:
+        // 石头：0，剪刀：1，布：2
+        return 0;
+    }
+
     public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         var results = await Choose(choices, 0, 1, targetUser);
@@ -124,7 +132,9 @@ public static class Request
             return returnedRequest?.Response as List<T>;
         }
     }
+    #endregion
 
+    #region Ask
     public static async Task<bool> AskIfUse<T>(T target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         LogUtils.Log("Requesting AskIfUse: " + Environment.NewLine
@@ -213,12 +223,6 @@ public static class Request
         return true;
     }
 
-    public static async Task<int> ChooseRPS(User targetUser, RequestFlags flags = RequestFlags.Null)
-    {
-        // TO DO:
-        // 石头：0，剪刀：1，布：2
-        return 0;
-    }
 
     public static async Task<bool> AskIfChangeFirstHand(User targetUser, RequestFlags flags = RequestFlags.Null)
     {
@@ -233,8 +237,10 @@ public static class Request
         DoNotAllowSameName = 1,
         ShowOrder = 2
     }
+    #endregion
 }
 
+#region Remote Request
 public abstract class RemoteRequest
 {
     static readonly int fieldNumber = 7;
@@ -285,7 +291,7 @@ public abstract class RemoteRequest
             {
                 response = StringUtils.ParseAny(item.Replace("\"response\":", "").Trim(' '));
             }
-            if (item.Contains("\"requestId\": \"") )
+            if (item.Contains("\"requestId\": \""))
             {
                 guid = item.Replace("\"requestId\": \"", "").Trim('\"', ' ');
             }
@@ -365,3 +371,4 @@ public class ChooseRemoteRequest<T> : RemoteRequest where T : IChoosable
         await Request.Choose(Choices, Min, Max, Game.Player, Flags, Description);
     }
 }
+#endregion
