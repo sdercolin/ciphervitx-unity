@@ -7,6 +7,7 @@ public static class Game
 {
     #region non-game components
     public static MessageManager MessageManager;
+    public static IRequestUIController RequestUIController;
     #endregion
 
 

@@ -336,10 +336,20 @@ public abstract class AutoSkill : Skill
 
 }
 
-public class Induction
+public class Induction : IChoosable
 {
     public AutoSkill Skill;
     public Message Message;
+
+    public string GetDescription(DescriptionPattern descriptionOption = DescriptionPattern.Default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetImagePath()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 /// <summary>

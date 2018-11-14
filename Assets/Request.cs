@@ -57,33 +57,33 @@ public static class Request
     }
     #endregion
 
-    public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
+    public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         var results = await Choose(choices, 0, 1, targetUser);
         return results.Count == 0 ? default(T) : results[0];
     }
 
-    public static async Task<T> ChooseOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
+    public static async Task<T> ChooseOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         return (await Choose(choices, 1, 1, targetUser, flags, description))[0];
     }
 
-    public static async Task<List<T>> ChooseUpTo<T>(List<T> choices, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
+    public static async Task<List<T>> ChooseUpTo<T>(List<T> choices, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         return await Choose(choices, 0, max, targetUser, flags, description);
     }
 
-    public static async Task<List<T>> Choose<T>(List<T> choices, int number, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
+    public static async Task<List<T>> Choose<T>(List<T> choices, int number, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         return await Choose(choices, number, number, targetUser, flags, description);
     }
 
-    public static async Task<List<T>> Choose<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
+    public static async Task<List<T>> Choose<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         return await Choose(choices, 0, choices.Count, targetUser, flags, description);
     }
 
-    public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "")
+    public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         LogUtils.Log("Requesting Choose: " + Environment.NewLine
             + "choices = " + ListUtils.ToString(choices) + Environment.NewLine
@@ -107,6 +107,7 @@ public static class Request
         if (targetUser is Player)
         {
             // request UI
+            return await Game.RequestUIController.RequestChoose(choices, min, max, flags, description);
         }
         else
         {
@@ -122,7 +123,6 @@ public static class Request
             var returnedRequest = await Game.MessageManager?.Request(remoteRequest) as ChooseRemoteRequest<T>;
             return returnedRequest?.Response as List<T>;
         }
-        return null;
     }
 
     public static async Task<bool> AskIfUse<T>(T target, User targetUser, RequestFlags flags = RequestFlags.Null)
@@ -352,7 +352,7 @@ public abstract class RemoteRequest
     public abstract Task Do();
 }
 
-public class ChooseRemoteRequest<T> : RemoteRequest
+public class ChooseRemoteRequest<T> : RemoteRequest where T : IChoosable
 {
     public List<T> Choices { get { return field1; } set { field1 = value; } }
     public int Min { get { return field2; } set { field2 = value; } }
