@@ -88,4 +88,10 @@ public static class StringExtensions
         }
         return result.ToArray();
     }
+
+    public static string UnWrap(this string content)
+    {
+        content = content.Trim(' ');
+        return content.Substring(1, content.Length - 2);
+    }
 }

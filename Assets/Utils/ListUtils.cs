@@ -61,7 +61,7 @@ public static class ListUtils
 
     public static dynamic Deserialize(string json)
     {
-        string[] splited = json.Trim(new char[] { '[', ']' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
+        string[] splited = json.UnWrap().SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         var type = SerializationUtils.Deserialize(splited[0]).GetType().GetBaseTypeOverObject();
         Type[] typeArgs = { type };
         var constructed = typeof(List<>).MakeGenericType(typeArgs);

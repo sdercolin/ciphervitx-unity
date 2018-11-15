@@ -21,7 +21,7 @@ public static class EnumUtils
     {
         try
         {
-            string[] splited = json.Trim(new char[] { '"' }).SplitOnce("#");
+            string[] splited = json.UnWrap().SplitOnce("#");
             type = Assembly.GetExecutingAssembly().GetType(splited[0]);
             if (type != null)
             {

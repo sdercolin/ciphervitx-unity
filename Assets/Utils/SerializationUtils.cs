@@ -80,13 +80,13 @@ public static class SerializationUtils
         if (json.Length > 2 && json.First() == '{' && json.Last() == '}')
         {
             // is ISerializable: User, Area, Card, Skill, Buff, Induction
-            string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
+            string[] splited = json.UnWrap().SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
             string guid = null;
             foreach (var item in splited)
             {
                 if (item.Contains("\"guid\": \""))
                 {
-                    guid = item.Replace("\"guid\": \"", "").Trim('\"', ' ');
+                    guid = item.Replace("\"guid\": ", "").UnWrap();
                     break;
                 }
             }
@@ -108,13 +108,13 @@ public static class SerializationUtils
 
     static ISerializable DeserializeCreate(string json)
     {
-        string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
+        string[] splited = json.UnWrap().SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         string typename = null;
         foreach (var item in splited)
         {
             if (item.Contains("\"type\": \""))
             {
-                typename = item.Replace("\"type\": \"", "").Trim('\"', ' ');
+                typename = item.Replace("\"type\": ", "").UnWrap();
                 break;
             }
         }

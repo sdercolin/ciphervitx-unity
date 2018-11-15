@@ -276,7 +276,7 @@ public abstract class RemoteRequest
 
     public static RemoteRequest FromString(string json)
     {
-        string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
+        string[] splited = json.UnWrap().SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         string typename = null;
         dynamic response = null;
         string guid = null;
@@ -285,19 +285,19 @@ public abstract class RemoteRequest
         {
             if (item.Contains("\"type\": \""))
             {
-                typename = item.Replace("\"type\": \"", "").Trim('\"', ' ');
+                typename = item.Replace("\"type\": ", "").UnWrap();
             }
             if (item.Contains("\"response\":"))
             {
-                response = SerializationUtils.Deserialize(item.Replace("\"response\":", "").Trim(' '));
+                response = SerializationUtils.Deserialize(item.Replace("\"response\": ", ""));
             }
             if (item.Contains("\"requestId\": \""))
             {
-                guid = item.Replace("\"requestId\": \"", "").Trim('\"', ' ');
+                guid = item.Replace("\"requestId\": ", "").UnWrap();
             }
             if (item.Contains("\"innerType\": \""))
             {
-                innerTypename = item.Replace("\"innerType\": \"", "").Trim('\"', ' ');
+                innerTypename = item.Replace("\"innerType\": ", "").UnWrap();
             }
         }
         if (typename == null)

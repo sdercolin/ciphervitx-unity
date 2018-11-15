@@ -99,13 +99,13 @@ public class Message
 
     public static Message FromString(string json)
     {
-        string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
+        string[] splited = json.UnWrap().SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         string typename = null;
         foreach (var item in splited)
         {
             if (item.Contains("\"type\": \""))
             {
-                typename = item.Replace("\"type\": \"", "").Trim('\"');
+                typename = item.Replace("\"type\": ", "").UnWrap();
                 break;
             }
         }
