@@ -9,7 +9,7 @@ using System.Linq;
 public static class Config
 {
     const string path = @"Assets/config.xml";
-    private static readonly Dictionary<string, string> config = new Dictionary<string, string>();
+    static readonly Dictionary<string, string> config = new Dictionary<string, string>();
 
     /// <summary>
     /// 获取
@@ -67,7 +67,7 @@ public static class Config
         }
     }
 
-    private static void SaveUpdates()
+    static void SaveUpdates()
     {
         var doc = XDocument.Parse("<?xml version=\"1.0\" encoding=\"utf-8\"?><root></root>");
         doc.Root.Add(config.Select(kv =>

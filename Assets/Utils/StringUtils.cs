@@ -94,4 +94,13 @@ public static class StringExtensions
         content = content.Trim(' ');
         return content.Substring(1, content.Length - 2);
     }
+
+    public static string ToUpperCapital(this string content)
+    {
+        if (content.Length > 0)
+        {
+            content = content.Substring(0, 1).ToUpper() + content.Substring(1);
+        }
+        return content;
+    }
 }

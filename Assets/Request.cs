@@ -94,7 +94,7 @@ public static class Request
     public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         LogUtils.Log("Requesting Choose: " + Environment.NewLine
-            + "choices = " + ListUtils.Serialize(choices) + Environment.NewLine
+            + "choices = " + choices.Serialize() + Environment.NewLine
             + "min = " + min + Environment.NewLine
             + "max = " + max);
         max = Math.Min(max, choices.Count);
@@ -283,21 +283,24 @@ public abstract class RemoteRequest
         string innerTypename = null;
         foreach (var item in splited)
         {
-            if (item.Contains("\"type\": \""))
+            var key = item.SplitOnce(": ")[0].UnWrap();
+            var value = item.SplitOnce(": ")[1].UnWrap();
+            switch (key)
             {
-                typename = item.Replace("\"type\": ", "").UnWrap();
-            }
-            if (item.Contains("\"response\":"))
-            {
-                response = SerializationUtils.Deserialize(item.Replace("\"response\": ", ""));
-            }
-            if (item.Contains("\"requestId\": \""))
-            {
-                guid = item.Replace("\"requestId\": ", "").UnWrap();
-            }
-            if (item.Contains("\"innerType\": \""))
-            {
-                innerTypename = item.Replace("\"innerType\": ", "").UnWrap();
+                case "type":
+                    typename = value.UnWrap();
+                    break;
+                case "response":
+                    response = SerializationUtils.Deserialize(value);
+                    break;
+                case "requestId":
+                    guid = value.UnWrap();
+                    break;
+                case "innerType":
+                    innerTypename = value.UnWrap();
+                    break;
+                default:
+                    break;
             }
         }
         if (typename == null)
@@ -323,23 +326,11 @@ public abstract class RemoteRequest
             newRequest.Guid = guid;
             foreach (var item in splited)
             {
-                if (item.Contains("\"type\": "))
+                var key = item.SplitOnce(": ")[0].UnWrap();
+                if (new string[] { "type", "response", "requestId", "innerType" }.Contains(key))
                 {
                     continue;
                 }
-                if (item.Contains("\"response\": "))
-                {
-                    continue;
-                }
-                if (item.Contains("\"requestId\": "))
-                {
-                    continue;
-                }
-                if (item.Contains("\"innerType\": "))
-                {
-                    continue;
-                }
-                var key = item.SplitOnce(": ")[0].Trim(new char[] { '\"' });
                 object value = SerializationUtils.Deserialize(item.SplitOnce(": ")[1]);
                 requestType.GetField(key, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
             }

@@ -24,7 +24,7 @@ public abstract class SubSkill : Skill
     /// </summary>
     public LastingTypeEnum LastingType;
 
-    private static readonly int fieldNumber = 5;
+    static readonly int fieldNumber = 5;
     protected dynamic field1 = null;
     protected dynamic field2 = null;
     protected dynamic field3 = null;
@@ -37,7 +37,7 @@ public abstract class SubSkill : Skill
         {
             { "type", GetType().Name },
             { "guid", Guid },
-            { "onlyAvailableWhenFrontShown", SerializationUtils.SerializeAny(OnlyAvailableWhenFrontShown) }
+            { "onlyAvailableWhenFrontShown", OnlyAvailableWhenFrontShown }
         };
         if (Owner != null)
         {
@@ -118,7 +118,7 @@ public class ObtainSkill : SubSkill
     public ObtainSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
     public Skill TargetPrototype { get { return field1; } set { field1 = value; } }
-    private Skill target;
+    Skill target;
 
     public override void Attached()
     {
@@ -142,7 +142,7 @@ public class DisableSkill : SubSkill
     public DisableSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
     public string TargetName { get { return field1; } set { field1 = value; } }
-    private List<Skill> targets = new List<Skill>();
+    List<Skill> targets = new List<Skill>();
 
     public override void Attached()
     {

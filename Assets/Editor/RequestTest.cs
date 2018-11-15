@@ -57,26 +57,23 @@ public class RequestTest
 
         public async Task<string> Receive()
         {
-            return await Task.Run(() =>
+            await Task.Run(() =>
             {
                 while (queue.Count == 0)
                 {
                     Thread.Sleep(100);
                 }
-                var requestString = queue.Dequeue();
-                var request = RemoteRequest.FromString(requestString) as ChooseRemoteRequest<Card>;
-                request.Response = request.Choices;
-                return request.ToString();
             });
+            var requestString = queue.Dequeue();
+            var request = RemoteRequest.FromString(requestString) as ChooseRemoteRequest<Card>;
+            request.Response = request.Choices;
+            return request.ToString();
         }
 
-        public async Task Send(string data)
+        public Task Send(string data)
         {
-            Task.Run(() =>
-            {
-                queue.Enqueue(data);
-            }).Forget();
-            await Task.CompletedTask;
+            queue.Enqueue(data);
+            return Task.CompletedTask;
         }
 
         readonly Queue<string> queue = new Queue<string>();

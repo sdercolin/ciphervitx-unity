@@ -18,7 +18,6 @@ public abstract class Buff : IAttachable, ISerializable
         Guid = System.Guid.NewGuid().ToString();
     }
 
-    protected string guid;
     public string Guid { get; set; }
     public string Serialize()
     {
@@ -26,7 +25,7 @@ public abstract class Buff : IAttachable, ISerializable
         {
             { "type", GetType().Name },
             { "guid", Guid },
-            { "onlyAvailableWhenFrontShown", OnlyAvailableWhenFrontShown.Serialize() }
+            { "onlyAvailableWhenFrontShown", OnlyAvailableWhenFrontShown }
         };
         if (Owner != null)
         {
@@ -54,13 +53,8 @@ public abstract class Buff : IAttachable, ISerializable
         return "{" + json + "}";
     }
     public bool OnlyAvailableWhenFrontShown { get; set; } = true;
-
-    protected Card owner;
     public Card Owner { get; set; }
-
-    protected Skill origin;
     public Skill Origin { get; set; }
-    protected LastingTypeEnum lastingType;
     public LastingTypeEnum LastingType { get; set; }
 
     protected bool? isAdding = null;

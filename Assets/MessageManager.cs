@@ -28,16 +28,13 @@ public class MessageManager
         return false;
     }
 
-    public void Send(Message message)
+    public async Task Send(Message message)
     {
-        Task.Run(() =>
+        if (!service.Connected)
         {
-            if (!service.Connected)
-            {
-                service.Connect(Url).Wait();
-            }
-            service.Send(message.ToString()).Wait();
-        });
+            await service.Connect(Url);
+        }
+        await service.Send(message.ToString());
     }
 
     async Task Listen()

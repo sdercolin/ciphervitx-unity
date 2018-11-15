@@ -229,7 +229,7 @@ public abstract class AutoSkill : Skill
         }
     }
 
-    private void UnInduceAll()
+    void UnInduceAll()
     {
         foreach (var inductionSet in Game.InductionSetList)
         {
@@ -356,8 +356,8 @@ public class Induction : IChoosable, ISerializable
         {
             { "type", GetType().GetBaseTypeOverObject() },
             { "guid", Guid },
-            { "skill", Skill.Serialize() },
-            { "message", Message.ToString() }
+            { "skill", Skill }
+            // messsage
         };
         string json = toSerialize.Serialize();
         json = json.Substring(1, json.Length - 2);
@@ -462,7 +462,7 @@ public abstract class PermanentSkill : Skill
         }
     }
 
-    private bool CheckItemUpdated(Card card)
+    bool CheckItemUpdated(Card card)
     {
         if (ItemsApplied[card].Length != ItemsToApply.Count)
         {
@@ -483,7 +483,7 @@ public abstract class PermanentSkill : Skill
         return base.Try(message, ref substitute);
     }
 
-    private void CleanItemsToApply()
+    void CleanItemsToApply()
     {
         ItemsToApply.RemoveAll(item =>
         {

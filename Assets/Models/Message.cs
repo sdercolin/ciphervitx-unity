@@ -12,7 +12,7 @@ public class Message
     /// <summary>
     /// 数据
     /// </summary>
-    private static readonly int fieldNumber = 10;
+    static readonly int fieldNumber = 10;
     protected dynamic field1 = null;
     protected dynamic field2 = null;
     protected dynamic field3 = null;
@@ -103,9 +103,9 @@ public class Message
         string typename = null;
         foreach (var item in splited)
         {
-            if (item.Contains("\"type\": \""))
+            if (item.SplitOnce(": ")[0].UnWrap()=="type")
             {
-                typename = item.Replace("\"type\": ", "").UnWrap();
+                typename = item.SplitOnce(": ")[1].UnWrap();
                 break;
             }
         }
@@ -119,12 +119,13 @@ public class Message
             var newMessage = Activator.CreateInstance(messageType) as Message;
             foreach (var item in splited)
             {
-                if (item.Contains("\"type\": "))
+                string key = item.SplitOnce(": ")[0].UnWrap();
+                if (key == "type")
                 {
                     continue;
                 }
                 object value = SerializationUtils.Deserialize(item.SplitOnce(": ")[1]);
-                typeof(Message).GetField(item.SplitOnce(": ")[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
+                typeof(Message).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
             }
             return newMessage;
         }

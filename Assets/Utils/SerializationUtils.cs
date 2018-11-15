@@ -84,9 +84,9 @@ public static class SerializationUtils
             string guid = null;
             foreach (var item in splited)
             {
-                if (item.Contains("\"guid\": \""))
+                if (item.SplitOnce(": ")[0].UnWrap() == "guid")
                 {
-                    guid = item.Replace("\"guid\": ", "").UnWrap();
+                    guid = item.SplitOnce(": ")[1].UnWrap();
                     break;
                 }
             }
@@ -112,9 +112,9 @@ public static class SerializationUtils
         string typename = null;
         foreach (var item in splited)
         {
-            if (item.Contains("\"type\": \""))
+            if (item.SplitOnce(": ")[0].UnWrap() == "type")
             {
-                typename = item.Replace("\"type\": ", "").UnWrap();
+                typename = item.SplitOnce(": ")[1].UnWrap();
                 break;
             }
         }
@@ -135,12 +135,12 @@ public static class SerializationUtils
 
         foreach (var item in splited)
         {
-            if (item.Contains("\"type\": \""))
+            string[] splited2 = item.SplitOnce(": ");
+            string name = splited2[0].UnWrap();
+            if (name == "type")
             {
                 continue;
             }
-            string[] splited2 = item.SplitOnce(": ");
-            string name = splited2[0].Trim(new char[] { '\"', ' ' });
             object value = Deserialize(splited2[1]);
             if (parameterNames.Contains(name))
             {
@@ -151,23 +151,29 @@ public static class SerializationUtils
                 otherFields.Add(name, value);
             }
         }
-        var newObject = Activator.CreateInstance(type, parameters);
+        var newObject = Activator.CreateInstance(type, parameters.ToArray());
         foreach (var pair in otherFields)
         {
+            var nowType = type;
             bool isSet = false;
-            while (type != typeof(object))
+            while (nowType != typeof(object))
             {
-                var field = type.GetField(pair.Key, BindingFlags.Instance);
+                var field = nowType.GetField(pair.Key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
                 if (field == null)
                 {
-                    field = type.GetField(pair.Key, BindingFlags.NonPublic | BindingFlags.Instance);
+                    var property = nowType.GetProperty(pair.Key.ToUpperCapital(), BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (property != null)
+                    {
+                        property.SetValue(newObject, pair.Value);
+                        isSet = true;
+                    }
                 }
-                if (field != null)
+                else
                 {
                     field.SetValue(newObject, pair.Value);
                     isSet = true;
                 }
-                type = type.BaseType;
+                nowType = nowType.BaseType;
             }
             if (!isSet)
             {

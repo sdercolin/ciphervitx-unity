@@ -132,13 +132,13 @@ public static class Game
     /// 广播消息
     /// </summary>
     /// <param name="message">消息</param>
-    private static void Broadcast(Message message)
+    static void Broadcast(Message message)
     {
         LogUtils.Log("Broadcasting message: " + Environment.NewLine
             + SerializationUtils.SerializeAny(message) + Environment.NewLine);
         if (message.SendBySelf)
         {
-            MessageManager?.Send(message);
+            Task.Run(() => MessageManager?.Send(message).Wait());
         }
         ForEachCard(card =>
         {
@@ -152,7 +152,7 @@ public static class Game
     /// <param name="message">表示该操作的消息</param>
     /// <param name="substitute">拒绝该操作时表示作为代替的动作的消息</param>
     /// <returns>如允许，则返回True</returns>
-    private static bool BroadcastTry(Message message, ref Message substitute)
+    static bool BroadcastTry(Message message, ref Message substitute)
     {
         //LogUtils.Log("BroadcastTrying message: " + Environment.NewLine
         //    + StringUtils.CreateFromAny(message) + Environment.NewLine);
@@ -344,7 +344,7 @@ public static class Game
         DoBeginningPhase();
     }
 
-    private static async void DoBeginningPhase()
+    static async void DoBeginningPhase()
     {
         Player.StartTurn();
         await DoAutoCheckTiming();
@@ -358,7 +358,7 @@ public static class Game
         DoBondPhase();
     }
 
-    private static async void DoBondPhase()
+    static async void DoBondPhase()
     {
         Player.GoToBondPhase();
         await DoAutoCheckTiming();
@@ -367,7 +367,7 @@ public static class Game
         StartDeploymentPhase();
     }
 
-    private static async void StartDeploymentPhase()
+    static async void StartDeploymentPhase()
     {
         Player.GoToDeploymentPhase();
         await DoAutoCheckTiming();
@@ -381,7 +381,7 @@ public static class Game
         StartActionPhase();
     }
 
-    private static async void StartActionPhase()
+    static async void StartActionPhase()
     {
         TurnPlayer.GoToActionPhase();
         await DoAutoCheckTiming();
@@ -395,7 +395,7 @@ public static class Game
         DoEndPhase();
     }
 
-    private static async void DoEndPhase()
+    static async void DoEndPhase()
     {
         Player.EndTurn();
         await DoAutoCheckTiming();
@@ -512,7 +512,7 @@ public static class Game
     }
 
     //クラスチェンジボーナス処理
-    private static void DoCCBonusProcess()
+    static void DoCCBonusProcess()
     {
         int playerCount = 0;
         int rivalCount = 0;
@@ -539,7 +539,7 @@ public static class Game
     }
 
     //ルール処理
-    private static async Task<bool> DoRuleProcess()
+    static async Task<bool> DoRuleProcess()
     {
         if (await DoSameNameProcess())
         {
@@ -562,7 +562,7 @@ public static class Game
     }
 
     //同名処理
-    private static async Task<bool> DoSameNameProcess()
+    static async Task<bool> DoSameNameProcess()
     {
         var nameChecked = new List<string>();
         var cardsToSendToRetreat = new List<Card>();
@@ -599,7 +599,7 @@ public static class Game
     }
 
     //撃破処理
-    private static async Task<bool> DoDestructionProcess()
+    static async Task<bool> DoDestructionProcess()
     {
         bool processed = false;
         var cardsToSendToRetreat = new List<Card>();
@@ -672,7 +672,7 @@ public static class Game
     }
 
     //敗北処理
-    private static void DoLosingProcess()
+    static void DoLosingProcess()
     {
         if (LosingProcessDisabled)
         {
@@ -693,7 +693,7 @@ public static class Game
     }
 
     //配置処理
-    private static bool DoPositionProcess()
+    static bool DoPositionProcess()
     {
         var cardsToSendToRetreat = new List<Card>();
         foreach (var card in AllCards)
@@ -732,7 +732,7 @@ public static class Game
     }
 
     //進軍処理
-    private static bool DoMarchingProcess()
+    static bool DoMarchingProcess()
     {
         if (NotTurnPlayer.FrontField.Count == 0 && NotTurnPlayer.BackField.Count > 0)
         {
@@ -749,7 +749,7 @@ public static class Game
     }
 
     //自動型スキル誘発処理
-    private static async Task<bool> DoInducedSkillProcess()
+    static async Task<bool> DoInducedSkillProcess()
     {
         if (InductionSetList.Count == 0)
         {
