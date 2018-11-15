@@ -648,6 +648,7 @@ public class ClearStatusEndingTurnMessage : Message
         Game.ForEachCard(card => card.ClearStatusEndingTurn());
     }
 }
+
 public class SwitchTurnMessage : Message
 {
     public User NextTurnPlayer { get { return field1; } set { field1 = value; } }
@@ -659,6 +660,7 @@ public class SwitchTurnMessage : Message
         }
     }
 }
+
 public class RefreshUnitMessage : Message
 {
     public List<Card> Targets { get { return field1; } set { field1 = value; } }

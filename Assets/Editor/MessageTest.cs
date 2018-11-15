@@ -82,7 +82,6 @@ public class MessageTest
         Game.SetTestMode();
         var card = CardFactory.CreateCard(1, Game.Player);
         Game.Player.Deck.AddCard(card);
-        var targets = new List<Card> { card };
         var buff = new PowerBuff(null, 10);
         var subskill = new CanNotAttack(null);
         var message1 = new AttachItemMessage

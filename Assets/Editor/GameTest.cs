@@ -26,7 +26,7 @@ public class GameTest
         Assert.IsTrue(Game.Player.Hand.Count == 0);
 
         Request.SetNextResult(new List<Card>() { });
-        Game.StartTurn();
+        Game.DoBeginningPhase().Wait();
 
         Assert.IsTrue(!card1.IsHorizontal);
         Assert.IsTrue(!card2.IsHorizontal);
@@ -34,7 +34,7 @@ public class GameTest
 
         Game.TurnCount = 2;
         Request.SetNextResult(new List<Card>() { });
-        Game.StartTurn();
+        Game.DoBeginningPhase().Wait();
         Assert.IsTrue(Game.Player.Hand.Count == 1);
     }
 

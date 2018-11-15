@@ -344,7 +344,7 @@ public static class Game
         Task.Run(DoBeginningPhase);
     }
 
-    static async Task DoBeginningPhase()
+    public static async Task DoBeginningPhase()
     {
         Player.StartTurn();
         await DoAutoCheckTiming();
