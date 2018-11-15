@@ -47,7 +47,7 @@ public class Card00033Test
         var orb = CardFactory.CreateCard(33, rival);
         rival.Orb.AddCard(orb);
 
-        Game.DoLevelUp(adv_lizi, true).Wait();
+        Game.DoLevelUp(adv_lizi).Wait();
         Assert.IsTrue(player.Hand.Contains(bonus));
 
         Request.SetNextResult(false); //不必杀

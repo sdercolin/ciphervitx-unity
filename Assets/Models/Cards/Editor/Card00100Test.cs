@@ -79,7 +79,7 @@ public class Card00100Test
         player.Deck.AddCard(deck4);
         player.Deck.AddCard(deck5);
 
-        Game.DoLevelUp(hand1, true).Wait();//转职
+        Game.DoLevelUp(hand1).Wait();//转职
         Assert.IsTrue(player.Hand.Count == 2);
         Assert.IsTrue(player.Deck.Count == 4);
 

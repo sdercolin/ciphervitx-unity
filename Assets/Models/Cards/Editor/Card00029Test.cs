@@ -39,9 +39,9 @@ public class Card00029Test
         player.Deck.AddCard(bonus2);
 
         Assert.IsTrue(kuluomu.Power == 40);
-        Game.DoLevelUp(card2, true).Wait();
+        Game.DoLevelUp(card2).Wait();
         Assert.IsTrue(kuluomu.Power == 50);
-        Game.DoLevelUp(card4, true).Wait();
+        Game.DoLevelUp(card4).Wait();
         Assert.IsTrue(kuluomu.Power == 60);
     }
 }

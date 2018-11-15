@@ -49,7 +49,7 @@ public class Card00119Test
         var orb = CardFactory.CreateCard(15, rival);
         rival.Orb.AddCard(orb);
 
-        Game.DoLevelUp(gaiya, true).Wait();
+        Game.DoLevelUp(gaiya).Wait();
 
         Request.SetNextResult(true);//选择付费
         Request.SetNextResult(new List<Card>() { bond1, bond2 }); //设定要翻的费

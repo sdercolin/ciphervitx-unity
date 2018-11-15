@@ -42,7 +42,7 @@ public class Card00114Test
         var rivalSupport = CardFactory.CreateCard(4, rival);//10支援
         rival.Deck.AddCard(rivalSupport);
 
-        Game.DoLevelUp(hand, true).Wait();
+        Game.DoLevelUp(hand).Wait();
 
         Request.SetNextResult(false); //不必杀
         Request.SetNextResult(false); //不回避

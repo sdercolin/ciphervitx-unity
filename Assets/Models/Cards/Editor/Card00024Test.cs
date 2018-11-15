@@ -44,7 +44,7 @@ public class Card00024Test
         rival.Orb.AddCard(orb2);
 
         Request.SetNextResult();
-        Game.DoLevelUp(maersi_adv, true).Wait();
+        Game.DoLevelUp(maersi_adv).Wait();
         Assert.IsTrue(player.Hand.Contains(bonus));
         Assert.IsTrue(maersi_adv.Power == 90); // +20
 

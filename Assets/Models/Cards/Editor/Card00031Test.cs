@@ -42,7 +42,7 @@ public class Card00031Test
         Request.SetNextResult(true);
         Request.SetNextResult(new List<Card>() { hisUint1 }); 
         // case2 end
-        Game.DoLevelUp(adv_myUnit, true).Wait();
+        Game.DoLevelUp(adv_myUnit).Wait();
 
         Assert.IsTrue(rival.BackField.Cards.Count == 0);
         // ==========================================
@@ -81,7 +81,7 @@ public class Card00031Test
         Request.SetNextResult();
         Request.SetNextResult(true);
         Request.SetNextResult(new List<Card>() { hisUint2 });
-        Game.DoLevelUp(adv_myUnit, true);
+        Game.DoLevelUp(adv_myUnit).Wait();
 
         Assert.IsTrue(rival.BackField.Cards.Count == 0);
     }
@@ -123,7 +123,7 @@ public class Card00031Test
         Assert.IsTrue(count == 0);
 
         // Class Change
-        Game.DoLevelUp(adv_lufulei, true).Wait();
+        Game.DoLevelUp(adv_lufulei).Wait();
         Assert.IsTrue(player.Hand.Contains(bonus));
 
         // 一般场合
@@ -176,7 +176,7 @@ public class Card00031Test
         Assert.IsTrue(count == 0);
 
         // Class Change
-        Game.DoLevelUp(adv_lufulei, true).Wait();
+        Game.DoLevelUp(adv_lufulei).Wait();
         Assert.IsTrue(player.Hand.Contains(bonus));
 
         // 血一样的场合，应该是能发，但是空发
@@ -186,7 +186,7 @@ public class Card00031Test
         Assert.IsTrue(count == 1);
 
         Request.SetNextResult(new List<Card>() { bond1, bond2, bond3 }); //设定要翻的费
-        Game.DoActionSkill(adv_lufulei.GetUsableActionSkills()[0]);
+        Game.DoActionSkill(adv_lufulei.GetUsableActionSkills()[0]).Wait();
 
         Assert.IsTrue(player.Orb.Count == 0);
         // ===========================================

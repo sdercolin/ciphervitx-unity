@@ -67,7 +67,7 @@ public class Card00121Test
         var deck = CardFactory.CreateCard(2, player);
         player.Deck.AddCard(deck);
 
-        Game.DoLevelUp(hand, true).Wait();
+        Game.DoLevelUp(hand).Wait();
         Request.SetNextResult(); //翻面1
         Game.DoActionSkill(hand.GetUsableActionSkills()[0]).Wait();
 
