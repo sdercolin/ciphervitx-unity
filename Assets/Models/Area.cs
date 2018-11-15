@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 所有区域的基类
 /// </summary>
-public abstract class Area : IChoosable
+public abstract class Area : IChoosable, ISerializable
 {
     public Area(User Controller)
     {
@@ -15,7 +15,7 @@ public abstract class Area : IChoosable
 
     public string Guid;
 
-    public override string ToString()
+    public string Serialize()
     {
         return "{\"guid\": \"" + Guid + "\" }";
     }

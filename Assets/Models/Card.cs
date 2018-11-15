@@ -7,7 +7,7 @@ using System.Text;
 /// <summary>
 /// 所有卡的基类
 /// </summary>
-public abstract class Card : IChoosable
+public abstract class Card : IChoosable, ISerializable
 {
     public Card(User controller)
     {
@@ -20,7 +20,7 @@ public abstract class Card : IChoosable
     /// </summary>
     public string Guid;
 
-    public override string ToString()
+    public string Serialize()
     {
         return "{\"guid\": \"" + Guid + "\" }";
     }
@@ -508,59 +508,17 @@ public abstract class Card : IChoosable
     /// <summary>
     /// 能力列表
     /// </summary>
-    public List<Skill> SkillList
-    {
-        get
-        {
-            var skillList = new List<Skill>();
-            foreach (var item in AttachableList)
-            {
-                if (item is Skill && !(item is SubSkill))
-                {
-                    skillList.Add(item as Skill);
-                }
-            }
-            return skillList;
-        }
-    }
+    public List<Skill> SkillList => AttachableList.FindAll(attachable => attachable is Skill && !(attachable is SubSkill)).Cast<Skill>().ToList();
 
     /// <summary>
     /// 附加值列表
     /// </summary>
-    public List<Buff> BuffList
-    {
-        get
-        {
-            var buffList = new List<Buff>();
-            foreach (var item in AttachableList)
-            {
-                if (item is Buff)
-                {
-                    buffList.Add(item as Buff);
-                }
-            }
-            return buffList;
-        }
-    }
+    public List<Buff> BuffList => AttachableList.FindAll(attachable => attachable is Buff).Cast<Buff>().ToList();
 
     /// <summary>
     /// 附加能力列表
     /// </summary>
-    public List<SubSkill> SubSkillList
-    {
-        get
-        {
-            var subSkillList = new List<SubSkill>();
-            foreach (var item in AttachableList)
-            {
-                if (item is SubSkill)
-                {
-                    subSkillList.Add(item as SubSkill);
-                }
-            }
-            return subSkillList;
-        }
-    }
+    public List<SubSkill> SubSkillList => AttachableList.FindAll(attachable => attachable is SubSkill).Cast<SubSkill>().ToList();
     #endregion
 
     #region 卡片动作

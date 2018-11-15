@@ -4,7 +4,7 @@ using System.Reflection;
 /// <summary>
 /// 所有附加值的基类
 /// </summary>
-public abstract class Buff : IAttachable
+public abstract class Buff : IAttachable, ISerializable
 {
     /// <summary>
     /// 附加值的构造函数
@@ -20,13 +20,13 @@ public abstract class Buff : IAttachable
 
     protected string guid;
     public string Guid { get; set; }
-    public override string ToString()
+    public string Serialize()
     {
         var toSerialize = new Dictionary<string, dynamic>
         {
-            { "type", GetType().Name },
+            { "type", GetType().FullName },
             { "guid", Guid },
-            { "onlyAvailableWhenFrontShown", SerializationUtils.SerializeAny(OnlyAvailableWhenFrontShown) }
+            { "onlyAvailableWhenFrontShown", OnlyAvailableWhenFrontShown.Serialize() }
         };
         if (Owner != null)
         {
@@ -49,15 +49,8 @@ public abstract class Buff : IAttachable
         {
             toSerialize.Add("value", value);
         }
-        string json = String.Empty;
-        foreach (var pair in toSerialize)
-        {
-            if (String.IsNullOrEmpty(json))
-            {
-                json += ", ";
-            }
-            json += "\"" + pair.Key + "\": " + SerializationUtils.SerializeAny(pair.Value);
-        }
+        string json = toSerialize.Serialize();
+        json = json.Substring(1, json.Length - 2);
         return "{" + json + "}";
     }
     public bool OnlyAvailableWhenFrontShown { get; set; } = true;

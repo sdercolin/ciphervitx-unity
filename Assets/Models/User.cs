@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 /// <summary>
 /// 玩家类
 /// </summary>
-public abstract class User : IChoosable
+public abstract class User : IChoosable, ISerializable
 {
     public User()
     {
@@ -25,7 +26,7 @@ public abstract class User : IChoosable
 
     public string Guid;
 
-    public override string ToString()
+    public string Serialize()
     {
         return "{\"guid\": \"" + Guid + "\" }";
     }
@@ -58,10 +59,8 @@ public abstract class User : IChoosable
     /// </summary>
     public int DeployAndCCCostCount = 0;
 
-    public List<Card> AllCards
-    {
-        get
-        {
+    public List<Card> AllCards {
+        get {
             var allCards = new List<Card>();
             ForEachCard(card => allCards.Add(card));
             return allCards;
@@ -154,28 +153,28 @@ public abstract class User : IChoosable
                     .IsHero = true;
             }
             var cardDict = new Dictionary<string, int>();
+            var cardSkillDict = new Dictionary<string, string[]>();
             foreach (var card in cardlistTemp)
             {
                 cardDict.Add(card.Guid, int.Parse(card.Serial.TrimStart('0')));
+                cardSkillDict.Add(card.Guid, card.SkillList.Select(skill => skill.Guid).ToArray());
             }
-            Game.DoMessage(new SetDeckMessage()
+            Game.DoMessage(new SetDeckMessage
             {
                 User = this,
                 CardDict = cardDict,
-                HeroGuid = cardlistTemp.Find(card => card.IsHero).Guid
+                HeroGuid = cardlistTemp.Find(card => card.IsHero).Guid,
+                CardSkillDict = cardSkillDict
             });
             return true;
         }
-        else
-        {
-            //提示错误
-            return false;
-        }
+        // TODO 提示错误
+        return false;
     }
 
     public void SetHeroUnit()
     {
-        Game.DoMessage(new SetHeroUnitMessage()
+        Game.DoMessage(new SetHeroUnitMessage
         {
             User = this
         });
@@ -183,7 +182,7 @@ public abstract class User : IChoosable
 
     public void SetFirstHand()
     {
-        Game.DoMessage(new SetFirstHandMessage()
+        Game.DoMessage(new SetFirstHandMessage
         {
             User = this
         });
@@ -191,7 +190,7 @@ public abstract class User : IChoosable
 
     public void PutBackFirstHand()
     {
-        Game.DoMessage(new PutBackFirstHandMessage()
+        Game.DoMessage(new PutBackFirstHandMessage
         {
             User = this
         });
@@ -199,7 +198,7 @@ public abstract class User : IChoosable
 
     public void SetFirstOrbs()
     {
-        Game.DoMessage(new SetFirstOrbsMessage()
+        Game.DoMessage(new SetFirstOrbsMessage
         {
             User = this
         });
@@ -217,7 +216,7 @@ public abstract class User : IChoosable
     public void ShuffleDeck(Skill reason)
     {
         var order = Deck.GetShuffledOrder();
-        Game.TryDoMessage(new ShuffleDeckMessage()
+        Game.TryDoMessage(new ShuffleDeckMessage
         {
             User = this,
             Order = order,
@@ -229,7 +228,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new MoveMessage()
+            Game.TryDoMessage(new MoveMessage
             {
                 Targets = targets,
                 Reason = reason
@@ -255,7 +254,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new ReverseBondMessage()
+            Game.TryDoMessage(new ReverseBondMessage
             {
                 Targets = targets,
                 Reason = reason,
@@ -279,7 +278,7 @@ public abstract class User : IChoosable
     {
         if (unit != null && target != null)
         {
-            Game.TryDoMessage(new AttackMessage()
+            Game.TryDoMessage(new AttackMessage
             {
                 AttackingUnit = unit,
                 DefendingUnit = target
@@ -291,7 +290,7 @@ public abstract class User : IChoosable
     {
         if (Deck.Count > 0)
         {
-            Game.TryDoMessage(new SetSupportMessage()
+            Game.TryDoMessage(new SetSupportMessage
             {
                 User = this
             });
@@ -302,7 +301,7 @@ public abstract class User : IChoosable
     {
         var battlingUnit = Game.BattlingUnits.Find(unit => unit.Controller == this);
         bool isSuccessful = !(Support.SupportCard == null || battlingUnit.HasSameUnitNameWith(Support.SupportCard));
-        Game.TryDoMessage(new ConfirmSupportMessage()
+        Game.TryDoMessage(new ConfirmSupportMessage
         {
             Unit = battlingUnit,
             SupportCard = Support.SupportCard,
@@ -314,9 +313,9 @@ public abstract class User : IChoosable
     {
         if (Support.SupportCard != null)
         {
-            Game.TryDoMessage(new RemoveSupportMessage()
+            Game.TryDoMessage(new RemoveSupportMessage
             {
-                Targets = new List<Card>() { Support.SupportCard },
+                Targets = new List<Card> { Support.SupportCard },
                 Reason = null,
                 AsCost = false
             });
@@ -325,7 +324,7 @@ public abstract class User : IChoosable
 
     public void StartTurn()
     {
-        Game.TryDoMessage(new StartTurnMessage()
+        Game.TryDoMessage(new StartTurnMessage
         {
             TurnPlayer = this
         });
@@ -333,7 +332,7 @@ public abstract class User : IChoosable
 
     public void GoToBondPhase()
     {
-        Game.TryDoMessage(new GoToBondPhaseMessage()
+        Game.TryDoMessage(new GoToBondPhaseMessage
         {
             TurnPlayer = this
         });
@@ -341,7 +340,7 @@ public abstract class User : IChoosable
 
     public void GoToDeploymentPhase()
     {
-        Game.TryDoMessage(new GoToDeploymentPhaseMessage()
+        Game.TryDoMessage(new GoToDeploymentPhaseMessage
         {
             TurnPlayer = this
         });
@@ -349,7 +348,7 @@ public abstract class User : IChoosable
 
     public void GoToActionPhase()
     {
-        Game.TryDoMessage(new GoToActionPhaseMessage()
+        Game.TryDoMessage(new GoToActionPhaseMessage
         {
             TurnPlayer = this
         });
@@ -357,7 +356,7 @@ public abstract class User : IChoosable
 
     public void EndTurn()
     {
-        Game.TryDoMessage(new EndTurnMessage()
+        Game.TryDoMessage(new EndTurnMessage
         {
             TurnPlayer = this
         });
@@ -365,7 +364,7 @@ public abstract class User : IChoosable
 
     public void ClearStatusEndingTurn()
     {
-        Game.TryDoMessage(new ClearStatusEndingTurnMessage()
+        Game.TryDoMessage(new ClearStatusEndingTurnMessage
         {
             TurnPlayer = this
         });
@@ -373,7 +372,7 @@ public abstract class User : IChoosable
 
     public void SwitchTurn()
     {
-        Game.TryDoMessage(new SwitchTurnMessage()
+        Game.TryDoMessage(new SwitchTurnMessage
         {
             NextTurnPlayer = Opponent
         });
@@ -469,7 +468,7 @@ public abstract class User : IChoosable
     {
         if (target != null)
         {
-            RefreshUnit(new List<Card>() { target }, reason);
+            RefreshUnit(new List<Card> { target }, reason);
         }
     }
 
@@ -477,7 +476,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new RefreshUnitMessage()
+            Game.TryDoMessage(new RefreshUnitMessage
             {
                 Targets = targets,
                 Reason = reason
@@ -487,7 +486,7 @@ public abstract class User : IChoosable
 
     public void DrawCard(int number, Skill reason = null)
     {
-        Game.TryDoMessage(new DrawCardMessage()
+        Game.TryDoMessage(new DrawCardMessage
         {
             Player = this,
             Number = number,
@@ -517,7 +516,7 @@ public abstract class User : IChoosable
                 return;
             }
         }
-        Game.TryDoMessage(new AttachItemMessage()
+        Game.TryDoMessage(new AttachItemMessage
         {
             Item = item,
             Target = target
@@ -528,7 +527,7 @@ public abstract class User : IChoosable
     {
         if (item != null && target != null)
         {
-            Game.TryDoMessage(new GrantSkillMessage()
+            Game.TryDoMessage(new GrantSkillMessage
             {
                 Item = item,
                 Target = target
@@ -584,7 +583,7 @@ public abstract class User : IChoosable
     /// </summary>
     public void Deploy(Card target, bool toFrontField, bool actioned = false, Skill reason = null)
     {
-        Deploy(new List<Card>() { target }, new List<bool> { toFrontField }, new List<bool> { actioned }, reason);
+        Deploy(new List<Card> { target }, new List<bool> { toFrontField }, new List<bool> { actioned }, reason);
     }
 
     /// <summary>
@@ -594,7 +593,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new DeployMessage()
+            Game.TryDoMessage(new DeployMessage
             {
                 Targets = targets,
                 ToFrontFieldList = toFrontFieldList,
@@ -609,7 +608,7 @@ public abstract class User : IChoosable
     /// </summary>
     public async Task DeployChooseArea(Card target, Dictionary<Card, bool> actionedDict = null, Skill reason = null)
     {
-        await ChooseDeploy(new List<Card>() { target }, 1, 1, null, actionedDict, reason);
+        await ChooseDeploy(new List<Card> { target }, 1, 1, null, actionedDict, reason);
     }
 
     /// <summary>
@@ -688,7 +687,7 @@ public abstract class User : IChoosable
         }
         if (target != null && baseUnit != null)
         {
-            Game.TryDoMessage(new LevelUpMessage()
+            Game.TryDoMessage(new LevelUpMessage
             {
                 Target = target,
                 BaseUnit = baseUnit,
@@ -746,7 +745,7 @@ public abstract class User : IChoosable
                 var cost = await Request.ChooseUpToOne(costs, this);
                 if (cost != null)
                 {
-                    Game.TryDoMessage(new CriticalAttackMessage()
+                    Game.TryDoMessage(new CriticalAttackMessage
                     {
                         AttackingUnit = Game.AttackingUnit,
                         DefendingUnit = Game.DefendingUnit,
@@ -769,7 +768,7 @@ public abstract class User : IChoosable
                 var cost = await Request.ChooseUpToOne(costs, this);
                 if (cost != null)
                 {
-                    Game.TryDoMessage(new AvoidMessage()
+                    Game.TryDoMessage(new AvoidMessage
                     {
                         AttackingUnit = Game.AttackingUnit,
                         DefendingUnit = Game.DefendingUnit,
@@ -784,7 +783,7 @@ public abstract class User : IChoosable
 
     public void EndBattle()
     {
-        Game.TryDoMessage(new EndBattleMessage()
+        Game.TryDoMessage(new EndBattleMessage
         {
             AttackingUnit = Game.AttackingUnit,
             DefendingUnit = Game.DefendingUnit
@@ -793,7 +792,7 @@ public abstract class User : IChoosable
 
     public void ClearStatusEndingBattle()
     {
-        Game.TryDoMessage(new ClearStatusEndingBattleMessage()
+        Game.TryDoMessage(new ClearStatusEndingBattleMessage
         {
             AttackingUnit = Game.AttackingUnit,
             DefendingUnit = Game.DefendingUnit
@@ -804,7 +803,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new SetActionedMessage()
+            Game.TryDoMessage(new SetActionedMessage
             {
                 Targets = targets,
                 Reason = reason,
@@ -822,7 +821,7 @@ public abstract class User : IChoosable
     {
         if (target != null)
         {
-            Destroy(new List<Card>() { target }, reason, asCost);
+            Destroy(new List<Card> { target }, reason, asCost);
         }
     }
 
@@ -830,7 +829,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new DestroyMessage()
+            Game.TryDoMessage(new DestroyMessage
             {
                 DestroyedUnits = targets,
                 Count = 1,
@@ -850,7 +849,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new AddToHandMessage()
+            Game.TryDoMessage(new AddToHandMessage
             {
                 Targets = targets,
                 Reason = reason,
@@ -866,7 +865,7 @@ public abstract class User : IChoosable
 
     public async Task<List<Card>> ChooseDiscardedCardsSameNameProcess(List<Card> units, string name)
     {
-        var readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage()
+        var readyForSameNameProcessMessage = Game.TryMessage(new ReadyForSameNameProcessPartialMessage
         {
             Targets = units,
             Name = name
@@ -905,7 +904,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new ShowCardsMessage()
+            Game.TryDoMessage(new ShowCardsMessage
             {
                 Targets = targets,
                 Reason = reason
@@ -917,7 +916,7 @@ public abstract class User : IChoosable
     {
         if (target != null)
         {
-            SendToRetreat(new List<Card>() { target }, reason, asCost);
+            SendToRetreat(new List<Card> { target }, reason, asCost);
         }
     }
 
@@ -925,7 +924,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new SendToRetreatMessage()
+            Game.TryDoMessage(new SendToRetreatMessage
             {
                 Targets = targets,
                 Reason = reason,
@@ -938,7 +937,7 @@ public abstract class User : IChoosable
     {
         if (toUnit != null)
         {
-            Game.TryDoMessage(new ChangeDefendingUnitMessage()
+            Game.TryDoMessage(new ChangeDefendingUnitMessage
             {
                 FromUnit = Game.DefendingUnit,
                 ToUnit = toUnit,
@@ -951,7 +950,7 @@ public abstract class User : IChoosable
     {
         if (targets.Count > 0)
         {
-            Game.TryDoMessage(new SetToDeckTopMessage()
+            Game.TryDoMessage(new SetToDeckTopMessage
             {
                 Targets = await Request.Choose(targets, min, max, this, flags),
                 Reason = reason

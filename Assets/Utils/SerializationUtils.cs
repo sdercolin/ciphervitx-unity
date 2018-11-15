@@ -106,7 +106,7 @@ public static class SerializationUtils
         return null;
     }
 
-    static object DeserializeCreate(string json)
+    static ISerializable DeserializeCreate(string json)
     {
         string[] splited = json.Trim(new char[] { '{', '}' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
         string typename = null;
@@ -166,7 +166,6 @@ public static class SerializationUtils
                 {
                     field.SetValue(newObject, pair.Value);
                     isSet = true;
-
                 }
                 type = type.BaseType;
             }
@@ -175,7 +174,7 @@ public static class SerializationUtils
                 throw new DeserializeFailureException(json, pair.Key, "Field \"" + pair.Key + "\"is not found when deserializing Json: " + Environment.NewLine + json);
             }
         }
-        return newObject;
+        return newObject as ISerializable;
     }
 }
 

@@ -257,11 +257,11 @@ public abstract class RemoteRequest
 
     public override string ToString()
     {
-        string json = "\"type\": \"" + GetType().Name + "\", \"response\": " + SerializationUtils.SerializeAny(Response) + ", \"requestId\": \"" + Guid + "\"";
+        string json = "\"type\": \"" + GetType().FullName + "\", \"response\": " + SerializationUtils.SerializeAny(Response) + ", \"requestId\": \"" + Guid + "\"";
         if (GetType().IsGenericType)
         {
             var innerType = GetType().GenericTypeArguments[0];
-            json += ", \"innerType\": \"" + innerType.Name + "\"";
+            json += ", \"innerType\": \"" + innerType.FullName + "\"";
         }
         for (int i = 0; i < fieldNumber; i++)
         {

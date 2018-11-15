@@ -85,7 +85,7 @@ public class Message
 
     public override string ToString()
     {
-        string json = "\"type\": \"" + GetType().Name + "\"";
+        string json = "\"type\": \"" + GetType().FullName + "\"";
         for (int i = 0; i < fieldNumber; i++)
         {
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
@@ -217,6 +217,7 @@ public class SetDeckMessage : Message
     public User User { get { return field1; } set { field1 = value; } }
     public Dictionary<string, int> CardDict { get { return field2; } set { field2 = value; } }
     public string HeroGuid { get { return field3; } set { field3 = value; } }
+    public Dictionary<string, string[]> CardSkillDict { get { return field4; } set { field4 = value; } }
 
     public override void Do()
     {
@@ -228,6 +229,10 @@ public class SetDeckMessage : Message
             if (guid == HeroGuid)
             {
                 newCard.IsHero = true;
+            }
+            for (int i = 0; i < newCard.SkillList.Count; i++)
+            {
+                newCard.SkillList[i].Guid = CardSkillDict[guid][i];
             }
         }
         User.DeckLoaded = true;

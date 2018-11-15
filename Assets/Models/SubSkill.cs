@@ -31,11 +31,11 @@ public abstract class SubSkill : Skill
     protected dynamic field4 = null;
     protected dynamic field5 = null;
 
-    public override string ToString()
+    public override string Serialize()
     {
         var toSerialize = new Dictionary<string, dynamic>
         {
-            { "type", GetType().Name },
+            { "type", GetType().FullName },
             { "guid", Guid },
             { "onlyAvailableWhenFrontShown", SerializationUtils.SerializeAny(OnlyAvailableWhenFrontShown) }
         };
@@ -56,15 +56,8 @@ public abstract class SubSkill : Skill
                 toSerialize.Add("field" + (i + 1).ToString(), SerializationUtils.SerializeAny(field));
             }
         }
-        string json = String.Empty;
-        foreach (var pair in toSerialize)
-        {
-            if (String.IsNullOrEmpty(json))
-            {
-                json += ", ";
-            }
-            json += "\"" + pair.Key + "\": " + SerializationUtils.SerializeAny(pair.Value);
-        }
+        string json = toSerialize.Serialize();
+        json = json.Substring(1, json.Length - 2);
         return "{" + json + "}";
     }
 

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-public abstract class Skill : IAttachable
+public abstract class Skill : IAttachable, ISerializable
 {
     public string Guid { get; set; }
-    public override string ToString()
+    public virtual string Serialize()
     {
         return "{\"guid\": \"" + Guid + "\" }";
     }
@@ -109,8 +109,6 @@ public abstract class Skill : IAttachable
 /// </summary>
 public abstract class ActionSkill : Skill
 {
-    public ActionSkill() : base() { }
-
     /// <summary>
     /// 判断该能力是否可以发动
     /// </summary>
@@ -212,7 +210,6 @@ public abstract class ActionSkill : Skill
 /// </summary>
 public abstract class AutoSkill : Skill
 {
-    public AutoSkill() : base() { }
 
     public bool Optional = false;
 
@@ -332,13 +329,14 @@ public abstract class AutoSkill : Skill
     /// 能力实行
     /// </summary>
     public abstract Task Do(Induction induction);
-
-
 }
 
-public class Induction : IChoosable
+public class Induction : IChoosable, ISerializable
 {
-    public AutoSkill Skill;
+    protected string guid;
+    public string Guid { get; set; }
+    protected AutoSkill skill;
+    public AutoSkill Skill { get; set; }
     public Message Message;
 
     public string GetDescription(DescriptionPattern descriptionOption = DescriptionPattern.Default)
@@ -350,6 +348,19 @@ public class Induction : IChoosable
     {
         throw new NotImplementedException();
     }
+
+    public string Serialize()
+    {
+        var toSerialize = new Dictionary<string, dynamic>
+        {
+            { "type", GetType().FullName },
+            { "guid", Guid },
+            { "skill", Skill.Serialize() }
+        };
+        string json = toSerialize.Serialize();
+        json = json.Substring(1, json.Length - 2);
+        return "{" + json + "}";
+    }
 }
 
 /// <summary>
@@ -358,7 +369,6 @@ public class Induction : IChoosable
 /// </summary>
 public abstract class PermanentSkill : Skill
 {
-    public PermanentSkill() : base() { }
 
     protected List<Card> Targets = new List<Card>();
     protected Dictionary<Card, IAttachable[]> ItemsApplied = new Dictionary<Card, IAttachable[]>();

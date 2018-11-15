@@ -50,7 +50,7 @@ public class MessageManager
             var message = Message.FromString(data);
             if (message != null)
             {
-                LogUtils.Log("Converted to Message: " + message.GetType().Name);
+                LogUtils.Log("Converted to Message: " + message.GetType().FullName);
                 history.Add(message);
                 message.SendBySelf = false;
                 Game.DoMessage(message);
@@ -60,7 +60,7 @@ public class MessageManager
                 var request = RemoteRequest.FromString(data);
                 if (request != null)
                 {
-                    LogUtils.Log("Converted to RemoteRequest: " + request.GetType().Name);
+                    LogUtils.Log("Converted to RemoteRequest: " + request.GetType().FullName);
                     if (request.Response != null)
                     {
                         var oriRequest = waitingRequests.Find(it => it.Guid == request.Guid);
@@ -81,7 +81,7 @@ public class MessageManager
         }
         await service.Send(request.ToString());
         waitingRequests.Add(request);
-        LogUtils.Log("Requested: " + request.GetType().Name);
+        LogUtils.Log("Requested: " + request.GetType().FullName);
         while (request.Response == null)
         {
             Thread.Sleep(200);
