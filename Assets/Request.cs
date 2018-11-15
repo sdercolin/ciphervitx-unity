@@ -284,7 +284,7 @@ public abstract class RemoteRequest
         foreach (var item in splited)
         {
             var key = item.SplitOnce(": ")[0].UnWrap();
-            var value = item.SplitOnce(": ")[1].UnWrap();
+            var value = item.SplitOnce(": ")[1];
             switch (key)
             {
                 case "type":

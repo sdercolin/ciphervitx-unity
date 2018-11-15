@@ -28,7 +28,7 @@ public abstract class User : IChoosable, ISerializable
 
     public string Serialize()
     {
-        return "{\"guid\": \"" + Guid + "\" }";
+        return "{\"guid\": \"" + Guid + "\"}";
     }
 
     public abstract string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default);

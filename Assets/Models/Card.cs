@@ -22,7 +22,7 @@ public abstract class Card : IChoosable, ISerializable
 
     public string Serialize()
     {
-        return "{\"guid\": \"" + Guid + "\" }";
+        return "{\"guid\": \"" + Guid + "\"}";
     }
 
     public string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
