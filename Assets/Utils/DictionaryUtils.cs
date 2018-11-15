@@ -19,7 +19,7 @@ public static class DictionaryUtils
         return clone;
     }
 
-    public static string ToString<T1, T2>(Dictionary<T1, T2> dictionary)
+    public static string Serialize<T1, T2>(this Dictionary<T1, T2> dictionary)
     {
         string json = String.Empty;
         foreach (var pair in dictionary)
@@ -28,20 +28,35 @@ public static class DictionaryUtils
             {
                 json += ", ";
             }
-            json += StringUtils.CreateFromAny(pair.Key) + ": " + StringUtils.CreateFromAny(pair.Value);
+            json += SerializationUtils.SerializeAny(pair.Key) + ": " + SerializationUtils.SerializeAny(pair.Value);
         }
         return "<" + json + ">";
     }
 
-    public static Dictionary<object, object> FromString(string json)
+    public static dynamic Deserialize(string json)
     {
-        var result = new Dictionary<object, object>();
         string[] splited = json.Trim(new char[] { '<', '>' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
+        var keyType = SerializationUtils.Deserialize(splited[0]).GetType();
+        while (!keyType.BaseType.Equals(typeof(object)))
+        {
+            keyType = keyType.BaseType;
+        }
+        var valueType = SerializationUtils.Deserialize(splited[1]).GetType();
+        while (!valueType.BaseType.Equals(typeof(object)))
+        {
+            valueType = valueType.BaseType;
+        }
+        Type[] typeArgs = { keyType, valueType };
+        var constructed = typeof(Dictionary<,>).MakeGenericType(typeArgs);
+
+        object result = Activator.CreateInstance(constructed);
+        var methodInfo = constructed.GetMethod("Add");
         foreach (var item in splited)
         {
             var key = item.SplitOnce(": ")[0];
             var value = item.SplitOnce(": ")[1];
-            result.Add(StringUtils.ParseAny(key), StringUtils.ParseAny(value));
+            object[] parametersArray = { SerializationUtils.Deserialize(key), SerializationUtils.Deserialize(value) };
+            methodInfo.Invoke(result, parametersArray);
         }
         return result;
     }

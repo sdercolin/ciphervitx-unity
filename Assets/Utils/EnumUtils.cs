@@ -7,7 +7,7 @@ using System.Reflection;
 
 public static class EnumUtils
 {
-    public static string ToString<T>(T item)
+    public static string Serialize<T>(T item)
     {
         if (typeof(T).IsEnum)
         {

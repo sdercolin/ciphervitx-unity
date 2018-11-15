@@ -26,7 +26,7 @@ public abstract class Buff : IAttachable
         {
             { "type", GetType().Name },
             { "guid", Guid },
-            { "onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown) }
+            { "onlyAvailableWhenFrontShown", SerializationUtils.SerializeAny(OnlyAvailableWhenFrontShown) }
         };
         if (Owner != null)
         {
@@ -56,7 +56,7 @@ public abstract class Buff : IAttachable
             {
                 json += ", ";
             }
-            json += "\"" + pair.Key + "\": " + StringUtils.CreateFromAny(pair.Value);
+            json += "\"" + pair.Key + "\": " + SerializationUtils.SerializeAny(pair.Value);
         }
         return "{" + json + "}";
     }

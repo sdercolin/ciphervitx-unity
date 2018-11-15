@@ -42,27 +42,27 @@ public static class ListUtils
         return newValue;
     }
 
-    public static string ToString<T>(List<T> list)
+    public static string Serialize<T>(this List<T> list)
     {
         string json = String.Empty;
         foreach (var item in list)
         {
             if (String.IsNullOrEmpty(json))
             {
-                json += StringUtils.CreateFromAny(item);
+                json += SerializationUtils.SerializeAny(item);
             }
             else
             {
-                json += ", " + StringUtils.CreateFromAny(item);
+                json += ", " + SerializationUtils.SerializeAny(item);
             }
         }
         return "[" + json + "]";
     }
 
-    public static dynamic FromString(string json)
+    public static dynamic Deserialize(string json)
     {
         string[] splited = json.Trim(new char[] { '[', ']' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
-        var type = StringUtils.ParseAny(splited[0]).GetType();
+        var type = SerializationUtils.Deserialize(splited[0]).GetType();
         while (!type.BaseType.Equals(typeof(object)))
         {
             type = type.BaseType;
@@ -73,7 +73,7 @@ public static class ListUtils
         var methodInfo = constructed.GetMethod("Add");
         foreach (var item in splited)
         {
-            object[] parametersArray = new object[] { StringUtils.ParseAny(item) };
+            object[] parametersArray = new object[] { SerializationUtils.Deserialize(item) };
             methodInfo.Invoke(result, parametersArray);
         }
         return result;

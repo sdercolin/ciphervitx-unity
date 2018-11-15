@@ -37,7 +37,7 @@ public abstract class SubSkill : Skill
         {
             { "type", GetType().Name },
             { "guid", Guid },
-            { "onlyAvailableWhenFrontShown", StringUtils.CreateFromAny(OnlyAvailableWhenFrontShown) }
+            { "onlyAvailableWhenFrontShown", SerializationUtils.SerializeAny(OnlyAvailableWhenFrontShown) }
         };
         if (Owner != null)
         {
@@ -53,7 +53,7 @@ public abstract class SubSkill : Skill
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
             if (field != null)
             {
-                toSerialize.Add("field" + (i + 1).ToString(), StringUtils.CreateFromAny(field));
+                toSerialize.Add("field" + (i + 1).ToString(), SerializationUtils.SerializeAny(field));
             }
         }
         string json = String.Empty;
@@ -63,7 +63,7 @@ public abstract class SubSkill : Skill
             {
                 json += ", ";
             }
-            json += "\"" + pair.Key + "\": " + StringUtils.CreateFromAny(pair.Value);
+            json += "\"" + pair.Key + "\": " + SerializationUtils.SerializeAny(pair.Value);
         }
         return "{" + json + "}";
     }

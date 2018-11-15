@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 public static class BooleanUtils
 {
-    public static string ToString(bool item)
+    public static string Serialize(this bool item)
     {
         return item ? "\"true\"" : "\"false\"";
     }
-    public static bool? FromString(string json)
+    public static bool? Deserialize(string json)
     {
         if (json == "\"true\"")
         {

@@ -91,7 +91,7 @@ public class Message
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
             if (field != null)
             {
-                json += ", \"field" + (i + 1).ToString() + "\": " + StringUtils.CreateFromAny(field);
+                json += ", \"field" + (i + 1).ToString() + "\": " + SerializationUtils.SerializeAny(field);
             }
         }
         return "{" + json + "}";
@@ -123,7 +123,7 @@ public class Message
                 {
                     continue;
                 }
-                object value = StringUtils.ParseAny(item.SplitOnce(": ")[1]);
+                object value = SerializationUtils.Deserialize(item.SplitOnce(": ")[1]);
                 typeof(Message).GetField(item.SplitOnce(": ")[0].Trim(new char[] { '\"' }), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newMessage, value);
             }
             return newMessage;

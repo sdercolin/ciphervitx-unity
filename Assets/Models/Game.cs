@@ -135,7 +135,7 @@ public static class Game
     private static void Broadcast(Message message)
     {
         LogUtils.Log("Broadcasting message: " + Environment.NewLine
-            + StringUtils.CreateFromAny(message) + Environment.NewLine);
+            + SerializationUtils.SerializeAny(message) + Environment.NewLine);
         if (message.SendBySelf)
         {
             MessageManager?.Send(message);

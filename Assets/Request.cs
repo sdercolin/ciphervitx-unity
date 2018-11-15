@@ -94,7 +94,7 @@ public static class Request
     public static async Task<List<T>> Choose<T>(List<T> choices, int min, int max, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
     {
         LogUtils.Log("Requesting Choose: " + Environment.NewLine
-            + "choices = " + ListUtils.ToString(choices) + Environment.NewLine
+            + "choices = " + ListUtils.Serialize(choices) + Environment.NewLine
             + "min = " + min + Environment.NewLine
             + "max = " + max);
         max = Math.Min(max, choices.Count);
@@ -102,7 +102,7 @@ public static class Request
         if (NextResults.Count > 0)
         {
             var result = GetNextChooseResult(choices, min, max);
-            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + SerializationUtils.SerializeAny(result) + Environment.NewLine);
             return result;
         }
         if (targetUser is Player && Config.GetValue("apply_default_choices") == "true")
@@ -138,11 +138,11 @@ public static class Request
     public static async Task<bool> AskIfUse<T>(T target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         LogUtils.Log("Requesting AskIfUse: " + Environment.NewLine
-            + "target = " + StringUtils.CreateFromAny(target));
+            + "target = " + SerializationUtils.SerializeAny(target));
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + SerializationUtils.SerializeAny(result) + Environment.NewLine);
             return result;
         }
         // TO DO
@@ -152,12 +152,12 @@ public static class Request
     public static async Task<bool> AskIfReverseBond(int number, Skill reason, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         LogUtils.Log("Requesting AskIfReverseBond: " + Environment.NewLine
-            + "number = " + StringUtils.CreateFromAny(number) + Environment.NewLine
-            + "reason = " + StringUtils.CreateFromAny(reason));
+            + "number = " + SerializationUtils.SerializeAny(number) + Environment.NewLine
+            + "reason = " + SerializationUtils.SerializeAny(reason));
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + SerializationUtils.SerializeAny(result) + Environment.NewLine);
             return result;
         }
         // TO DO
@@ -170,7 +170,7 @@ public static class Request
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + SerializationUtils.SerializeAny(result) + Environment.NewLine);
             return result;
         }
         // TO DO
@@ -183,7 +183,7 @@ public static class Request
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + SerializationUtils.SerializeAny(result) + Environment.NewLine);
             return result;
         }
         // TO DO
@@ -198,11 +198,11 @@ public static class Request
     public static async Task<bool> AskIfSendToRetreat(List<Card> targets, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         LogUtils.Log("Requesting AskIfSendToRetreat: " + Environment.NewLine
-            + "targets = " + StringUtils.CreateFromAny(targets));
+            + "targets = " + SerializationUtils.SerializeAny(targets));
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + SerializationUtils.SerializeAny(result) + Environment.NewLine);
             return result;
         }
         // TO DO
@@ -212,11 +212,11 @@ public static class Request
     public static async Task<bool> AskIfDeployToFrontField(Card target, User targetUser, RequestFlags flags = RequestFlags.Null)
     {
         LogUtils.Log("Requesting AskIfDeployToFrontField: " + Environment.NewLine
-            + "target = " + StringUtils.CreateFromAny(target));
+            + "target = " + SerializationUtils.SerializeAny(target));
         if (NextResults.Count > 0)
         {
             var result = GetNextAskResult();
-            LogUtils.Log("<<<<" + StringUtils.CreateFromAny(result) + Environment.NewLine);
+            LogUtils.Log("<<<<" + SerializationUtils.SerializeAny(result) + Environment.NewLine);
             return result;
         }
         // TO DO
@@ -257,7 +257,7 @@ public abstract class RemoteRequest
 
     public override string ToString()
     {
-        string json = "\"type\": \"" + GetType().Name + "\", \"response\": " + StringUtils.CreateFromAny(Response) + ", \"requestId\": \"" + Guid + "\"";
+        string json = "\"type\": \"" + GetType().Name + "\", \"response\": " + SerializationUtils.SerializeAny(Response) + ", \"requestId\": \"" + Guid + "\"";
         if (GetType().IsGenericType)
         {
             var innerType = GetType().GenericTypeArguments[0];
@@ -268,7 +268,7 @@ public abstract class RemoteRequest
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
             if (field != null)
             {
-                json += ", \"field" + (i + 1).ToString() + "\": " + StringUtils.CreateFromAny(field);
+                json += ", \"field" + (i + 1).ToString() + "\": " + SerializationUtils.SerializeAny(field);
             }
         }
         return "{" + json + "}";
@@ -289,7 +289,7 @@ public abstract class RemoteRequest
             }
             if (item.Contains("\"response\":"))
             {
-                response = StringUtils.ParseAny(item.Replace("\"response\":", "").Trim(' '));
+                response = SerializationUtils.Deserialize(item.Replace("\"response\":", "").Trim(' '));
             }
             if (item.Contains("\"requestId\": \""))
             {
@@ -344,7 +344,7 @@ public abstract class RemoteRequest
                     continue;
                 }
                 var key = item.SplitOnce(": ")[0].Trim(new char[] { '\"' });
-                object value = StringUtils.ParseAny(item.SplitOnce(": ")[1]);
+                object value = SerializationUtils.Deserialize(item.SplitOnce(": ")[1]);
                 requestType.GetField(key, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newRequest, value);
             }
             return newRequest;
