@@ -83,15 +83,19 @@ public class MessageManager
         await service.Send(request.ToString());
         waitingRequests.Add(request);
         LogUtils.Log("Requested: " + request.GetType().Name);
-        Task.Run(() => Thread.Sleep(requestTimeout)).Wait();
-        if (request.Response == null)
+        if (!Task.Run(() =>
+        {
+            while (request.Response == null)
+            {
+                Thread.Sleep(100);
+            }
+        }).Wait(requestTimeout))
         {
             throw new RequestTimeOutException(request, "Request timed out after " + requestTimeout + "ms: " + request);
         }
         return request;
     }
 }
-
 
 public class RequestTimeOutException : Exception
 {
