@@ -27,8 +27,9 @@ public class RequestTest
         player.Deck.AddCard(card2);
         player.Deck.AddCard(card3);
         var task = Request.Choose(new List<Card> { card1, card2, card3 }, rival);
-        task.Wait(1000);
+        task.Wait();
         Assert.IsTrue(task.IsCompleted);
+        Assert.IsNotNull(task.Result);
         Assert.AreEqual(3, task.Result.Count);
         Assert.AreSame(card1, task.Result[0]);
         Game.MessageManager = null;
