@@ -341,10 +341,10 @@ public static class Game
     public static void StartTurn()
     {
         //Called by Message when opponent ends turn
-        DoBeginningPhase();
+        Task.Run(DoBeginningPhase);
     }
 
-    static async void DoBeginningPhase()
+    static async Task DoBeginningPhase()
     {
         Player.StartTurn();
         await DoAutoCheckTiming();
@@ -355,47 +355,47 @@ public static class Game
             Player.DrawCard(1);
             await DoAutoCheckTiming();
         }
-        DoBondPhase();
+        await DoBondPhase();
     }
 
-    static async void DoBondPhase()
+    static async Task DoBondPhase()
     {
         Player.GoToBondPhase();
         await DoAutoCheckTiming();
         await Player.ChooseSetToBond(Player.Hand.Cards, 0, 1);
         await DoAutoCheckTiming();
-        StartDeploymentPhase();
+        await StartDeploymentPhase();
     }
 
-    static async void StartDeploymentPhase()
+    static async Task StartDeploymentPhase()
     {
         Player.GoToDeploymentPhase();
         await DoAutoCheckTiming();
         //Release
     }
 
-    public static async void EndDeploymentPhase()
+    public static async Task EndDeploymentPhase()
     {
         //Called by UI
         await DoAutoCheckTiming();
-        StartActionPhase();
+        await StartActionPhase();
     }
 
-    static async void StartActionPhase()
+    static async Task StartActionPhase()
     {
         TurnPlayer.GoToActionPhase();
         await DoAutoCheckTiming();
         //Release
     }
 
-    public static async void EndActionPhase()
+    public static async Task EndActionPhase()
     {
         //Called by UI
         await DoAutoCheckTiming();
-        DoEndPhase();
+        await DoEndPhase();
     }
 
-    static async void DoEndPhase()
+    static async Task DoEndPhase()
     {
         Player.EndTurn();
         await DoAutoCheckTiming();
@@ -411,7 +411,7 @@ public static class Game
         await DoAutoCheckTiming();
     }
 
-    public static async Task DoLevelUp(Card target, bool toFrontField)
+    public static async Task DoLevelUp(Card target)
     {
         await DoAutoCheckTiming();
         await Player.LevelUp(target);

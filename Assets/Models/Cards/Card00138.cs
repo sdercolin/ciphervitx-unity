@@ -34,7 +34,7 @@ public class Card00138 : Card
     public Sk1 sk1;
     public class Sk1 : ReverseBondToAdd10
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "苍炎剑·Blue Flame Sword";
@@ -52,7 +52,7 @@ public class Card00138 : Card
     public Sk2 sk2;
     public class Sk2 : PermanentSkill
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "继承的圣痕";

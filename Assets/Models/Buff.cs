@@ -11,7 +11,7 @@ public abstract class Buff : IAttachable, ISerializable
     /// </summary>
     /// <param name="origin">产生该附加值的能力</param>
     /// <param name="lastingType">持续类型</param>
-    public Buff(Skill origin, LastingTypeEnum lastingType)
+    protected Buff(Skill origin, LastingTypeEnum lastingType)
     {
         Origin = origin;
         LastingType = lastingType;
@@ -57,9 +57,9 @@ public abstract class Buff : IAttachable, ISerializable
     public Skill Origin { get; set; }
     public LastingTypeEnum LastingType { get; set; }
 
-    protected bool? isAdding = null;
-    protected bool? isBecoming = null;
-    protected dynamic value = null;
+    protected bool? isAdding;
+    protected bool? isBecoming;
+    protected dynamic value;
 
     public virtual void Attached() { }
 

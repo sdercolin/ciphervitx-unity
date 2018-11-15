@@ -34,7 +34,7 @@ public class Card00080 : Card
     public Sk1 sk1;
     public class Sk1 : ActionSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "无双的射手";
@@ -67,7 +67,7 @@ public class Card00080 : Card
     public Sk2 sk2;
     public class Sk2 : Wingslayer
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "飞行特效";

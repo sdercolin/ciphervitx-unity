@@ -44,12 +44,12 @@ public abstract class Skill : IAttachable, ISerializable
     /// <summary>
     /// 是否在本回合中使用过
     /// </summary>
-    public bool UsedInThisTurn = false;
+    public bool UsedInThisTurn;
 
     /// <summary>
     /// 是否一回合只能使用一次
     /// </summary>
-    public bool OncePerTurn = false;
+    public bool OncePerTurn;
 
     /// <summary>
     /// 是否有效
@@ -66,7 +66,7 @@ public abstract class Skill : IAttachable, ISerializable
     /// </summary>
     public List<SkillTypeSymbol> TypeSymbols = new List<SkillTypeSymbol>();
 
-    public Skill()
+    protected Skill()
     {
         Guid = System.Guid.NewGuid().ToString();
     }
@@ -166,10 +166,7 @@ public abstract class ActionSkill : Skill
         //Owner.Controller.Broadcast(new Message(MessageType.UseSkill, new System.Collections.ArrayList { this }));
         await Cost.Pay();
         await Do();
-        if (OncePerTurn)
-        {
-            UsedInThisTurn = true;
-        }
+        UsedInThisTurn |= OncePerTurn;
     }
 
     public override void Read(Message message)
@@ -211,7 +208,7 @@ public abstract class ActionSkill : Skill
 public abstract class AutoSkill : Skill
 {
 
-    public bool Optional = false;
+    public bool Optional;
 
     /// <summary>
     /// 诱发

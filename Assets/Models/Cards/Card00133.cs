@@ -34,7 +34,7 @@ public class Card00133 : Card
     public Sk1 sk1;
     public class Sk1 : Hand4OrLessAdd10
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "赤色诅咒";
@@ -51,7 +51,7 @@ public class Card00133 : Card
     public Sk2 sk2;
     public class Sk2 : DarkEmblem
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "黑暗之纹章";

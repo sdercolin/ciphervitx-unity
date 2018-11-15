@@ -34,7 +34,7 @@ public class Card00024 : Card
     public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "库洛姆警卫队";
@@ -93,7 +93,7 @@ public class Card00024 : Card
     public Sk2 sk2;
     public class Sk2 : Dragonslayer
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "封剑 法尔西昂";

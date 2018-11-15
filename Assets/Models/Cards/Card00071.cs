@@ -32,7 +32,7 @@ public class Card00071 : Card
     public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "圣者的祝福";

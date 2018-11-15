@@ -13,16 +13,16 @@ public class Message
     /// 数据
     /// </summary>
     static readonly int fieldNumber = 10;
-    protected dynamic field1 = null;
-    protected dynamic field2 = null;
-    protected dynamic field3 = null;
-    protected dynamic field4 = null;
-    protected dynamic field5 = null;
-    protected dynamic field6 = null;
-    protected dynamic field7 = null;
-    protected dynamic field8 = null;
-    protected dynamic field9 = null;
-    protected dynamic field10 = null;
+    protected dynamic field1;
+    protected dynamic field2;
+    protected dynamic field3;
+    protected dynamic field4;
+    protected dynamic field5;
+    protected dynamic field6;
+    protected dynamic field7;
+    protected dynamic field8;
+    protected dynamic field9;
+    protected dynamic field10;
 
     public Message Clone()
     {
@@ -227,10 +227,7 @@ public class SetDeckMessage : Message
             var newCard = CardFactory.CreateCard(CardDict[guid], User);
             User.Deck.ImportCard(newCard);
             newCard.Guid = guid;
-            if (guid == HeroGuid)
-            {
-                newCard.IsHero = true;
-            }
+            newCard.IsHero |= guid == HeroGuid;
             for (int i = 0; i < newCard.SkillList.Count; i++)
             {
                 newCard.SkillList[i].Guid = CardSkillDict[guid][i];
@@ -396,10 +393,7 @@ public class MoveMessage : Message
             {
                 card.MoveTo(card.Controller.BackField);
             }
-            if (Reason == null)
-            {
-                card.IsHorizontal = true;
-            }
+            card.IsHorizontal |= Reason == null;
         }
     }
 }
@@ -428,10 +422,7 @@ public class ToBondMessage : Message
         foreach (var card in Targets)
         {
             card.MoveTo(card.Controller.Bond);
-            if (!TargetFrontShown)
-            {
-                card.FrontShown = false;
-            }
+            card.FrontShown &= TargetFrontShown;
         }
     }
 }

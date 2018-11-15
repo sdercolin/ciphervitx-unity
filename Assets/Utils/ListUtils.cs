@@ -69,7 +69,7 @@ public static class ListUtils
         var methodInfo = constructed.GetMethod("Add");
         foreach (var item in splited)
         {
-            object[] parametersArray = new object[] { SerializationUtils.Deserialize(item) };
+            var parametersArray = new object[] { SerializationUtils.Deserialize(item) };
             methodInfo.Invoke(result, parametersArray);
         }
         return result;

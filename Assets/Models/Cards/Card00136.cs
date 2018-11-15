@@ -34,7 +34,7 @@ public class Card00136 : Card
     public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "天翔的双龙";

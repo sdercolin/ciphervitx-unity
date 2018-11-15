@@ -34,7 +34,7 @@ public class Card00137 : Card
     public Sk1 sk1;
     public class Sk1 : ActionSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "圣魔剑·Holy Devil Sword";
@@ -67,7 +67,7 @@ public class Card00137 : Card
     public Sk2 sk2;
     public class Sk2 : PermanentSkill
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "古代魔剑 米斯托尔汀";

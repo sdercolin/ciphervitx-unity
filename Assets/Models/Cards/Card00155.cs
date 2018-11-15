@@ -36,7 +36,7 @@ public class Card00155 : Card
     public Sk1 sk1;
     public class Sk1 : AutoSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "振奋";
@@ -80,7 +80,7 @@ public class Card00155 : Card
     public Sk2 sk2;
     public class Sk2 : ReverseBondToAddRange1to2
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "投枪";

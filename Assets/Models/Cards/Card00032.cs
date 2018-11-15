@@ -34,7 +34,7 @@ public class Card00032 : Card
     public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "军师之才";
@@ -62,7 +62,7 @@ public class Card00032 : Card
     public Sk2 sk2;
     public class Sk2 : TacticalEmblem
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "计略之纹章";

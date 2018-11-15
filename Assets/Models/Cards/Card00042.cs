@@ -36,7 +36,7 @@ public class Card00042 : Card
     public Sk1 sk1;
     public class Sk1 : WingedDeliverer
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "天空的运送者";
@@ -53,7 +53,7 @@ public class Card00042 : Card
     public Sk2 sk2;
     public class Sk2 : FlyingEmblem
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "天空之纹章";

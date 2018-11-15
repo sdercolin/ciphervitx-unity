@@ -9,7 +9,7 @@ using System.Linq;
 /// </summary>
 public abstract class User : IChoosable, ISerializable
 {
-    public User()
+    protected User()
     {
         Deck = new Deck(this);
         Hand = new Hand(this);
@@ -52,12 +52,12 @@ public abstract class User : IChoosable, ISerializable
     public abstract User Opponent { get; }
     public Card Hero => AllCards.Find(card => card.IsHero);
 
-    public bool DeckLoaded = false;
+    public bool DeckLoaded;
 
     /// <summary>
     /// 本回合中已经出击（升级）过的费用数
     /// </summary>
-    public int DeployAndCCCostCount = 0;
+    public int DeployAndCCCostCount;
 
     public List<Card> AllCards {
         get {
@@ -965,8 +965,6 @@ public abstract class User : IChoosable, ISerializable
 /// </summary>
 public class Player : User
 {
-    public Player() : base() { }
-
     public override User Opponent => Game.Rival;
 
     public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
@@ -986,11 +984,9 @@ public class Player : User
 /// </summary>
 public class Rival : User
 {
-    public Rival() : base() { }
-
     public override User Opponent => Game.Player;
 
-    public bool Synchronized = false;
+    public bool Synchronized;
 
     public override string GetDescription(DescriptionPattern descriptionPattern = DescriptionPattern.Default)
     {

@@ -35,7 +35,7 @@ public class Card00028 : Card
     public Sk1 sk1;
     public class Sk1 : ActionSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "烈风";
@@ -73,7 +73,7 @@ public class Card00028 : Card
     public Sk2 sk2;
     public class Sk2 : MagicEmblem
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "魔术之纹章";
@@ -86,7 +86,7 @@ public class Card00028 : Card
     public SkillPrototype1 skillPrototype1;
     public class SkillPrototype1 : Wingslayer
     {
-        public SkillPrototype1() : base()
+        public SkillPrototype1()
         {
             Number = 0;
             Name = "飞行特效";

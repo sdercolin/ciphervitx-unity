@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 /// </summary>
 public abstract class SupportSkill : Skill
 {
-    public SupportSkill() : base() { }
-
     /// <summary>
     /// 支援能力种类
     /// </summary>

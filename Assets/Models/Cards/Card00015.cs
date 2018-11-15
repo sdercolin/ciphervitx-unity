@@ -34,7 +34,7 @@ public class Card00015 : Card
     public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "佣兵队长";
@@ -63,7 +63,7 @@ public class Card00015 : Card
     public Sk2 sk2;
     public class Sk2 : AttackEmblem
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "攻击之纹章";

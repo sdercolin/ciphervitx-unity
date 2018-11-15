@@ -9,7 +9,7 @@ using System.Text;
 /// </summary>
 public abstract class Card : IChoosable, ISerializable
 {
-    public Card(User controller)
+    protected Card(User controller)
     {
         Controller = controller;
         Guid = System.Guid.NewGuid().ToString();
@@ -426,7 +426,7 @@ public abstract class Card : IChoosable, ISerializable
     /// <summary>
     /// 卡叠放时的顶端卡，null表示自身在顶端
     /// </summary>
-    protected Card stackTop = null;
+    protected Card stackTop;
 
     /// <summary>
     /// 等级
@@ -461,27 +461,27 @@ public abstract class Card : IChoosable, ISerializable
     /// <summary>
     /// 卡是否横置
     /// </summary>
-    public bool IsHorizontal = false;
+    public bool IsHorizontal;
 
     /// <summary>
     /// 卡是否正面朝上
     /// </summary>
-    public bool FrontShown = false;
+    public bool FrontShown;
 
     /// <summary>
     /// 卡是否公开
     /// </summary>
-    public bool Visible = false;
+    public bool Visible;
 
     /// <summary>
     /// 卡是否为主人公
     /// </summary>
-    public bool IsHero = false;
+    public bool IsHero;
 
     /// <summary>
     /// 卡被击破的计数，2以上对应主人公被击破时所破坏的宝玉数量
     /// </summary>
-    public int DestroyedCount = 0;
+    public int DestroyedCount;
 
     /// <summary>
     /// 卡被击破的原因
@@ -803,14 +803,8 @@ public abstract class Card : IChoosable, ISerializable
         bool canAttackBack = false;
         if (BelongedRegion is FrontField)
         {
-            if (HasRange(RangeEnum.One))
-            {
-                canAttackFront = true;
-            }
-            if (HasRange(RangeEnum.Two))
-            {
-                canAttackBack = true;
-            }
+            canAttackFront |= HasRange(RangeEnum.One);
+            canAttackBack |= HasRange(RangeEnum.Two);
             if (HasRange(RangeEnum.OnetoTwo) || HasRange(RangeEnum.OnetoThree))
             {
                 canAttackFront = true;
@@ -819,14 +813,8 @@ public abstract class Card : IChoosable, ISerializable
         }
         else if (BelongedRegion is BackField)
         {
-            if (HasRange(RangeEnum.Two) || HasRange(RangeEnum.OnetoTwo))
-            {
-                canAttackFront = true;
-            }
-            if (HasRange(RangeEnum.Three))
-            {
-                canAttackBack = true;
-            }
+            canAttackFront |= (HasRange(RangeEnum.Two) || HasRange(RangeEnum.OnetoTwo));
+            canAttackBack |= HasRange(RangeEnum.Three);
             if (HasRange(RangeEnum.OnetoThree))
             {
                 canAttackFront = true;
@@ -878,7 +866,7 @@ public abstract class Card : IChoosable, ISerializable
                     targets.Add((SupportSkill)skill);
                 }
             }
-        };
+        }
         return targets;
     }
 
@@ -887,7 +875,7 @@ public abstract class Card : IChoosable, ISerializable
         return Power > 0 && GetCostsForCriticalAttack().Count > 0;
     }
 
-    public List<Card> GetCostsForCriticalAttack(Skill reason = null)
+    public List<Card> GetCostsForCriticalAttack()
     {
         var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
         foreach (var card in targets.Clone())
@@ -911,7 +899,7 @@ public abstract class Card : IChoosable, ISerializable
         return GetCostsForAvoid().Count > 0;
     }
 
-    public List<Card> GetCostsForAvoid(Skill reason = null)
+    public List<Card> GetCostsForAvoid()
     {
         var targets = Controller.Hand.Filter(card => card.HasSameUnitNameWith(this));
         foreach (var card in targets.Clone())

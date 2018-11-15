@@ -36,7 +36,7 @@ public class Card00037 : Card
     public Sk1 sk1;
     public class Sk1 : ReverseBondToAdd10
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "钢弓";
@@ -54,7 +54,7 @@ public class Card00037 : Card
     public Sk2 sk2;
     public class Sk2 : Wingslayer
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "飞行特效";
@@ -71,7 +71,7 @@ public class Card00037 : Card
     public Sk3 sk3;
     public class Sk3 : AttackEmblem
     {
-        public Sk3() : base()
+        public Sk3()
         {
             Number = 3;
             Name = "攻击之纹章";

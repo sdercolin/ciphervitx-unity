@@ -36,7 +36,7 @@ public class Card00114 : Card
     public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "天马之呐喊";
@@ -65,7 +65,7 @@ public class Card00114 : Card
     public Sk2 sk2;
     public class Sk2 : AngelicFlight
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "翱翔天空者";

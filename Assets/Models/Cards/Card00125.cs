@@ -37,7 +37,7 @@ public class Card00125 : Card
     public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "长寿的龙一族";
@@ -64,7 +64,7 @@ public class Card00125 : Card
     public Sk2 sk2;
     public class Sk2 : PermanentSkill
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "生物节律·奇数";
@@ -91,7 +91,7 @@ public class Card00125 : Card
     public Sk3 sk3;
     public class Sk3 : DragonEmblem
     {
-        public Sk3() : base()
+        public Sk3()
         {
             Number = 3;
             Name = "龙人之纹章";

@@ -36,7 +36,7 @@ public class Card00102 : Card
     public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "英雄王之名";
@@ -63,7 +63,7 @@ public class Card00102 : Card
     public Sk2 sk2;
     public class Sk2 : Dragonslayer
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "里剑 法尔西昂";
@@ -80,7 +80,7 @@ public class Card00102 : Card
     public Sk3 sk3;
     public class Sk3 : HeroEmblem
     {
-        public Sk3() : base()
+        public Sk3()
         {
             Number = 3;
             Name = "英雄之纹章";

@@ -32,7 +32,7 @@ public class Card00098 : Card
     public Sk1 sk1;
     public class Sk1 : ActionSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "勇敢的王子";

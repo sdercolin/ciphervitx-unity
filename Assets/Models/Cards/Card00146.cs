@@ -38,7 +38,7 @@ public class Card00146 : Card
     public Sk1 sk1;
     public class Sk1 : PermanentSkill
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "安娜姐妹";
@@ -65,7 +65,7 @@ public class Card00146 : Card
     public Sk2 sk2;
     public class Sk2 : Annas
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "100名安娜";
@@ -81,7 +81,7 @@ public class Card00146 : Card
     public Sk3 sk3;
     public class Sk3 : AllowOverFourInDeck
     {
-        public Sk3() : base()
+        public Sk3()
         {
             Number = 3;
             Name = "100名安娜";
@@ -97,7 +97,7 @@ public class Card00146 : Card
     public Sk4 sk4;
     public class Sk4 : PermanentSkill
     {
-        public Sk4() : base()
+        public Sk4()
         {
             Number = 4;
             Name = "100名安娜";

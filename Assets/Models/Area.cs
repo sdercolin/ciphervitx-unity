@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class Area : IChoosable, ISerializable
 {
-    public Area(User Controller)
+    protected Area(User Controller)
     {
         list = new List<Card>();
         this.Controller = Controller;
@@ -80,7 +80,6 @@ public abstract class Area : IChoosable, ISerializable
     /// 在特定卡前加入卡
     /// </summary>
     /// <param name="card">要加入的卡</param>
-    /// <param name="pos">参考的卡</param>
     public void AddCard(Card card, Card referenceCard)
     {
         if (Contains(referenceCard))

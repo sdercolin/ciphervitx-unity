@@ -8,7 +8,7 @@ using System.Reflection;
 /// </summary>
 public abstract class SubSkill : Skill
 {
-    public SubSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base()
+    protected SubSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base()
     {
         Origin = origin;
         LastingType = lastingType;
@@ -25,11 +25,11 @@ public abstract class SubSkill : Skill
     public LastingTypeEnum LastingType;
 
     static readonly int fieldNumber = 5;
-    protected dynamic field1 = null;
-    protected dynamic field2 = null;
-    protected dynamic field3 = null;
-    protected dynamic field4 = null;
-    protected dynamic field5 = null;
+    protected dynamic field1;
+    protected dynamic field2;
+    protected dynamic field3;
+    protected dynamic field4;
+    protected dynamic field5;
 
     public override string Serialize()
     {
@@ -142,7 +142,7 @@ public class DisableSkill : SubSkill
     public DisableSkill(Skill origin, LastingTypeEnum lastingType = LastingTypeEnum.Forever) : base(origin, lastingType) { }
 
     public string TargetName { get { return field1; } set { field1 = value; } }
-    List<Skill> targets = new List<Skill>();
+    readonly List<Skill> targets = new List<Skill>();
 
     public override void Attached()
     {

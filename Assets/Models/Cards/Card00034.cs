@@ -34,7 +34,7 @@ public class Card00034 : Card
     public Sk1 sk1;
     public class Sk1 : Heal
     {
-        public Sk1() : base()
+        public Sk1()
         {
             Number = 1;
             Name = "回复之杖";
@@ -52,7 +52,7 @@ public class Card00034 : Card
     public Sk2 sk2;
     public class Sk2 : MiracleEmblem
     {
-        public Sk2() : base()
+        public Sk2()
         {
             Number = 2;
             Name = "祈祷之纹章";

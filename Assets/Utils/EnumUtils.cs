@@ -28,11 +28,15 @@ public static class EnumUtils
                 value = Enum.Parse(type, splited[1]);
                 return true;
             }
+            value = null;
+            return false;
         }
-        catch { }
-        type = null;
-        value = null;
-        return false;
+        catch
+        {
+            type = null;
+            value = null;
+            return false;
+        }
     }
 }
 

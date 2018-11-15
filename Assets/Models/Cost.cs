@@ -22,7 +22,7 @@ public abstract class Cost
     /// </summary>
     protected List<Card> Choices;
 
-    public Cost(Skill reason)
+    protected Cost(Skill reason)
     {
         Reason = reason;
         Choices = new List<Card>();
@@ -35,7 +35,7 @@ public abstract class Cost
 
     /// <summary>
     /// 执行支付过程（可能被覆写为async Task）
-    /// </summar
+    /// </summary>
     public abstract Task Pay();
 
 
