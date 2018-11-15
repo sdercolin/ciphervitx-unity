@@ -85,7 +85,7 @@ public class Message
 
     public override string ToString()
     {
-        string json = "\"type\": \"" + GetType().FullName + "\"";
+        string json = "\"type\": \"" + GetType().Name + "\"";
         for (int i = 0; i < fieldNumber; i++)
         {
             dynamic field = GetType().GetField("field" + (i + 1).ToString(), BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);

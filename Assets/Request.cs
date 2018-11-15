@@ -257,11 +257,11 @@ public abstract class RemoteRequest
 
     public override string ToString()
     {
-        string json = "\"type\": \"" + GetType().FullName + "\", \"response\": " + SerializationUtils.SerializeAny(Response) + ", \"requestId\": \"" + Guid + "\"";
+        string json = "\"type\": \"" + GetType().Name + "\", \"response\": " + SerializationUtils.SerializeAny(Response) + ", \"requestId\": \"" + Guid + "\"";
         if (GetType().IsGenericType)
         {
             var innerType = GetType().GenericTypeArguments[0];
-            json += ", \"innerType\": \"" + innerType.FullName + "\"";
+            json += ", \"innerType\": \"" + innerType.Name + "\"";
         }
         for (int i = 0; i < fieldNumber; i++)
         {
@@ -310,11 +310,7 @@ public abstract class RemoteRequest
             RemoteRequest newRequest;
             if (requestType.ContainsGenericParameters)
             {
-                var innerType = Assembly.GetExecutingAssembly().GetType(innerTypename);
-                while (!innerType.BaseType.Equals(typeof(object)))
-                {
-                    innerType = innerType.BaseType;
-                }
+                var innerType = Assembly.GetExecutingAssembly().GetType(innerTypename).GetBaseTypeOverObject();
                 Type[] typeArgs = { innerType };
                 requestType = requestType.MakeGenericType(typeArgs);
                 newRequest = Activator.CreateInstance(requestType) as RemoteRequest;

@@ -35,7 +35,7 @@ public abstract class SubSkill : Skill
     {
         var toSerialize = new Dictionary<string, dynamic>
         {
-            { "type", GetType().FullName },
+            { "type", GetType().Name },
             { "guid", Guid },
             { "onlyAvailableWhenFrontShown", SerializationUtils.SerializeAny(OnlyAvailableWhenFrontShown) }
         };

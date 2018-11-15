@@ -337,7 +337,8 @@ public class Induction : IChoosable, ISerializable
     public string Guid { get; set; }
     protected AutoSkill skill;
     public AutoSkill Skill { get; set; }
-    public Message Message;
+    protected Message message;
+    public Message Message { get; set; }
 
     public string GetDescription(DescriptionPattern descriptionOption = DescriptionPattern.Default)
     {
@@ -353,9 +354,10 @@ public class Induction : IChoosable, ISerializable
     {
         var toSerialize = new Dictionary<string, dynamic>
         {
-            { "type", GetType().FullName },
+            { "type", GetType().GetBaseTypeOverObject() },
             { "guid", Guid },
-            { "skill", Skill.Serialize() }
+            { "skill", Skill.Serialize() },
+            { "message", Message.ToString() }
         };
         string json = toSerialize.Serialize();
         json = json.Substring(1, json.Length - 2);

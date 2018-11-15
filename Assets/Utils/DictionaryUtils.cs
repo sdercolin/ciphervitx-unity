@@ -36,16 +36,8 @@ public static class DictionaryUtils
     public static dynamic Deserialize(string json)
     {
         string[] splited = json.Trim(new char[] { '<', '>' }).SplitProtectingWrappers(", ", StringSplitOptions.RemoveEmptyEntries, "[]", "{}", "<>");
-        var keyType = SerializationUtils.Deserialize(splited[0]).GetType();
-        while (!keyType.BaseType.Equals(typeof(object)))
-        {
-            keyType = keyType.BaseType;
-        }
-        var valueType = SerializationUtils.Deserialize(splited[1]).GetType();
-        while (!valueType.BaseType.Equals(typeof(object)))
-        {
-            valueType = valueType.BaseType;
-        }
+        var keyType = SerializationUtils.Deserialize(splited[0]).GetType().GetBaseTypeOverObject();
+        var valueType = SerializationUtils.Deserialize(splited[1]).GetType().GetBaseTypeOverObject();
         Type[] typeArgs = { keyType, valueType };
         var constructed = typeof(Dictionary<,>).MakeGenericType(typeArgs);
 
