@@ -5,6 +5,7 @@ using System.Threading;
 
 public class MessageManager
 {
+    readonly int requestTimeout = 5000;
     readonly List<Message> history = new List<Message>();
     readonly List<RemoteRequest> waitingRequests = new List<RemoteRequest>();
     readonly IService service;
@@ -82,10 +83,22 @@ public class MessageManager
         await service.Send(request.ToString());
         waitingRequests.Add(request);
         LogUtils.Log("Requested: " + request.GetType().FullName);
-        while (request.Response == null)
+        Task.Run(() => Thread.Sleep(requestTimeout)).Wait();
+        if (request.Response == null)
         {
-            Thread.Sleep(200);
+            throw new RequestTimeOutException(request, "Request timed out after " + requestTimeout + "ms: " + request);
         }
         return request;
+    }
+}
+
+
+public class RequestTimeOutException : Exception
+{
+    public RemoteRequest Request;
+
+    public RequestTimeOutException(RemoteRequest request, string message) : base(message)
+    {
+        Request = request;
     }
 }
