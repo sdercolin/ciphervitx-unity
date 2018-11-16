@@ -82,8 +82,8 @@ public class MessageTest
         Game.SetTestMode();
         var card = CardFactory.CreateCard(1, Game.Player);
         Game.Player.Deck.AddCard(card);
+
         var buff = new PowerBuff(null, 10);
-        var subskill = new CanNotAttack(null);
         var message1 = new AttachItemMessage
         {
             Item = buff,
@@ -94,5 +94,18 @@ public class MessageTest
         Assert.NotNull(message1Parsed);
         Assert.AreNotSame(buff, message1Parsed.Item);
         Assert.AreEqual(buff.Guid, message1Parsed.Item.Guid);
+
+
+        var subskill = new CanNotAttack(null);
+        var message2 = new AttachItemMessage
+        {
+            Item = subskill,
+            Target = card
+        }; // without Do();
+        var message2String = message2.ToString();
+        var message2Parsed = Message.FromString(message2String) as AttachItemMessage;
+        Assert.NotNull(message2Parsed);
+        Assert.AreNotSame(subskill, message2Parsed.Item);
+        Assert.AreEqual(subskill.Guid, message2Parsed.Item.Guid);
     }
 }
