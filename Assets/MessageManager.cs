@@ -28,6 +28,12 @@ public class MessageManager
         return false;
     }
 
+    public void Disconnet()
+    {
+        service.Disconnect();
+        waitingRequests.Clear();
+    }
+
     public async Task Send(Message message)
     {
         if (!service.Connected)

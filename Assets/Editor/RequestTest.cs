@@ -37,13 +37,7 @@ public class RequestTest
 
     class DummyService : IService
     {
-        public bool Connected
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool Connected => true;
 
         public Task<bool> Connect(string url)
         {
@@ -74,6 +68,11 @@ public class RequestTest
         {
             queue.Enqueue(data);
             return Task.CompletedTask;
+        }
+
+        public void Disconnect()
+        {
+            return;
         }
 
         readonly Queue<string> queue = new Queue<string>();

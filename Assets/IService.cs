@@ -8,4 +8,5 @@ public interface IService
     Task<bool> Join(string roomId);
     Task Send(string data);
     Task<string> Receive();
+    void Disconnect();
 }
