@@ -28,7 +28,7 @@ public class MessageManager
         return false;
     }
 
-    public void Disconnet()
+    public void Disconnect()
     {
         service.Disconnect();
         waitingRequests.Clear();
