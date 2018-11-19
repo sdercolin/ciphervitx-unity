@@ -193,7 +193,7 @@ public class EmptyMessage : Message
 public class UserInformationMessage : Message
 {
     public string UserGuid { get { return field1; } set { field1 = value; } }
-    public List<string> AreaGuids { get { return field1; } set { field1 = value; } }
+    public List<string> AreaGuids { get { return field2; } set { field2 = value; } }
 
     public override void Do()
     {
