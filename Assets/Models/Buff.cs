@@ -21,7 +21,7 @@ public abstract class Buff : IAttachable, ISerializable
     public string Guid { get; set; }
     public string Serialize()
     {
-        var toSerialize = new Dictionary<string, dynamic>
+        var toSerialize = new Dictionary<string, object>
         {
             { "type", GetType().Name },
             { "guid", Guid },
