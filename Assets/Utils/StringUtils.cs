@@ -67,7 +67,7 @@ public static class StringExtensions
                     break;
                 }
                 var sub = content.Substring((int)firstStart, (int)lastEnd - (int)firstStart + 1);
-                var key = "@#" + (count++).ToString();
+                var key = string.Format("@@{0}##", count++);
                 wrappedDict.Add(key, sub);
                 content = content.Substring(0, (int)firstStart) + key + content.Substring((int)lastEnd + 1);
             }
@@ -77,11 +77,14 @@ public static class StringExtensions
         foreach (var part in splited)
         {
             var partResult = part;
-            foreach (var wrapped in wrappedDict)
+            while (partResult.Contains("@@"))
             {
-                if (part.Contains(wrapped.Key))
+                foreach (var wrapped in wrappedDict)
                 {
-                    partResult = partResult.Replace(wrapped.Key, wrapped.Value);
+                    if (partResult.Contains(wrapped.Key))
+                    {
+                        partResult = partResult.Replace(wrapped.Key, wrapped.Value);
+                    }
                 }
             }
             result.Add(partResult);
