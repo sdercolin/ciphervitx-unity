@@ -153,11 +153,11 @@ public abstract class User : IChoosable, ISerializable
                     .IsHero = true;
             }
             var cardDict = new Dictionary<string, int>();
-            var cardSkillDict = new Dictionary<string, string[]>();
+            var cardSkillDict = new Dictionary<string, List<string>>();
             foreach (var card in cardlistTemp)
             {
                 cardDict.Add(card.Guid, int.Parse(card.Serial.TrimStart('0')));
-                cardSkillDict.Add(card.Guid, card.SkillList.Select(skill => skill.Guid).ToArray());
+                cardSkillDict.Add(card.Guid, card.SkillList.Select(skill => skill.Guid).ToList());
             }
             Game.DoMessage(new SetDeckMessage
             {
