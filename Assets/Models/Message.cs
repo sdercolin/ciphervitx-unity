@@ -218,7 +218,7 @@ public class SetDeckMessage : Message
     public User User { get { return field1; } set { field1 = value; } }
     public Dictionary<string, int> CardDict { get { return field2; } set { field2 = value; } }
     public string HeroGuid { get { return field3; } set { field3 = value; } }
-    public Dictionary<string, string[]> CardSkillDict { get { return field4; } set { field4 = value; } }
+    public Dictionary<string, List<string>> CardSkillDict { get { return field4; } set { field4 = value; } }
 
     public override void Do()
     {
