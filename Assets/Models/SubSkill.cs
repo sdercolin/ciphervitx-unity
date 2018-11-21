@@ -33,7 +33,7 @@ public abstract class SubSkill : Skill
 
     public override string Serialize()
     {
-        var toSerialize = new Dictionary<string, dynamic>
+        var toSerialize = new Dictionary<string, object>
         {
             { "type", GetType().Name },
             { "guid", Guid },

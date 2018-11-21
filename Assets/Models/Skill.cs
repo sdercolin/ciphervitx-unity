@@ -349,7 +349,7 @@ public class Induction : IChoosable, ISerializable
 
     public string Serialize()
     {
-        var toSerialize = new Dictionary<string, dynamic>
+        var toSerialize = new Dictionary<string, object>
         {
             { "type", GetType().GetBaseTypeOverObject() },
             { "guid", Guid },
