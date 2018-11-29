@@ -139,6 +139,7 @@ public static class Game
             + SerializationUtils.SerializeAny(message) + Environment.NewLine);
         if (message.SendBySelf)
         {
+            Task.Run(() => MessageUIController.Do(message).Wait());
             Task.Run(() => MessageManager?.Send(message).Wait());
         }
         ForEachCard(card =>
