@@ -58,6 +58,7 @@ public class MessageManager
                 history.Add(message);
                 message.SendBySelf = false;
                 Game.DoMessage(message);
+                await Game.MessageUIController.Do(message);
             }
             else
             {
