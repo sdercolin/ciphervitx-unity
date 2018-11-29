@@ -103,7 +103,7 @@ public class Message
         string typename = null;
         foreach (var item in splited)
         {
-            if (item.SplitOnce(": ")[0].UnWrap()=="type")
+            if (item.SplitOnce(": ")[0].UnWrap() == "type")
             {
                 typename = item.SplitOnce(": ")[1].UnWrap();
                 break;
