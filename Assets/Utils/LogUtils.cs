@@ -12,6 +12,21 @@ public static class LogUtils
     {
         logger = newLogger;
     }
+
+#if DEBUG
+    public static LogLevel Level = LogUtils.LogLevel.Debug;
+#else 
+    public static LogLevel Level = LogUtils.LogLevel.Error;
+#endif
+
+    public enum LogLevel
+    {
+        Trace = 0,
+        Debug = 1,
+        Error = 2,
+        Fatal = 3,
+        Disabled = 4
+    }
 }
 
 public abstract class Logger
