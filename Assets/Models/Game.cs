@@ -296,7 +296,7 @@ public static class Game
             if (choices[0] != choices[1])
             {
                 decided = true;
-                switch (choices[0] - choices[1])
+                switch (choices[0].Value - choices[1].Value)
                 {
                     // 石头：0，剪刀：1，布：2
                     case 1:
@@ -315,7 +315,7 @@ public static class Game
             }
             DoMessage(new ConfirmRPSMessage()
             {
-                ResultDict = new Dictionary<User, int>()
+                ResultDict = new Dictionary<User, RPSItem>()
                 {
                      { Player, choices[0] },
                      { Rival, choices[1] }

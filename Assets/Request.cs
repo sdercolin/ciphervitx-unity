@@ -58,9 +58,9 @@ public static class Request
     #endregion
 
     #region Choose
-    public static async Task<int> ChooseRPS(User targetUser, RequestFlags flags = RequestFlags.Null)
+    public static async Task<RPSItem> ChooseRPS(User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        return (int)(await Choose(RPSITem.CreateRPSSet(), 1, targetUser, flags))[0].Value;
+        return (await Choose(RPSItem.CreateRPSSet(), 1, targetUser, flags))[0];
     }
 
     public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable

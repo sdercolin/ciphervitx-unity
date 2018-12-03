@@ -249,7 +249,7 @@ public class SetHeroUnitMessage : Message
 
 public class ConfirmRPSMessage : Message
 {
-    public Dictionary<User, int> ResultDict { get { return field1; } set { field1 = value; } }
+    public Dictionary<User, RPSItem> ResultDict { get { return field1; } set { field1 = value; } }
     public User Winner { get { return field2; } set { field2 = value; } }
 
     public override void Do()
