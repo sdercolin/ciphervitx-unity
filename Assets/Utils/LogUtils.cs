@@ -4,9 +4,12 @@ using UnityEngine;
 public static class LogUtils
 {
     static Logger logger = new UnityLogger();
-    public static void Log(string content)
+    public static void Log(string content, LogLevel level = LogLevel.Debug)
     {
-        logger.Log(content);
+        if (level >= Level)
+        {
+            logger.Log(content);
+        }
     }
     public static void SetLogger(Logger newLogger)
     {
