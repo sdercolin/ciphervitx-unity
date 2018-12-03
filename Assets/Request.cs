@@ -60,9 +60,7 @@ public static class Request
     #region Choose
     public static async Task<int> ChooseRPS(User targetUser, RequestFlags flags = RequestFlags.Null)
     {
-        // TO DO:
-        // 石头：0，剪刀：1，布：2
-        return 0;
+        return (int)(await Choose(RPSITem.CreateRPSSet(), 1, targetUser, flags))[0].Value;
     }
 
     public static async Task<T> ChooseUpToOne<T>(List<T> choices, User targetUser, RequestFlags flags = RequestFlags.Null, string description = "") where T : IChoosable
