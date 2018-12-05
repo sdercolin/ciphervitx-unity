@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class RPSITem : IChoosable
+public class RPSItem : IChoosable
 {
-    public static List<RPSITem> CreateRPSSet()
+    public static List<RPSItem> CreateRPSSet()
     {
-        return new List<RPSITem>{
-            new RPSITem(RPSValue.Rock),
-            new RPSITem(RPSValue.Paper),
-            new RPSITem(RPSValue.Scissors)
+        return new List<RPSItem>{
+            new RPSItem(RPSValue.Rock),
+            new RPSItem(RPSValue.Paper),
+            new RPSItem(RPSValue.Scissors)
         };
     }
 
-    RPSITem(RPSValue value)
+    RPSItem(RPSValue value)
     {
         Value = value;
     }
